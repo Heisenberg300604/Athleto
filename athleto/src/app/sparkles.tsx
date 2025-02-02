@@ -47,48 +47,57 @@ export const SparklesCore = ({
     canvas.height = window.innerHeight
 
     class Particle {
-      x: number
-      y: number
-      size: number
-      speedX: number
-      speedY: number
-
-      constructor() {
-        this.x = Math.random() * canvas.width
-        this.y = Math.random() * canvas.height
-        this.size = Math.random() * (maxSize - minSize) + minSize
-        this.speedX = Math.random() * 0.5 - 0.25
-        this.speedY = Math.random() * 0.5 - 0.25
-      }
-
-      update() {
-        this.x += this.speedX
-        this.y += this.speedY
-
-        if (this.x > canvas.width) this.x = 0
-        if (this.x < 0) this.x = canvas.width
-        if (this.y > canvas.height) this.y = 0
-        if (this.y < 0) this.y = canvas.height
-
-        // Mouse interaction
-        const dx = mousePosition.x - this.x
-        const dy = mousePosition.y - this.y
-        const distance = Math.sqrt(dx * dx + dy * dy)
-        if (distance < 100) {
-          const angle = Math.atan2(dy, dx)
-          this.x -= Math.cos(angle) * 1
-          this.y -= Math.sin(angle) * 1
+        x: number
+        y: number
+        size: number
+        speedX: number
+        speedY: number
+      
+        constructor() {
+          const canvas = canvasRef.current
+          if (!canvas) return
+      
+          this.x = Math.random() * canvas.width
+          this.y = Math.random() * canvas.height
+          this.size = Math.random() * (maxSize - minSize) + minSize
+          this.speedX = Math.random() * 0.5 - 0.25
+          this.speedY = Math.random() * 0.5 - 0.25
+        }
+      
+        update() {
+          const canvas = canvasRef.current
+          if (!canvas) return
+      
+          this.x += this.speedX
+          this.y += this.speedY
+      
+          if (this.x > canvas.width) this.x = 0
+          if (this.x < 0) this.x = canvas.width
+          if (this.y > canvas.height) this.y = 0
+          if (this.y < 0) this.y = canvas.height
+      
+          // Mouse interaction
+          const dx = mousePosition.x - this.x
+          const dy = mousePosition.y - this.y
+          const distance = Math.sqrt(dx * dx + dy * dy)
+          if (distance < 100) {
+            const angle = Math.atan2(dy, dx)
+            this.x -= Math.cos(angle) * 1
+            this.y -= Math.sin(angle) * 1
+          }
+        }
+      
+        draw() {
+          const canvas = canvasRef.current
+          const ctx = canvas?.getContext("2d")
+          if (!canvas || !ctx) return
+      
+          ctx.fillStyle = particleColor
+          ctx.beginPath()
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2)
+          ctx.fill()
         }
       }
-
-      draw() {
-        if (!ctx) return
-        ctx.fillStyle = particleColor
-        ctx.beginPath()
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2)
-        ctx.fill()
-      }
-    }
 
     const init = () => {
       particles = []
