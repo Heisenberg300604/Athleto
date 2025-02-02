@@ -47,11 +47,11 @@ export const SparklesCore = ({
     canvas.height = window.innerHeight
 
     class Particle {
-        x: number
-        y: number
-        size: number
-        speedX: number
-        speedY: number
+        x!: number
+        y!: number
+        size!: number
+        speedX!: number
+        speedY!: number
       
         constructor() {
           const canvas = canvasRef.current
@@ -98,6 +98,7 @@ export const SparklesCore = ({
           ctx.fill()
         }
       }
+      
 
     const init = () => {
       particles = []

@@ -15,10 +15,10 @@ export default function Home() {
           id="tsparticles"
           background="transparent"
           particleColor="#4A90E2"
-          particleDensity={50}
+          particleDensity={70}
           className="h-full w-full"
           minSize={0.9}
-          maxSize={1.9}
+          maxSize={2.2}
         />
       </div>
 
