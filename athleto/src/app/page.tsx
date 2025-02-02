@@ -7,10 +7,12 @@ import { SparklesCore } from "./sparkles"
 import { useMousePosition } from "./use-mouse-position"
 import { useState } from "react"
 import AthleteSignupModal from "@/components/Atheletesignup"
+import BrandSignupModal from "@/components/Brandsignup"
 
 export default function Home() {
 
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
+  const [isBrandSignupModalOpen, setIsBrandSignupModalOpen] = useState(false);
 
   return (
     <div className="relative min-h-screen overflow-hidden">
@@ -77,13 +79,20 @@ export default function Home() {
   >
     Athlete Sign up
   </Button>
-            <Button variant="outline" className="border-gray-600 bg-transparent text-white hover:bg-white/10">
+            <Button 
+                onClick={() => setIsBrandSignupModalOpen(true)}
+            variant="outline" className="border-gray-600 bg-transparent text-white hover:bg-white/10">
               Brand Sign up
             </Button>
 
-            <AthleteSignupModal 
+            <AthleteSignupModal
     isOpen={isSignupModalOpen} 
-    onClose={() => setIsSignupModalOpen(false)} 
+    onClose={() => setIsSignupModalOpen(false)}
+  />
+
+  <BrandSignupModal
+    isOpen={isBrandSignupModalOpen}
+    onClose={() => setIsBrandSignupModalOpen(false)}
   />
 
           </div>
