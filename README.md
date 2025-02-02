@@ -2,6 +2,18 @@
 
 Athleto is a virtual platform designed to support underprivileged athletes in India by providing them with the resources, training, and financial backing they need to excel in their respective sports. Our mission is to bridge the gap between talent and opportunity, ensuring that no athlete is left behind due to economic constraints.
 
+##  Live Demo
+
+Check out the live demo of the project below:
+
+<div align="center">
+  <a href="https://athleto-project.vercel.app/" target="_blank">
+    <img src="https://img.shields.io/badge/Visit%20Athleto%20Project-4C9DFF?style=for-the-badge&logo=vercel&logoColor=white" alt="Athleto Project" />
+  </a>
+  <br><br>
+  <p style="font-size: 16px; color: #666;">Click the button above to visit the live version of the Athleto project hosted on Vercel.</p>
+</div>
+
 ## Features 🌟
 
 - **AI-Powered Talent Scouting**: Leverage advanced AI algorithms to identify and nurture hidden talent across various sports.
@@ -10,8 +22,6 @@ Athleto is a virtual platform designed to support underprivileged athletes in In
 - **Sponsorship Matching Engine**: Connect athletes with potential sponsors based on their skills, achievements, and needs.
 - **Sports Equipment and Scholarship Marketplace**: Provide a platform for athletes to access affordable sports equipment and apply for scholarships.
 
-
-### Tech Stack :
  
 ## Tech Stack 💻
 
@@ -48,6 +58,7 @@ Athleto is a virtual platform designed to support underprivileged athletes in In
 - ![Razorpay](https://img.shields.io/badge/Razorpay-00A86B?style=flat&logo=razorpay&logoColor=white) For payment processing.
 
 
+
 ## Getting Started 🚀
 
 ### Prerequisites
@@ -70,3 +81,34 @@ Athleto is a virtual platform designed to support underprivileged athletes in In
    ```bash
    npm install 
    ```
+4. **Set up environment variables**
+Create a .env.local file in the root directory and add the following variables:
+   ```bash
+   NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
+   ```
+5. **Run the development server**
+   ```bash
+   npm run dev
+   ```
+6. **Open your browser**
+   Visit http://localhost:3000 to see the application running.
+
+ ## Contributing 🤝
+We welcome contributions from the community! If you'd like to contribute, please follow these steps:
+
+Fork the repository.
+
+Create a new branch (git checkout -b feature/YourFeatureName).
+
+Commit your changes (git commit -m 'Add some feature').
+
+Push to the branch (git push origin feature/YourFeatureName).
+
+Open a pull request.
+
+## Contact 📧
+For any inquiries, please reach out to us at arshtiwari12345@gmail.com
+
+
+    
