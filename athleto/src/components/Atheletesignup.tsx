@@ -3,6 +3,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import LoginModal from './Loginmodal';
+
 
 interface AthleteSignupModalProps {
   isOpen: boolean;
@@ -12,6 +14,10 @@ interface AthleteSignupModalProps {
 const AthleteSignupModal = ({ isOpen, onClose }: AthleteSignupModalProps) => {
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | ArrayBuffer | null>(null);
+
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+const [isBrandSignupOpen, setIsBrandSignupOpen] = useState(false);
+const [isAthleteSignupOpen, setIsAthleteSignupOpen] = useState(false);
   
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -98,10 +104,18 @@ const AthleteSignupModal = ({ isOpen, onClose }: AthleteSignupModalProps) => {
           </div>
 
           <div className="text-sm text-gray-400 text-center">
-            Already have an account?{" "}
-            <a href="#" className="text-blue-400 hover:underline">Log in</a>
-          </div>
+  Already have an account?{" "}
+  <a onClick={() => setIsLoginModalOpen(true)} className="text-blue-400 hover:underline cursor-pointer">
+    Log in
+  </a>
+</div>
 
+<LoginModal 
+  isOpen={isLoginModalOpen}
+  onClose={() => setIsLoginModalOpen(false)}
+  onOpenBrandSignup={() => setIsBrandSignupOpen(true)}
+  onOpenAthleteSignup={() => setIsAthleteSignupOpen(true)}
+/>
           <Button 
             type="submit" 
             className="w-full h-12 bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 rounded-xl transition-all font-medium shadow-lg shadow-blue-500/25"
