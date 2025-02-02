@@ -34,7 +34,7 @@ export default function Home() {
               Contact
             </Link>
             <Button variant="outline" className="hidden bg-white/5 text-white hover:bg-white/10 md:inline-flex">
-              Get a Demo
+              Get a Demo now !
             </Button>
           </div>
         </div>
