@@ -21,34 +21,39 @@ Sports equipment and scholarship marketplace
 ### Tech Stack :
  
 #### Frontend:
+
 Next.js
 Typescript
 Tailwind CSS
-shadcn/Aceternity UI
+shadcn
+Aceternity UI
+Zustand(validation)
 
-Backend:
 
-Node.js
+#### Backend:
 
-Express.js
+Supabase
+NodeJS
+Superbase storage ( for storing files+images)
+Superbase authentication
 
-Firebase
 
-AI/ML:
+#### AI/ML:
 
-APIs: Using third-party APIs 
+APIs: Using third-party APIs ( Deepseek/Shivaay API)
 
-Database:
-Firestore: For real-time data storage.
+#### Database:
 
-MongoDB: For structured data storage (e.g., athlete profiles, sponsors).
+Postgres SQL 
+
 
 Cloud & Hosting:
 Vercel: For frontend hosting.
 
-Firebase Hosting: For backend and database hosting.
+Supabase Hosting: For backend and database hosting.
+
+Docker and Kubernetes ( for scaling )
 
 Other Tools:
-
 Stripe/Razorpay: For payment processing.
 
