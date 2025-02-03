@@ -1,8 +1,10 @@
+"use client"
 import { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {supabase} from "@/lib/supabase";
 
 interface AthleteSignupModalProps {
   isOpen: boolean;
@@ -12,7 +14,12 @@ interface AthleteSignupModalProps {
 const AthleteSignupModal = ({ isOpen, onClose }: AthleteSignupModalProps) => {
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | ArrayBuffer | null>(null);
-  
+  const handleLogin = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+    });
+    if (error) console.error(error);
+  };
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[600px] bg-black border-2 border-blue-500/30 p-8  rounded-xl shadow-xl backdrop-blur-sm ">
@@ -80,6 +87,7 @@ const AthleteSignupModal = ({ isOpen, onClose }: AthleteSignupModalProps) => {
           </div>
 
           <Button 
+                    onClick={handleLogin}
             className="w-full h-12 flex items-center justify-center gap-2 bg-white/10 text-white hover:bg-white/20 rounded-xl transition-all backdrop-blur-sm border border-white/10"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
