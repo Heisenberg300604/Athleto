@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {supabase} from "@/lib/supabase";
+import LoginModal from './Loginmodal';
+
 
 interface AthleteSignupModalProps {
   isOpen: boolean;
@@ -20,6 +22,11 @@ const AthleteSignupModal = ({ isOpen, onClose }: AthleteSignupModalProps) => {
     });
     if (error) console.error(error);
   };
+
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+const [isBrandSignupOpen, setIsBrandSignupOpen] = useState(false);
+const [isAthleteSignupOpen, setIsAthleteSignupOpen] = useState(false);
+  
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[600px] bg-black border-2 border-blue-500/30 p-8  rounded-xl shadow-xl backdrop-blur-sm ">
@@ -106,10 +113,18 @@ const AthleteSignupModal = ({ isOpen, onClose }: AthleteSignupModalProps) => {
           </div>
 
           <div className="text-sm text-gray-400 text-center">
-            Already have an account?{" "}
-            <a href="#" className="text-blue-400 hover:underline">Log in</a>
-          </div>
+  Already have an account?{" "}
+  <a onClick={() => setIsLoginModalOpen(true)} className="text-blue-400 hover:underline cursor-pointer">
+    Log in
+  </a>
+</div>
 
+<LoginModal 
+  isOpen={isLoginModalOpen}
+  onClose={() => setIsLoginModalOpen(false)}
+  onOpenBrandSignup={() => setIsBrandSignupOpen(true)}
+  onOpenAthleteSignup={() => setIsAthleteSignupOpen(true)}
+/>
           <Button 
             type="submit" 
             className="w-full h-12 bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 rounded-xl transition-all font-medium shadow-lg shadow-blue-500/25"

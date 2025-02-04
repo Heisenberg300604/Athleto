@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import LoginModal from './Loginmodal';
 
 interface BrandSignupModalProps {
   isOpen: boolean;
@@ -21,9 +22,14 @@ const BrandSignupModal = ({ isOpen, onClose }: BrandSignupModalProps) => {
     "Athletic Accessories"
   ];
 
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isBrandSignupOpen, setIsBrandSignupOpen] = useState(false);
+  const [isAthleteSignupOpen, setIsAthleteSignupOpen] = useState(false);
+    
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[600px] bg-black border border-blue-500/20 p-7 rounded-xl shadow-xl">
+      <DialogContent className="sm:max-w-[600px] bg-black border-2 border-blue-500/30 p-7 rounded-xl shadow-xl">
         {/* Decorative elements */}
         <div className="absolute inset-0 bg-gradient-to-b from-blue-500/10 to-purple-500/10 rounded-xl pointer-events-none" />
         
@@ -118,7 +124,7 @@ const BrandSignupModal = ({ isOpen, onClose }: BrandSignupModalProps) => {
           </div>
 
           <Button 
-            className="w-full h-12 flex items-center justify-center gap-2 bg-[#171923] text-white hover:bg-[#1a1f2e] rounded-lg transition-all border border-gray-700/30"
+            className="w-full h-12 flex items-center justify-center gap-2 bg-white/10 text-white hover:bg-white/20 rounded-lg transition-all border border-gray-700/30"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path
@@ -136,9 +142,19 @@ const BrandSignupModal = ({ isOpen, onClose }: BrandSignupModalProps) => {
           </div>
 
           <div className="text-sm text-gray-400 text-center">
-            Already have a brand account?{" "}
-            <a href="#" className="text-blue-400 hover:underline">Log in</a>
-          </div>
+  Already have an account?{" "}
+  <a onClick={() => setIsLoginModalOpen(true)} className="text-blue-400 hover:underline cursor-pointer">
+    Log in
+  </a>
+</div>
+
+<LoginModal 
+  isOpen={isLoginModalOpen}
+  onClose={() => setIsLoginModalOpen(false)}
+  onOpenBrandSignup={() => setIsBrandSignupOpen(true)}
+  onOpenAthleteSignup={() => setIsAthleteSignupOpen(true)}
+/>
+
 
           <Button 
             type="submit"
