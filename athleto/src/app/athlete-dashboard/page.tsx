@@ -58,7 +58,7 @@ const AthleteDashboard: React.FC = () => {
   ]
 
   return (
-    <div className="flex flex-col h-screen bg-gray-100">
+    <div className="flex flex-col h-screen bg-gray-50">
       <AthleteNavbar />
 
       <div className="flex flex-1 p-6 gap-6">
@@ -89,7 +89,7 @@ const AthleteDashboard: React.FC = () => {
                 <button className="flex-1 py-3 px-4 border border-indigo-200 rounded-md text-gray-700 hover:bg-gray-50 transition-all duration-200 ease-in-out font-medium">
                   Clear All
                 </button>
-                <button className="flex-1 py-3 px-4 bg-indigo-500 text-white rounded-md hover:bg-indigo-700 transition-all duration-200 ease-in-out font-medium">
+                <button className="flex-1 py-3 px-4 bg-indigo-600 text-white rounded-md hover:bg-indigo-800 transition-all duration-200 ease-in-out font-medium">
                   Apply
                 </button>
               </div>
@@ -118,7 +118,7 @@ const AthleteDashboard: React.FC = () => {
           {/* Brands */}
           <div className="space-y-4">
             {/* Yummy Chumz */}
-            <div className="bg-white border border-indigo-500 shadow-md rounded-lg p-6">
+            <div className="bg-white border border-indigo-600 shadow-md rounded-lg p-6">
               <div className="flex items-start justify-between">
                 <div className="flex gap-4">
                   <img src="/photo1.jpeg" alt="Yummy Chumz" className="w-16 h-16 rounded-full" />
@@ -137,7 +137,7 @@ const AthleteDashboard: React.FC = () => {
             </div>
 
             {/* TGI Fridays */}
-            <div className="bg-white border border-indigo-500 shadow-md rounded-lg p-6">
+            <div className="bg-white border border-indigo-600 shadow-md rounded-lg p-6">
               <div className="flex items-start justify-between">
                 <div className="flex gap-4">
                   <img src="/download.png" alt="TGI Fridays" className="w-16 h-16 rounded-full" />
@@ -154,7 +154,7 @@ const AthleteDashboard: React.FC = () => {
             </div>
 
             {/* Shuz Group */}
-            <div className="bg-white border border-indigo-500 shadow-md rounded-lg p-6">
+            <div className="bg-white border border-indigo-600 shadow-md rounded-lg p-6">
               <div className="flex items-start justify-between">
                 <div className="flex gap-4">
                   <img src="/shuz.png" alt="Shuz Group" className="w-16 h-16 rounded-full" />
