@@ -18,40 +18,42 @@ const AthleteNavbar: React.FC = () => {
   }
 
   return (
-    <header className="bg-white py-4 px-6 shadow-lg">
+    <header className="bg-white text-white py-4 px-6 ">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         <div className="flex items-center gap-4">
-          <Link href="/" className="text-2xl text-indigo-600 font-bold mr-6 hover:text-blue-400 transition-colors duration-200">
+          <Link href="/" className="text-2xl font-bold mr-6 text-indigo-600 transition-colors duration-200">
             ATHLETO
           </Link>
-          <nav className="hidden md:flex items-center gap-6 text-gray-600">
-            {["BRANDS", "OOPPORTUNITIES", "APPLIED", "NEWS FEED"].map((item) => (
-              <Link
-                key={item}
-                href={item === "Brands" ? "/athlete-dashboard" : "#"}
-                className="hover:text-indigo-500 transition-colors duration-200 relative group"
-              >
-                {item}
-                <span className="absolute left-0 right-0 bottom-0 h-0.5 bg-blue-400 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200 origin-left"></span>
-              </Link>
-            ))}
-          </nav>
+            <nav className="hidden md:flex items-center gap-6 text-gray-600">
+            <Link href="/athlete-dashboard" className="hover:text-indigo-600">
+            BRANDS
+            </Link>
+          <Link href="#" className="hover:text-indigo-600">
+            OPPORTUNITIES
+          </Link>
+          <Link href="#" className="hover:text-indigo-600">
+            APPLIED
+          </Link>
+          <Link href="#" className="hover:text-indigo-600">
+            NEWS FEED
+          </Link>
+        </nav>
         </div>
         <div className="flex items-center gap-4">
-            <button
-            className="text-white p-2 rounded-full  transition-colors duration-200 relative"
+          <button
+            className="text-gray-900 p-2 rounded-full  transition-colors duration-200 relative"
             title="Notifications"
-            >
-            <Bell className="h-6 w-6 text-gray-900" />
+          >
+            <Bell className="h-6 w-6 text-grey-900" />
             <span className="absolute top-0 right-0 h-3 w-3 bg-red-500 rounded-full border-2 border-gray-900"></span>
           </button>
           <div className="relative">
             <button
-              className="text-white p-2 rounded-full transition-colors duration-200 flex items-center gap-2"
+              className="text-gray-900 p-2 rounded-full  transition-colors duration-200 flex items-center gap-2"
               onClick={toggleUserMenu}
               title="User Menu"
             >
-              <User className="h-7 w-7 text-gray-900" />
+              <User className="h-7 w-7" />
               
             </button>
             {isUserMenuOpen && (
