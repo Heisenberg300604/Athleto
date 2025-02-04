@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { Bell, User, Search } from 'lucide-react';
 import Link from 'next/link';
+import AthleteDashboard from '@/app/athlete-dashboard/page';
 
 const AthleteNavbar: React.FC = () => {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
@@ -14,13 +15,13 @@ const AthleteNavbar: React.FC = () => {
   return (
     <header className="bg-gray-900 text-white py-4 px-6 flex justify-between items-center shadow-md">
       <div className="flex items-center gap-4">
-        <Link href="/" className="text-2xl font-bold">
+        <Link href="/" className="text-2xl font-bold mr-6">
           Athleto
         </Link>
         <nav className="hidden md:flex items-center gap-6">
-          <Link href="#" className="hover:text-gray-400">
+            <Link href="/athlete-dashboard" className="hover:text-gray-400">
             Brands
-          </Link>
+            </Link>
           <Link href="#" className="hover:text-gray-400">
             Opportunities
           </Link>
@@ -70,16 +71,7 @@ const AthleteNavbar: React.FC = () => {
             </div>
           )}
         </div>
-        <div className="relative flex-1">
-          <div className="flex items-center gap-4 bg-gray-700 rounded-md px-4 py-2">
-            <Search className="h-6 w-6 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search brands..."
-              className="bg-transparent text-white flex-1 focus:outline-none"
-            />
-          </div>
-        </div>
+        
       </div>
     </header>
   );
