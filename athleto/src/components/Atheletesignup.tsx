@@ -1,14 +1,18 @@
+"use client";
+
 import { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import LoginModal from './Loginmodal';
+import { useRouter } from 'next/navigation';
 
 
 interface AthleteSignupModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onSubmit: () => void;
 }
 
 const AthleteSignupModal = ({ isOpen, onClose }: AthleteSignupModalProps) => {
@@ -18,6 +22,15 @@ const AthleteSignupModal = ({ isOpen, onClose }: AthleteSignupModalProps) => {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 const [isBrandSignupOpen, setIsBrandSignupOpen] = useState(false);
 const [isAthleteSignupOpen, setIsAthleteSignupOpen] = useState(false);
+const router = useRouter();
+
+const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    // Perform signup logic here
+    // ...
+    // Redirect to the Athlete Dashboard after successful signup
+    router.push('/athlete-dashboard');
+  };
   
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -116,12 +129,14 @@ const [isAthleteSignupOpen, setIsAthleteSignupOpen] = useState(false);
   onOpenBrandSignup={() => setIsBrandSignupOpen(true)}
   onOpenAthleteSignup={() => setIsAthleteSignupOpen(true)}
 />
+<form onSubmit={handleSubmit}>
           <Button 
             type="submit" 
             className="w-full h-12 bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 rounded-xl transition-all font-medium shadow-lg shadow-blue-500/25"
           >
             Create Account
           </Button>
+          </form>
         </div>
       </DialogContent>
     </Dialog>

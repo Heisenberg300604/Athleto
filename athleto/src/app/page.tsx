@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { Button } from "@/components/ui/button"
 import { Github } from "lucide-react"
@@ -8,11 +8,18 @@ import { useMousePosition } from "./use-mouse-position"
 import { useState } from "react"
 import AthleteSignupModal from "@/components/Atheletesignup"
 import BrandSignupModal from "@/components/Brandsignup"
+import { useRouter } from "next/navigation"
 
 export default function Home() {
 
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
   const [isBrandSignupModalOpen, setIsBrandSignupModalOpen] = useState(false);
+  const router = useRouter();
+
+  const handleAthleteSignup = () => {
+    setIsSignupModalOpen(false);
+    router.push("/athlete-dashboard");
+  };
 
   return (
     <div className="relative min-h-screen overflow-hidden">
@@ -85,9 +92,10 @@ export default function Home() {
               Brand Sign up
             </Button>
 
-            <AthleteSignupModal
-    isOpen={isSignupModalOpen} 
-    onClose={() => setIsSignupModalOpen(false)}
+  <AthleteSignupModal
+      isOpen={isSignupModalOpen} 
+      onClose={() => setIsSignupModalOpen(false)}
+      onSubmit={handleAthleteSignup}
   />
 
   <BrandSignupModal
