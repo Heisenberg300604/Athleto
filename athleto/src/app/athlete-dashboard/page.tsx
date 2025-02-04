@@ -1,56 +1,95 @@
-import React from 'react';
-import { Heart, Search } from 'lucide-react';
-import AthleteNavbar from '@/components/AthleteNavbar';
-
+import type React from "react"
+import { Heart, Search, Sliders } from "lucide-react"
+import AthleteNavbar from "@/components/AthleteNavbar"
 
 const AthleteDashboard: React.FC = () => {
+  const countries = [
+    "All countries",
+    "India",
+    "United Kingdom",
+    "Ireland",
+    "United States",
+    "Canada",
+    "Australia",
+    "Germany",
+    "France",
+    "Spain",
+    "Italy",
+    "Japan",
+    "Singapore",
+    "UAE",
+    "South Africa",
+  ]
+
+  const cities = [
+    "All cities",
+    "Mumbai",
+    "Delhi",
+    "London",
+    "Dublin",
+    "Cork",
+    "New York",
+    "Toronto",
+    "Sydney",
+    "Berlin",
+    "Paris",
+    "Madrid",
+    "Rome",
+    "Tokyo",
+    "Dubai",
+  ]
+
+  const industries = [
+    "All industries",
+    "Food & Beverage Retail",
+    "Restaurants & Catering",
+    "Consumer Goods & Apparel",
+    "Technology",
+    "Sports Equipment",
+    "Entertainment",
+    "Healthcare",
+    "Education",
+    "Financial Services",
+    "Media",
+    "Automotive",
+    "Travel & Tourism",
+    "Fitness & Wellness",
+    "Retail",
+  ]
+
   return (
-    <div className="flex flex-col h-screen bg-gray-800">
-      {/* Navbar */}
+    <div className="flex flex-col h-screen bg-gray-100">
       <AthleteNavbar />
 
       <div className="flex flex-1 p-6 gap-6">
-        {/*  Filters */}
+        {/* Filters */}
         <div className="w-80">
-            <div className="bg-gray-800 p-6 rounded-lg shadow-2xl">
-            <div className="text-lg font-medium mb-6 text-white">Filters:</div>
-            
+          <div className="bg-white p-6 rounded-2xl shadow-lg">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-gray-800">Filters</h2>
+              <Sliders className="text-blue-600" size={24} />
+            </div>
+
             <div className="space-y-6">
-              <div className="space-y-2">
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-300">Country</span>
-                  <button className="text-gray-400 text-sm hover:text-gray-300">Clear</button>
+              {["Country", "City", "Industry"].map((filter, index) => (
+                <div key={filter} className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-700 font-medium">{filter}</span>
+                    <button className="text-blue-600 text-sm hover:text-blue-800 transition-colors">Clear</button>
+                  </div>
+                  <select className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ease-in-out">
+                    {(index === 0 ? countries : index === 1 ? cities : industries).map((option) => (
+                      <option key={option}>{option}</option>
+                    ))}
+                  </select>
                 </div>
-                <select className="w-full p-2 bg-gray-700 border border-gray-600 rounded-md text-gray-300">
-                  <option>All countries</option>
-                </select>
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-300">City</span>
-                  <button className="text-gray-400 text-sm hover:text-gray-300">Clear</button>
-                </div>
-                <select className="w-full p-2 bg-gray-700 border border-gray-600 rounded-md text-gray-300">
-                  <option>All cities</option>
-                </select>
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-300">Industry</span>
-                  <button className="text-gray-400 text-sm hover:text-gray-300">Clear</button>
-                </div>
-                <select className="w-full p-2 bg-gray-700 border border-gray-600 rounded-md text-gray-300">
-                  <option>All industries</option>
-                </select>
-              </div>
+              ))}
 
               <div className="flex gap-3 mt-8">
-                <button className="flex-1 py-2 px-4 border border-gray-600 rounded-md text-gray-300 hover:bg-gray-700">
-                  Clear
+                <button className="flex-1 py-3 px-4 border border-indigo-200 rounded-md text-gray-700 hover:bg-gray-50 transition-all duration-200 ease-in-out font-medium">
+                  Clear All
                 </button>
-                <button className="flex-1 py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+                <button className="flex-1 py-3 px-4 bg-indigo-500 text-white rounded-md hover:bg-indigo-700 transition-all duration-200 ease-in-out font-medium">
                   Apply
                 </button>
               </div>
@@ -63,33 +102,32 @@ const AthleteDashboard: React.FC = () => {
           {/* Search and Tabs */}
           <div className="mb-6">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
               <input
                 type="text"
-                placeholder="Search"
-                className="w-full pl-10 pr-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-gray-300 focus:outline-none focus:border-blue-500"
+                placeholder="Search brands"
+                className="w-full pl-12 pr-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ease-in-out"
               />
             </div>
-            <div className="flex gap-6 mt-4 border-b border-gray-700">
-              <button className="px-4 py-2 text-blue-500 border-b-2 border-blue-500">All Brands</button>
-              <button className="px-4 py-2 text-gray-400 hover:text-gray-300">Favorites</button>
+            <div className="flex gap-6 mt-6 border-b border-gray-200">
+              <button className="px-4 py-3 text-blue-600 border-b-2 border-blue-600 font-semibold">All Brands</button>
+              <button className="px-4 py-3 text-gray-600 hover:text-gray-800 transition-colors">Favorites</button>
             </div>
           </div>
 
-          {/* Brands  */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-2">
-
-            {/* dummy data  */}
-            <div className="bg-gray-800 shadow-md rounded-lg p-6">
+          {/* Brands */}
+          <div className="space-y-4">
+            {/* Yummy Chumz */}
+            <div className="bg-white border border-indigo-500 shadow-md rounded-lg p-6">
               <div className="flex items-start justify-between">
                 <div className="flex gap-4">
-                  <img src="#" alt="Yummy Chumz" className="rounded-full" />
+                  <img src="/photo1.jpeg" alt="Yummy Chumz" className="w-16 h-16 rounded-full" />
                   <div>
-                    <div className="flex items-center gap-4">
-                      <h3 className="text-xl font-bold text-white">Yummy Chumz</h3>
-                    </div>
-                    <p className="text-gray-400 mt-2">Food & Beverage Retail</p>
-                    <p className="text-gray-400">United Kingdom, Online (UK)</p>
+                  <div className="flex items-center gap-4">
+                    <h3 className="text-xl font-bold text-black">Yummy Chumz</h3>
+                  </div>
+                  <p className="text-gray-600 mt-2">Food & Beverage Retail</p>
+                  <p className="text-gray-600">United Kingdom, Online (UK)</p>
                   </div>
                 </div>
                 <button className="text-gray-400 hover:text-blue-500">
@@ -99,14 +137,14 @@ const AthleteDashboard: React.FC = () => {
             </div>
 
             {/* TGI Fridays */}
-            <div className="bg-gray-800 shadow-md rounded-lg p-6">
+            <div className="bg-white border border-indigo-500 shadow-md rounded-lg p-6">
               <div className="flex items-start justify-between">
                 <div className="flex gap-4">
-                  <img src="#" alt="TGI Fridays" className="rounded-full" />
+                  <img src="/download.png" alt="TGI Fridays" className="w-16 h-16 rounded-full" />
                   <div>
-                    <h3 className="text-xl font-bold text-white">TGI Fridays</h3>
-                    <p className="text-gray-400 mt-2">Restaurants & Catering</p>
-                    <p className="text-gray-400">Ireland, Dublin</p>
+                    <h3 className="text-xl font-bold text-black">TGI Fridays</h3>
+                    <p className="text-gray-600 mt-2">Restaurants & Catering</p>
+                    <p className="text-gray-600">Ireland, Dublin</p>
                   </div>
                 </div>
                 <button className="text-gray-400 hover:text-blue-500">
@@ -116,14 +154,14 @@ const AthleteDashboard: React.FC = () => {
             </div>
 
             {/* Shuz Group */}
-            <div className="bg-gray-800 shadow-md rounded-lg p-6">
+            <div className="bg-white border border-indigo-500 shadow-md rounded-lg p-6">
               <div className="flex items-start justify-between">
                 <div className="flex gap-4">
-                  <img src="#" alt="Shuz Group" className="rounded-full" />
+                  <img src="/shuz.png" alt="Shuz Group" className="w-16 h-16 rounded-full" />
                   <div>
-                    <h3 className="text-xl font-bold text-white">Shuz Group</h3>
-                    <p className="text-gray-400 mt-2">Consumer Goods & Apparel</p>
-                    <p className="text-gray-400">Ireland, Cork</p>
+                    <h3 className="text-xl font-bold text-black">Shuz Group</h3>
+                    <p className="text-gray-600 mt-2">Consumer Goods & Apparel</p>
+                    <p className="text-gray-600">Ireland, Cork</p>
                   </div>
                 </div>
                 <button className="text-gray-400 hover:text-blue-500">
@@ -131,13 +169,14 @@ const AthleteDashboard: React.FC = () => {
                 </button>
               </div>
             </div>
-
-          {/* Can add more brands */}
           </div>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default AthleteDashboard;
+export default AthleteDashboard
+
+
+
