@@ -1,22 +1,32 @@
 "use client";
 
-import { useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { toast } from 'react-hot-toast';
+import { useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { supabase } from "@/lib/supabase";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { toast } from "react-hot-toast";
 
 export default function ResetPasswordPage() {
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  return (
+    <Suspense fallback={<p className="text-white">Loading...</p>}>
+      <ResetPasswordForm />
+    </Suspense>
+  );
+}
+
+function ResetPasswordForm() {
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
 
+  const token = searchParams.get("token"); // Extract token if needed
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (password !== confirmPassword) {
       toast.error("Passwords don't match");
       return;
@@ -25,14 +35,12 @@ export default function ResetPasswordPage() {
     setLoading(true);
 
     try {
-      const { error } = await supabase.auth.updateUser({
-        password,
-      });
+      const { error } = await supabase.auth.updateUser({ password });
 
       if (error) throw error;
 
       toast.success("Password updated successfully!");
-      router.push('/login');
+      router.push("/login");
     } catch (error: any) {
       toast.error(error.message || "Password reset failed");
     } finally {
@@ -46,7 +54,7 @@ export default function ResetPasswordPage() {
         <h1 className="text-3xl font-bold text-white mb-6 text-center">
           Reset Password
         </h1>
-        
+
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label className="block text-gray-300 mb-2">New Password</label>
@@ -59,7 +67,7 @@ export default function ResetPasswordPage() {
               minLength={8}
             />
           </div>
-          
+
           <div>
             <label className="block text-gray-300 mb-2">Confirm Password</label>
             <Input
