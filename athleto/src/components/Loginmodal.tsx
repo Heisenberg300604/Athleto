@@ -4,6 +4,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { useState } from "react";
+import { supabase } from "@/lib/supabase"; // Import your Supabase client
+import { useRouter } from "next/navigation";
+import { toast } from "react-hot-toast";
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -14,6 +17,75 @@ interface LoginModalProps {
 
 const LoginModal = ({ isOpen, onClose, onOpenBrandSignup, onOpenAthleteSignup }: LoginModalProps) => {
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  const handleResetPassword = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    
+    if (!email) {
+      toast.error("Please enter your email address");
+      return;
+    }
+  
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/auth/reset-password`,
+      });
+  
+      if (error) throw error;
+      
+      toast.success("Password reset link sent to your email!");
+    } catch (error: any) {
+      toast.error(error.message || "Error sending reset link");
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
+    });
+    if (error) {
+      toast.error(error.message);
+    }
+  };
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!email || !password) {
+      toast.error("Please fill in all fields.");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      // Sign in with Supabase
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      // Handle successful login
+      toast.success("Login successful!");
+      onClose(); // Close the modal
+      router.push("/athlete-dashboard"); // Redirect to the dashboard or another page
+    } catch (error: any) {
+      toast.error(error.message || "An error occurred during login.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleBrandSignupClick = () => {
     onClose();
@@ -58,23 +130,31 @@ const LoginModal = ({ isOpen, onClose, onOpenBrandSignup, onOpenAthleteSignup }:
           </p>
         </DialogHeader>
 
-        <div className="grid gap-4">
+        <form onSubmit={handleLogin} className="grid gap-4">
           <div className="grid gap-1.5">
-            <Label htmlFor="email" className="text-gray-300 font-medium">Email</Label>
+            <Label htmlFor="email" className="text-gray-300 font-medium">
+              Email
+            </Label>
             <Input
               id="email"
               type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="bg-[#1A2233]/50 border-gray-700/30 text-white h-12 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all hover:bg-[#1A2233]/70"
               placeholder="Enter your email address"
             />
           </div>
 
           <div className="grid gap-1.5">
-            <Label htmlFor="password" className="text-gray-300 font-medium">Password</Label>
+            <Label htmlFor="password" className="text-gray-300 font-medium">
+              Password
+            </Label>
             <div className="relative">
               <Input
                 id="password"
                 type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 className="bg-[#1A2233]/50 border-gray-700/30 text-white h-12 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all hover:bg-[#1A2233]/70 pr-10"
                 placeholder="Enter your password"
               />
@@ -93,16 +173,18 @@ const LoginModal = ({ isOpen, onClose, onOpenBrandSignup, onOpenAthleteSignup }:
           </div>
 
           <div className="text-right">
-            <a href="#" className="text-sm text-blue-400 hover:underline">
+            <a href="#" className="text-sm text-blue-400 hover:underline"
+            onClick={handleResetPassword}>
               Forgot password?
             </a>
           </div>
 
           <Button
             type="submit"
+            disabled={loading}
             className="w-full h-12 bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 rounded-xl transition-all font-medium shadow-lg shadow-blue-500/25"
           >
-            Log In
+            {loading ? "Logging In..." : "Log In"}
           </Button>
 
           <div className="relative my-2">
@@ -128,7 +210,20 @@ const LoginModal = ({ isOpen, onClose, onOpenBrandSignup, onOpenAthleteSignup }:
               Sign Up as Talent
             </Button>
           </div>
-        </div>
+        </form>
+        <Button
+            type="button"
+            onClick={handleGoogleLogin}
+            className="w-full h-12 flex items-center justify-center gap-2 bg-white/10 text-white hover:bg-white/20 rounded-xl transition-all backdrop-blur-sm border border-white/10"
+          >
+            <svg className="w-5 h-5" viewBox="0 0 24 24">
+              <path
+                fill="currentColor"
+                d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z"
+              />
+            </svg>
+            Login with Google
+          </Button>
       </DialogContent>
     </Dialog>
   );
