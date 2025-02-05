@@ -14,6 +14,7 @@ const AthleteDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState("all")
   const [selectedBrand, setSelectedBrand] = useState<string | null>(null)
   const [showActionModal, setShowActionModal] = useState<string | null>(null)
+  const [searchQuery, setSearchQuery] = useState("")
 
   const brandDetails = {
     "Yummy Chumz": {
@@ -101,13 +102,27 @@ const AthleteDashboard: React.FC = () => {
     ...details,
   }))
 
-  const toggleFavorite = (brandName: string) => {
+  const toggleFavorite = (brandName: string, event: React.MouseEvent) => {
+    event.stopPropagation() 
     setFavorites((prev) =>
       prev.includes(brandName) ? prev.filter((name) => name !== brandName) : [...prev, brandName],
     )
   }
 
-  const filteredBrands = activeTab === "favorites" ? brands.filter((brand) => favorites.includes(brand.name)) : brands
+  const handleMoreClick = (brandName: string, event: React.MouseEvent) => {
+    event.stopPropagation() 
+    setShowActionModal(brandName)
+  }
+
+  // Filter brands based on both active tab and search query
+  const filteredBrands = brands
+    .filter((brand) => activeTab === "all" || favorites.includes(brand.name))
+    .filter((brand) => 
+      searchQuery === "" || 
+      brand.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      brand.industry.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      brand.location.toLowerCase().includes(searchQuery.toLowerCase())
+    )
 
   const selectedBrandDetails = selectedBrand ? brandDetails[selectedBrand as keyof typeof brandDetails] : null
 
@@ -160,6 +175,8 @@ const AthleteDashboard: React.FC = () => {
               <input
                 type="text"
                 placeholder="Search brands"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-12 pr-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ease-in-out"
               />
             </div>
@@ -190,17 +207,18 @@ const AthleteDashboard: React.FC = () => {
             {filteredBrands.map((brand) => (
               <div
                 key={brand.name}
-                className="bg-white border border-indigo-600 shadow-sm hover:shadow-md transition-shadow rounded-lg p-6"
+                onClick={() => setSelectedBrand(brand.name)}
+                className="bg-white border border-indigo-600 shadow-sm hover:shadow-md transition-shadow rounded-lg p-6 cursor-pointer"
               >
                 <div className="flex items-start justify-between">
-                  <div className="flex gap-4 cursor-pointer" onClick={() => setSelectedBrand(brand.name)}>
+                  <div className="flex gap-4">
                     <img src={brand.image || "/placeholder.svg"} alt={brand.name} className="w-16 h-16 rounded-full" />
                     <div>
                       <div className="flex items-center gap-2">
                         <h3 className="text-xl font-bold text-black">{brand.name}</h3>
                         {brand.verified && (
-                          <Badge  className="bg-green-100 text-green-900">
-                          Verified
+                          <Badge className="bg-green-100 text-green-900">
+                            Verified
                           </Badge>
                         )}
                       </div>
@@ -216,7 +234,7 @@ const AthleteDashboard: React.FC = () => {
                   </div>
                   <div className="flex items-center gap-2">
                     <button
-                      onClick={() => toggleFavorite(brand.name)}
+                      onClick={(e) => toggleFavorite(brand.name, e)}
                       className={`transition-colors ${
                         favorites.includes(brand.name) ? "text-red-500" : "text-gray-400 hover:text-red-500"
                       }`}
@@ -224,7 +242,7 @@ const AthleteDashboard: React.FC = () => {
                       <Heart size={24} fill={favorites.includes(brand.name) ? "currentColor" : "none"} />
                     </button>
                     <button
-                      onClick={() => setShowActionModal(brand.name)}
+                      onClick={(e) => handleMoreClick(brand.name, e)}
                       className="text-gray-400 hover:text-gray-600 transition-colors bg-gray-50"
                     >
                       <MoreVertical size={24} />
@@ -237,6 +255,7 @@ const AthleteDashboard: React.FC = () => {
         </div>
       </div>
 
+      
       {/* Brand Details Modal */}
       <Dialog open={!!selectedBrand} onOpenChange={() => setSelectedBrand(null)}>
         <DialogContent className="max-w-3xl bg-white p-0 gap-0">
@@ -276,14 +295,13 @@ const AthleteDashboard: React.FC = () => {
                       </Badge>
                     )}
                   </div>
-                    <Button
-                    
+                  <Button
                     size="icon"
-                    onClick={() => toggleFavorite(selectedBrand || "")}
+                    onClick={(e) => toggleFavorite(selectedBrand || "", e)}
                     className={favorites.includes(selectedBrand || "") ? "text-red-500" : "text-gray-400"}
-                    >
+                  >
                     <Heart fill={favorites.includes(selectedBrand || "") ? "currentColor" : "none"} />
-                    </Button>
+                  </Button>
                 </div>
                 {selectedBrandDetails && (
                   <div className="mt-4 space-y-2">
