@@ -14,6 +14,7 @@ import { toast } from "react-hot-toast";
 interface BrandSignupModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onSubmit: () => void; 
 }
 
 const BrandSignupModal = ({ isOpen, onClose }: BrandSignupModalProps) => {
