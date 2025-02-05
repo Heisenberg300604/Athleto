@@ -9,9 +9,9 @@ import { toast } from "react-hot-toast";
 
 export default function ResetPasswordPage() {
   return (
-    <Suspense fallback={<p className="text-white">Loading...</p>}>
+    <Suspense fallback={<p className="text-white">Loading....</p>}>
       <ResetPasswordForm />
-    </Suspense>
+    </Suspense> 
   );
 }
 
