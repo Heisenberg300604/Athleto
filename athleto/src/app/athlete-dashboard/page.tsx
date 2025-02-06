@@ -208,7 +208,7 @@ const AthleteDashboard: React.FC = () => {
               <div
                 key={brand.name}
                 onClick={() => setSelectedBrand(brand.name)}
-                className="bg-white border border-indigo-600 shadow-sm hover:shadow-md transition-shadow rounded-lg p-6 cursor-pointer"
+                className="bg-white  shadow-md hover:shadow-md transition-shadow rounded-lg p-6 cursor-pointer"
               >
                 <div className="flex items-start justify-between">
                   <div className="flex gap-4">
