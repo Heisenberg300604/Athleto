@@ -125,7 +125,6 @@ const AthleteDashboard: React.FC = () => {
     )
 
   const selectedBrandDetails = selectedBrand ? brandDetails[selectedBrand as keyof typeof brandDetails] : null
-
   return (
     <div className="flex flex-col h-screen bg-gray-50">
       <AthleteNavbar />
