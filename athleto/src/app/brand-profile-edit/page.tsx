@@ -13,17 +13,17 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import BrandNavbar from '@/components/BrandNavbar';
 
-
-interface BrandProfileEditProps {
-  onClose: () => void;
-}
-
-export const BrandProfileEdit: React.FC<BrandProfileEditProps> = ({ onClose }) => {
+export default function BrandProfileEditPage() {
   const [image, setImage] = useState<File | null>(null);
+
+  const handleClose = () => {
+    // Handle navigation or state management for closing
+    window.history.back();
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
-        <BrandNavbar    />
+      <BrandNavbar />
       <div className="max-w-4xl mx-auto">
         <div className="bg-white rounded-lg shadow-sm p-8">
           <div className="grid grid-cols-3 gap-8">
@@ -216,7 +216,7 @@ export const BrandProfileEdit: React.FC<BrandProfileEditProps> = ({ onClose }) =
 
               <div className="flex justify-end space-x-4 pt-6">
                 <button 
-                  onClick={onClose}
+                  onClick={handleClose}
                   className="px-4 py-2 text-gray-600 hover:text-gray-800 font-medium transition-colors"
                 >
                   CANCEL
@@ -231,5 +231,4 @@ export const BrandProfileEdit: React.FC<BrandProfileEditProps> = ({ onClose }) =
       </div>
     </div>
   );
-};
-
+}
