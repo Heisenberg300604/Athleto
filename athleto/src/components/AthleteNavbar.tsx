@@ -28,10 +28,10 @@ const AthleteNavbar: React.FC = () => {
             <Link href="/athlete-dashboard" className="hover:text-indigo-600">
             BRANDS
             </Link>
-          <Link href="#" className="hover:text-indigo-600">
+          <Link href="/athlete-opportunities" className="hover:text-indigo-600">
             OPPORTUNITIES
           </Link>
-          <Link href="#" className="hover:text-indigo-600">
+          <Link href="/athlete-applied" className="hover:text-indigo-600">
             APPLIED
           </Link>
             <Link href="/athlete-dashboard/newsfeed" className="hover:text-indigo-600">

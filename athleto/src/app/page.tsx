@@ -9,6 +9,7 @@ import { useState } from "react"
 import AthleteSignupModal from "@/components/Atheletesignup"
 import BrandSignupModal from "@/components/Brandsignup"
 import { useRouter } from "next/navigation"
+import { useHomePageForcedTheme } from "@/hooks/useHomePageForcedTheme";
 
 export default function Home() {
 
@@ -25,7 +26,10 @@ export default function Home() {
     setIsSignupModalOpen(false);
     router.push("/brand-dashboard");
   };
-
+  
+  // const {theme, setTheme} = useTheme();
+  useHomePageForcedTheme();
+  
   return (
     <div className="relative min-h-screen overflow-hidden">
       {/* Sparkles Background */}

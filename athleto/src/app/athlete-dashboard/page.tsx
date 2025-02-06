@@ -125,7 +125,6 @@ const AthleteDashboard: React.FC = () => {
     )
 
   const selectedBrandDetails = selectedBrand ? brandDetails[selectedBrand as keyof typeof brandDetails] : null
-
   return (
     <div className="flex flex-col h-screen bg-gray-50">
       <AthleteNavbar />
@@ -173,17 +172,17 @@ const AthleteDashboard: React.FC = () => {
             <div className="relative">
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
               <input
-                type="text"
-                placeholder="Search brands"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ease-in-out"
+              type="text"
+              placeholder="Search brands"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-12 pr-4 py-2 bg-white border border-gray-200 rounded-xl text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ease-in-out"
               />
             </div>
             <div className="flex gap-6 mt-6 border-b border-gray-200">
               <button
                 onClick={() => setActiveTab("all")}
-                className={`px-4 py-3 font-semibold transition-colors ${
+                className={`px-3 py-3 font-semibold transition-colors ${
                   activeTab === "all" ? "text-blue-600 border-b-2 border-blue-600" : "text-gray-600 hover:text-gray-800"
                 }`}
               >
@@ -208,7 +207,7 @@ const AthleteDashboard: React.FC = () => {
               <div
                 key={brand.name}
                 onClick={() => setSelectedBrand(brand.name)}
-                className="bg-white  shadow-md hover:shadow-md transition-shadow rounded-lg p-6 cursor-pointer"
+                className="bg-white  shadow-md hover:shadow-md transition-shadow rounded-xl p-6 cursor-pointer"
               >
                 <div className="flex items-start justify-between">
                   <div className="flex gap-4">
