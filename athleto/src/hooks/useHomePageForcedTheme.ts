@@ -4,10 +4,10 @@ import { useEffect } from "react"
 import { useTheme } from "next-themes"
 
 export function useHomePageForcedTheme() {
-  const { setTheme, theme, systemTheme } = useTheme()  
+  const { setTheme, theme} = useTheme()  
   useEffect(() => {
     if(theme === "dark") return;
     setTheme("dark")
-  }, [setTheme, theme, systemTheme])
+  }, [setTheme, theme])
 }
 

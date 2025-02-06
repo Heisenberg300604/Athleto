@@ -7,8 +7,6 @@ export function useForceLightMode() {
   const { setTheme, theme, systemTheme } = useTheme()
 
   useEffect(() => {
-    // const originalTheme = theme === "system" ? systemTheme : theme
-
     // Force light mode
     setTheme("light")
 
