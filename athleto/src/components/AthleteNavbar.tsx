@@ -34,9 +34,9 @@ const AthleteNavbar: React.FC = () => {
           <Link href="/athlete-applied" className="hover:text-indigo-600">
             APPLIED
           </Link>
-          <Link href="#" className="hover:text-indigo-600">
+            <Link href="/athlete-dashboard/newsfeed" className="hover:text-indigo-600">
             NEWS FEED
-          </Link>
+            </Link>
         </nav>
         </div>
         <div className="flex items-center gap-4">
