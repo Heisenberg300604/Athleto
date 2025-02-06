@@ -18,7 +18,7 @@ interface BrandProfileEditProps {
   onClose: () => void;
 }
 
-const BrandProfileEdit: React.FC<BrandProfileEditProps> = ({ onClose }) => {
+export const BrandProfileEdit: React.FC<BrandProfileEditProps> = ({ onClose }) => {
   const [image, setImage] = useState<File | null>(null);
 
   return (
@@ -233,4 +233,3 @@ const BrandProfileEdit: React.FC<BrandProfileEditProps> = ({ onClose }) => {
   );
 };
 
-export default BrandProfileEdit;
