@@ -100,7 +100,6 @@ export default function Home() {
   <AthleteSignupModal
       isOpen={isSignupModalOpen} 
       onClose={() => setIsSignupModalOpen(false)}
-      onSubmit={handleAthleteSignup}
   />
 
   <BrandSignupModal
