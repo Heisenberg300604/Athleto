@@ -61,7 +61,7 @@ const AthleteNavbar: React.FC = () => {
                 {["Profile", "Settings", "Log out"].map((item) => (
                   <Link
                     key={item}
-                    href="#"
+                    href="/athlete-profile"
                     className={`block px-4 py-2 hover:bg-gray-700 transition-colors duration-200 ${
                       item === "Log out" ? "text-red-500" : "text-white"
                     }`}

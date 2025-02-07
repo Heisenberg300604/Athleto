@@ -1,38 +1,40 @@
 import React from "react";
+import { cn } from "@/lib/utils";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  LayoutDashboard,
   User,
+  Lock,
   CreditCard,
   BarChart2,
   LogOut,
   Image as ImageIcon,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
 
-interface BrandSidebarProps {
-  currentView: string;
-  onViewChange: (view: string) => void;
+interface AthleteSidebarProps {
   isEditing?: boolean;
-  profileImage?: string | null; // Allow null as well
+  profileImage?: string | null;
   onImageUpload?: (file: File) => void;
+  activeTab: string;
+  onTabChange: (tab: string) => void;
 }
 
-export const BrandSidebar: React.FC<BrandSidebarProps> = ({
-  currentView,
-  onViewChange,
+export const AthleteProfileSidebar: React.FC<AthleteSidebarProps> = ({
   isEditing = false,
   profileImage,
   onImageUpload,
+  activeTab,
+  onTabChange,
 }) => {
-  const menuItems = [
-    { id: "brand-info", label: "BRAND INFO", icon: LayoutDashboard },
-    { id: "profile-info", label: "PROFILE INFO", icon: User },
-    { id: "payment-history", label: "PAYMENT HISTORY", icon: CreditCard },
+  const tabs = [
+    { id: "public", label: "PUBLIC INFO", icon: User },
+    { id: "private", label: "PRIVATE INFO", icon: Lock },
+    { id: "payment", label: "PAYMENT HISTORY", icon: CreditCard },
     { id: "analytics", label: "ANALYTICS", icon: BarChart2 },
   ];
 
   return (
     <div className="w-full bg-white rounded-xl shadow-sm p-6">
+      {/* Logo/Image Upload Section */}
       <div className="relative mb-8">
         <div className="w-full aspect-square rounded-xl overflow-hidden bg-gradient-to-br from-blue-50 to-blue-100 border-2 border-blue-200">
           {profileImage ? (
@@ -58,7 +60,6 @@ export const BrandSidebar: React.FC<BrandSidebarProps> = ({
               type="file"
               className="hidden"
               accept="image/*"
-              title="Upload Profile Image"
               onChange={(e) => {
                 if (e.target.files?.[0] && onImageUpload) {
                   onImageUpload(e.target.files[0]);
@@ -69,30 +70,37 @@ export const BrandSidebar: React.FC<BrandSidebarProps> = ({
         )}
       </div>
 
-      <nav className="space-y-2">
-        {menuItems.map((item) => {
-          const Icon = item.icon;
-          return (
-            <button
-              key={item.id}
-              onClick={() => onViewChange(item.id)}
+      {/* Navigation Tabs */}
+      <Tabs 
+        value={activeTab} 
+        onValueChange={onTabChange} 
+        orientation="vertical" 
+        className="w-full"
+      >
+        <TabsList className="flex flex-col h-auto bg-transparent space-y-2 w-full p-0">
+          {tabs.map(({ id, label, icon: Icon }) => (
+            <TabsTrigger
+              key={id}
+              value={id}
               className={cn(
-                "w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200",
-                currentView === item.id
-                  ? "bg-blue-50 text-blue-600"
-                  : "text-gray-600 hover:bg-gray-50"
+                "w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 justify-start",
+                "data-[state=active]:bg-blue-50 data-[state=active]:text-blue-600",
+                "hover:bg-gray-50 text-gray-600"
               )}>
               <Icon className="w-5 h-5" />
-              <span className="font-medium text-sm">{item.label}</span>
-            </button>
-          );
-        })}
+              <span className="font-medium text-sm">{label}</span>
+            </TabsTrigger>
+          ))}
+        </TabsList>
 
-        <button className="w-full flex items-center space-x-3 px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200 mt-6">
+        {/* Logout Button */}
+        <button
+          className="w-full flex items-center space-x-3 px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200 mt-6"
+          onClick={() => console.log("Logout clicked")}>
           <LogOut className="w-5 h-5" />
           <span className="font-medium text-sm">LOG OUT</span>
         </button>
-      </nav>
+      </Tabs>
     </div>
   );
 };
