@@ -53,11 +53,11 @@ export default function BrandProfile() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-        <BrandNavbar   />
+        <BrandNavbar />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {profileData.status === 'declined' && (
-          <Alert variant="destructive" className="mb-6">
-            <AlertTriangle className="h-4 w-4" />
+          <Alert variant="destructive" className="mb-12 border-none">
+           {/* <AlertTriangle className="h-4 w-4 mb-12" /> */}
             <AlertDescription>
               Verification request was declined. Please <a href="/support" className="underline font-medium">contact support</a> for assistance.
             </AlertDescription>
