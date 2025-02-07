@@ -1,9 +1,14 @@
-import { useRouter } from 'next/router';
+"use client"
+
+import { useRouter, useParams } from 'next/navigation';
 import React from 'react';
+import { useForceLightMode } from '@/hooks/useForcedLightTheme';
+import BrandNavbar from '@/components/BrandNavbar';
+
 
 export default function AthleteDetailPage() {
   const router = useRouter();
-  const { id } = router.query;
+  const { id } = useParams();
 
   // Mock data - in real application, fetch from API
   const athlete = {
@@ -15,7 +20,7 @@ export default function AthleteDetailPage() {
     performanceLevel: 'National',
     verificationStatus: 'Verified',
     sponsorshipStatus: 'Actively Seeking',
-    profilePicture: '/placeholder-athlete.jpg',
+    profilePicture: '/ronaldo.jpg',
     achievements: [
       'State Championship 2022',
       'Top Scorer in Regional League',
@@ -28,8 +33,19 @@ export default function AthleteDetailPage() {
     sponsorshipNeeds: ['Equipment', 'Training']
   };
 
+  useForceLightMode();
+
   return (
     <div className="container mx-auto px-4 py-8">
+        <BrandNavbar />
+
+        <button
+            onClick={() => router.push("/brand-talent")}
+            className="text-black hover:underline mb-4 flex items-center ml-44"
+        >
+            ← Go Back to Talent List
+        </button>
+
       <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-xl overflow-hidden">
         <div className="grid md:grid-cols-3 gap-6 p-6">
           {/* Profile Image */}

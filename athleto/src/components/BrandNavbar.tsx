@@ -45,19 +45,33 @@ const BrandNavbar = () => {
 
           {/* Navigation Links */}
           <div className="hidden md:block ml-10">
-            <div className="flex items-center space-x-8">
-              {['OPPORTUNITIES', 'TALENT', 'NEWS FEED'].map((link) => (
-                <Link 
-                  key={link} 
-                  href={`/${link.toLowerCase().replace(' ', '-')}`} 
-                  className="text-gray-600 hover:text-indigo-600 font-medium transition-colors duration-300 relative group"
-                >
-                  {link}
-                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-indigo-600 transition-all duration-300 group-hover:w-full"></span>
-                </Link>
-              ))}
-            </div>
-          </div>
+  <div className="flex items-center space-x-8">
+    <Link 
+      href="/brand-opportunities" 
+      className="text-gray-600 hover:text-indigo-600 font-medium transition-colors duration-300 relative group"
+    >
+      OPPORTUNITIES
+      <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-indigo-600 transition-all duration-300 group-hover:w-full"></span>
+    </Link>
+
+    <Link 
+      href="/brand-talent" 
+      className="text-gray-600 hover:text-indigo-600 font-medium transition-colors duration-300 relative group"
+    >
+      TALENT
+      <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-indigo-600 transition-all duration-300 group-hover:w-full"></span>
+    </Link>
+
+    <Link 
+      href="/news-feed" 
+      className="text-gray-600 hover:text-indigo-600 font-medium transition-colors duration-300 relative group"
+    >
+      NEWS FEED
+      <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-indigo-600 transition-all duration-300 group-hover:w-full"></span>
+    </Link>
+  </div>
+</div>
+
         </div>
 
         {/* Right Side Icons */}

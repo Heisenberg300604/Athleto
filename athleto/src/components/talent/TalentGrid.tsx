@@ -49,7 +49,7 @@ const MOCK_TALENTS = [
         performanceLevel: 'National',
         verificationStatus: 'Verified',
         sponsorshipStatus: 'Actively Seeking',
-        profilePicture: '/ronaldo.jpg',
+        profilePicture: '/usain.jpg',
         isFavorite: false
     },
     {
@@ -61,7 +61,7 @@ const MOCK_TALENTS = [
         performanceLevel: 'National',
         verificationStatus: 'Verified',
         sponsorshipStatus: 'Actively Seeking',
-        profilePicture: '/ronaldo.jpg',
+        profilePicture: '/simone.jpg',
         isFavorite: false
     },
 ];
@@ -77,7 +77,7 @@ const TalentCard: React.FC<any> = ({ talent, onFavoriteToggle }) => {
   const router = useRouter();
 
   const handleCardClick = () => {
-    router.push(`/components/talent/1`);
+    router.push(`/talent/${talent.id}`);
   };
 
   return (
