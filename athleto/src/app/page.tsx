@@ -11,6 +11,7 @@ import BrandSignupModal from "@/components/Brandsignup";
 import { useRouter } from "next/navigation";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { User } from "@supabase/supabase-js";
+import { useHomePageForcedTheme } from "@/hooks/useHomePageForcedTheme";
 
 export default function Home() {
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
@@ -18,20 +19,41 @@ export default function Home() {
   const router = useRouter();
   const supabase = createClientComponentClient();
   const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const getSession = async () => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      console.log("Session Data:", session); // Log the actual session data
-      setUser(session?.user || null);
+    // Create a single function to handle auth state
+    const setupAuth = async () => {
+      try {
+        // Get initial session
+        const { data: { session } } = await supabase.auth.getSession();
+        setUser(session?.user ?? null);
+        setLoading(false);
+
+        // Listen for auth changes
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(
+          (_event, session) => {
+            setUser(session?.user ?? null);
+          }
+        );
+
+        return () => {
+          subscription.unsubscribe();
+        };
+      } catch (error) {
+        console.error('Auth error:', error);
+        setLoading(false);
+      }
     };
 
-    getSession();
-    console.log(getSession())
-    console.log(user)
-  }, []);
+    setupAuth();
+  }, [supabase.auth]);
+
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) console.error('Logout error:', error);
+    // No need to update state here - the auth listener will handle it
+  };
 
   const handleAthleteSignup = () => {
     setIsSignupModalOpen(false);
@@ -42,7 +64,10 @@ export default function Home() {
     setIsSignupModalOpen(false);
     router.push("/brand-dashboard");
   };
-
+  
+  // const {theme, setTheme} = useTheme();
+  useHomePageForcedTheme();
+  
   return (
     <div className="relative min-h-screen overflow-hidden">
       {/* Sparkles Background */}
@@ -100,10 +125,7 @@ export default function Home() {
                 <Button
                   variant="outline"
                   className="bg-white/5 text-white hover:bg-white/10"
-                  onClick={async () => {
-                    await supabase.auth.signOut();
-                    router.refresh();
-                  }}
+                  onClick={handleLogout}
                 >
                   Logout
                 </Button>
@@ -133,7 +155,7 @@ export default function Home() {
             potential. Join us in shaping the future of Indian football.
           </p>
           <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:gap-6">
-            {user ? (
+            {user  ? (
               <Button
                 className="bg-white px-8 text-black hover:bg-gray-100"
                 onClick={() => router.push("/athlete-dashboard")}

@@ -21,17 +21,17 @@ const AthleteNavbar: React.FC = () => {
     <header className="bg-white text-white py-4 px-6 ">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         <div className="flex items-center gap-4">
-          <Link href="/" className="text-2xl font-bold mr-6 text-indigo-600 transition-colors duration-200">
+          <Link href="/athlete-dashboard" className="text-2xl font-bold mr-6 text-indigo-600 transition-colors duration-200">
             ATHLETO
           </Link>
             <nav className="hidden md:flex items-center gap-6 text-gray-600">
             <Link href="/athlete-dashboard" className="hover:text-indigo-600">
             BRANDS
             </Link>
-          <Link href="#" className="hover:text-indigo-600">
+          <Link href="/athlete-opportunities" className="hover:text-indigo-600">
             OPPORTUNITIES
           </Link>
-          <Link href="#" className="hover:text-indigo-600">
+          <Link href="/athlete-applied" className="hover:text-indigo-600">
             APPLIED
           </Link>
           <Link href="#" className="hover:text-indigo-600">
@@ -75,6 +75,7 @@ const AthleteNavbar: React.FC = () => {
           <button
             className="md:hidden text-white p-2 rounded-full hover:bg-gray-800 transition-colors duration-200"
             onClick={toggleMobileMenu}
+            title="Mobile Menu"
           >
             <Menu className="h-6 w-6" />
           </button>
