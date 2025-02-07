@@ -167,7 +167,7 @@ export default function AthleteDashboard() {
                 <button className="flex-1 py-3 px-4 border border-indigo-200 rounded-md text-gray-700 hover:bg-gray-50 transition-all duration-200 ease-in-out font-medium">
                   Clear All
                 </button>
-                <button className="flex-1 py-3 px-4 bg-indigo-600 text-white rounded-md hover:bg-indigo-800 transition-all duration-200 ease-in-out font-medium">
+                <button className="flex-1 py-3 px-4 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-all duration-200 ease-in-out font-medium">
                   Apply
                 </button>
               </div>

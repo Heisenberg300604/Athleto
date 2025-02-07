@@ -4,7 +4,7 @@ import Newsfeed from '@/components/Newsfeed'
 const page = () => {
   return (
     <div>
-      <Newsfeed/>
+      <Newsfeed brandDetails={{}} />
     </div>
   )
 }
