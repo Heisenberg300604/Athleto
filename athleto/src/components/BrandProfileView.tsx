@@ -19,7 +19,7 @@ export const BrandProfileView: React.FC<BrandProfileViewProps> = ({
   profileData
 }) => {
   return (
-    <Card className="w-full bg-white">
+    <Card className="w-full bg-white border-none box-shadow-md">
       <CardContent className="p-6">
         <div className="flex justify-between items-start mb-6">
           <div className="space-y-3">
@@ -35,7 +35,7 @@ export const BrandProfileView: React.FC<BrandProfileViewProps> = ({
           </div>
           <Button
             onClick={onEdit}
-            className="flex items-center space-x-2"
+            className="flex items-center space-x-2 bg-indigo-600 text-white hover:bg-indigo-700"
           >
             <Edit2 className="w-4 h-4" />
             <span>Edit Profile</span>

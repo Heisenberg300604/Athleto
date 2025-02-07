@@ -60,7 +60,7 @@ export const BrandProfileForm = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6 text-black">
+    <div className="max-w-4xl mx-auto space-y-6 text-black ">
         <button
         onClick={() => router.push("/brand-profile")}
         className="text-black hover:underline mb-4 flex items-center"
@@ -69,7 +69,7 @@ export const BrandProfileForm = () => {
       </button>
 
       <Card className="bg-gray-100 border-none text-black">
-        <CardContent className="p-6">
+        <CardContent className="p-6 border-none">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <FormField
@@ -276,7 +276,7 @@ export const BrandProfileForm = () => {
 
       <div className="flex justify-end space-x-4">
         <Button variant="outline" className="w-32 text-black bg-white ">CANCEL</Button>
-        <Button className="w-32  bg-indigo-600 text-white">SAVE</Button>
+        <Button className="w-32  bg-indigo-600 text-white hover:bg-indigo-700">SAVE</Button>
       </div>
     </div>
   );

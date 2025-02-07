@@ -1,13 +1,10 @@
-import React from "react";
-import {
-  LayoutDashboard,
-  User,
-  CreditCard,
-  BarChart2,
-  LogOut,
-  Image as ImageIcon,
-} from "lucide-react";
+"use client";
+
+import React from 'react';
+import { LayoutDashboard, User, CreditCard, BarChart2, LogOut, Image as ImageIcon } from 'lucide-react';
 import { cn } from "@/lib/utils";
+import { supabase } from '@/lib/supabase';
+import { useRouter } from "next/navigation";
 
 interface BrandSidebarProps {
   currentView: string;
@@ -30,6 +27,14 @@ export const BrandSidebar: React.FC<BrandSidebarProps> = ({
     { id: "payment-history", label: "PAYMENT HISTORY", icon: CreditCard },
     { id: "analytics", label: "ANALYTICS", icon: BarChart2 },
   ];
+  const router = useRouter();
+  
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) console.error('Logout error:', error);
+    // No need to update state here - the auth listener will handle it
+    router.push('/');
+  };
 
   return (
     <div className="w-full bg-white rounded-xl shadow-sm p-6">
@@ -87,7 +92,7 @@ export const BrandSidebar: React.FC<BrandSidebarProps> = ({
             </button>
           );
         })}
-
+        
         <button className="w-full flex items-center space-x-3 px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200 mt-6">
           <LogOut className="w-5 h-5" />
           <span className="font-medium text-sm">LOG OUT</span>

@@ -73,21 +73,21 @@ export function FilterSidebar() {
               Clear
             </Button>
           </div>
-          <div className="space-y-2">
+          {/* <div className="space-y-2">
             <Label>Date</Label>
-            {/* <Calendar 
+            <Calendar 
               mode="single" 
               selected={date} 
               onSelect={setDate} 
               className="rounded-md border w-full" 
-            /> */}
+            />
             <Button
               variant="link"
               className="px-0 text-sm text-muted-foreground"
               onClick={() => setDate(undefined)}>
               Clear
             </Button>
-          </div>
+          </div> */}
           <div className="space-y-2">
             <Label>Budget</Label>
             <div className="flex gap-2">
@@ -181,7 +181,7 @@ export function FilterSidebar() {
           <Button variant="outline" className="w-full" onClick={clearFilters}>
             CLEAR
           </Button>
-          <Button className="w-full bg-indigo-600">APPLY</Button>
+            <Button className="w-full bg-indigo-600 hover:bg-indigo-700">APPLY</Button>
         </div>
       </div>
     </Card>

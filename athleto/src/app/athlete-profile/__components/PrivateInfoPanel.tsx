@@ -205,7 +205,7 @@ export const PrivateInfoPanel: React.FC = () => {
             <div className="flex items-center">
               <User className="mr-3 h-6 w-6 text-muted-foreground" />
               <span className="text-sm">
-                Invite your manager to give access to your SportEndorse account
+                Invite your manager to give access to your Athleto account
               </span>
             </div>
             <Button variant="outline">INVITE</Button>
@@ -220,7 +220,7 @@ export const PrivateInfoPanel: React.FC = () => {
             <div className="flex items-center">
               <Calendar className="mr-3 h-6 w-6 text-muted-foreground" />
               <span className="text-sm">
-                Connect your Google calendar to SportEndorse
+                Connect your Google calendar to Athleto
               </span>
             </div>
             <Button variant="outline">CONNECT</Button>
