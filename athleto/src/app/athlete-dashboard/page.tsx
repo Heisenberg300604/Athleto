@@ -8,14 +8,22 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+// import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
+// import { cookies } from 'next/headers'
+// import { redirect } from 'next/navigation'
 
-const AthleteDashboard: React.FC = () => {
+export default function AthleteDashboard() {
   const [favorites, setFavorites] = useState<string[]>([])
   const [activeTab, setActiveTab] = useState("all")
   const [selectedBrand, setSelectedBrand] = useState<string | null>(null)
   const [showActionModal, setShowActionModal] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState("")
+  // const supabase = createServerComponentClient({ cookies })
+  // const { data: { session } } = await supabase.auth.getSession()
 
+  // if (!session) {
+  //   redirect('/')
+  // }
   const brandDetails = {
     "Yummy Chumz": {
       description:
@@ -125,6 +133,8 @@ const AthleteDashboard: React.FC = () => {
     )
 
   const selectedBrandDetails = selectedBrand ? brandDetails[selectedBrand as keyof typeof brandDetails] : null
+
+  
   return (
     <div className="flex flex-col h-screen bg-gray-50">
       <AthleteNavbar />
@@ -357,5 +367,5 @@ const AthleteDashboard: React.FC = () => {
   )
 }
 
-export default AthleteDashboard
+
 
