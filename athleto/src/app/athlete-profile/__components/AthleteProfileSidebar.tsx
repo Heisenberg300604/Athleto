@@ -9,6 +9,7 @@ import {
   LogOut,
   Image as ImageIcon,
 } from "lucide-react";
+import { useForceLightMode } from "@/hooks/useForcedLightTheme";
 
 interface AthleteSidebarProps {
   isEditing?: boolean;
@@ -31,7 +32,7 @@ export const AthleteProfileSidebar: React.FC<AthleteSidebarProps> = ({
     { id: "payment", label: "PAYMENT HISTORY", icon: CreditCard },
     { id: "analytics", label: "ANALYTICS", icon: BarChart2 },
   ];
-
+  useForceLightMode();
   return (
     <div className="w-full bg-white rounded-xl shadow-sm p-6">
       {/* Logo/Image Upload Section */}
@@ -73,7 +74,10 @@ export const AthleteProfileSidebar: React.FC<AthleteSidebarProps> = ({
       {/* Navigation Tabs */}
       <Tabs 
         value={activeTab} 
-        onValueChange={onTabChange} 
+        onValueChange={(value)=>{
+            onTabChange(value)
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }} 
         orientation="vertical" 
         className="w-full"
       >

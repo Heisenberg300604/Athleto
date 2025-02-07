@@ -6,9 +6,10 @@ import AthleteNavbar from "@/components/AthleteNavbar";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertTriangle } from "lucide-react";
 import { PrivateInfoPanel } from "./__components/PrivateInfoPanel";
-import PaymentHistoryPanel from "./__components/PaymentHistoryPanel";
-import AnalyticsPanel from "./__components/AnalyticsPanel";
+import { PaymentHistoryPanel } from "./__components/PaymentHistoryPanel";
+import { AnalyticsPanel } from "./__components/AnalyticsPanel";
 import { PublicInfoPanel } from "./__components/PublicInfoPanel";
+import { useForceLightMode } from "@/hooks/useForcedLightTheme";
 
 function Page() {
   const [isEditingPublicPanel, setIsEditingPublicPanel] = useState<boolean>(false);
@@ -45,7 +46,7 @@ function Page() {
         // return <PrivatePanel/>
     // return null;
   };
-
+  useForceLightMode();
   return (
     <div className="min-h-screen bg-gray-50">
       <AthleteNavbar />
