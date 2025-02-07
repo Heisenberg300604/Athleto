@@ -181,7 +181,7 @@ export function FilterSidebar() {
           <Button variant="outline" className="w-full" onClick={clearFilters}>
             CLEAR
           </Button>
-          <Button className="w-full bg-indigo-600">APPLY</Button>
+            <Button className="w-full bg-indigo-600 hover:bg-indigo-700">APPLY</Button>
         </div>
       </div>
     </Card>
