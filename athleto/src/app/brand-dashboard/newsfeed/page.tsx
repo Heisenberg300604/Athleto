@@ -1,11 +1,11 @@
 import React from 'react'
-import Newsfeed from '@/components/Newsfeed'
+import Newsfeed from '../../../components/BNewsfeed'
 
 const page = () => {
   return (
     <div>
-      <Newsfeed brandDetails={{}} />
-    </div>
+        <Newsfeed brandDetails={{}} /> 
+        </div>
   )
 }
 

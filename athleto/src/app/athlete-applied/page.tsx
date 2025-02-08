@@ -116,17 +116,17 @@ export default function AppliedPage() {
           <TabsList className="w-full justify-start border-b rounded-none h-auto p-0 bg-transparent">
             <TabsTrigger
               value="open"
-              className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent">
+              className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-blue-600">
               OPEN / {openCampaigns.length}
             </TabsTrigger>
             <TabsTrigger
               value="confirmed"
-              className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent">
+              className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-blue-600">
               CONFIRMED / {confirmedCampaigns.length}
             </TabsTrigger>
             <TabsTrigger
               value="complete"
-              className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent">
+              className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-blue-600">
               COMPLETE / {completeCampaigns.length}
             </TabsTrigger>
           </TabsList>

@@ -1,12 +1,13 @@
 import React from 'react'
-import Newsfeed from '@/components/Newsfeed'
+import ANewsfeed from '../../../components/ANewsfeed'
 
 const page = () => {
   return (
     <div>
-      <Newsfeed brandDetails={{}} />
-    </div>
+        < ANewsfeed brandDetails={{}} /> 
+        </div>
   )
 }
 
 export default page
+
