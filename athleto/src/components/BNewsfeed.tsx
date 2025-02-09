@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
-import AthleteNavbar from "./AthleteNavbar"
+import BrandNavbar from "./BrandNavbar"
 
 const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
   const [activeTab, setActiveTab] = useState("all")
@@ -105,7 +105,8 @@ const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
 
   return (
     <div className="flex flex-col min-h-screen bg-[#F8F9FB]">
-      <AthleteNavbar />
+      <BrandNavbar />
+      
       <div className="flex flex-1 gap-8 p-8">
         {/*tabs*/}
         <div className="flex-1 space-y-6">
@@ -141,13 +142,13 @@ const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
                 NEW POST
               </Button>
             </div>
-            <Separator className="mt-2" />
+            {/* <Separator className="mt-2" /> */}
           </div>
 
           {/*Post Cards*/}
           <div className="space-y-6">
             {filteredPosts.map((post) => (
-                <Card key={post.id} className="bg-white shadow-sm hover:shadow-md transition-shadow w-3/4 mx-auto">
+                <Card key={post.id} className="bg-white shadow-sm hover:shadow-md transition-shadow w-3/4 mx-auto border-none shadow-lg align-left">
                 <CardContent className="p-6">
                   <div className="flex justify-between items-start mb-4">
                     <div className="flex items-center gap-4">
@@ -410,7 +411,7 @@ const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
             </div>
 
             <div className="sticky bottom-0 z-50 bg-white border-t px-6 py-4 flex justify-end gap-3">
-              <Button variant="outline" onClick={() => setIsNewPostOpen(false)} className="h-11 px-6 text-gray-700">
+              <Button variant="outline" onClick={() => setIsNewPostOpen(false)} className="h-11 px-6 text-black bg-white hover:bg-gray-50 border-gray-200 hover:text-gray-800">
                 Cancel
               </Button>
               <Button onClick={handleCreatePost} className="h-11 px-8 bg-indigo-600 hover:bg-indigo-700 text-white">
