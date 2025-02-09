@@ -7,6 +7,7 @@ import BrandProfileForm from '@/components/BrandProfileEdit';
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertTriangle } from 'lucide-react';
 import BrandNavbar from '@/components/BrandNavbar';
+import BrandProfileInfo from '@/components/BrandProfileInfo';
 
 export default function BrandProfile() {
   const [currentView, setCurrentView] = useState('brand-info');
@@ -16,10 +17,10 @@ export default function BrandProfile() {
   // Mock profile data - replace with real data source
   const [profileData, setProfileData] = useState({
     status: 'declined',
-    companyName: 'Acme Corp',
+    companyName: 'Delhi Sports Organization',
     industry: 'Technology',
     location: 'San Francisco, CA',
-    about: 'Leading technology solutions provider...'
+    about: 'The Mahindra Scorpio is a mid-size SUV (in the Indian market) and Compact SUV (in the Global market) manufactured by the Indian automaker Mahindra & Mahindra since 2002. It was Mahindras first model to be built for the global market.The Mahindra Scorpio N is a prime example of luxury on wheels at an affordable price point. Its a dream car for many, known as one of the most desired mafia cars in India. With its robust build quality, powerful and well-tuned engine, spacious interior, and premium looks, it stands out.'
   });
 
   const handleImageUpload = (file: File) => {
@@ -36,19 +37,38 @@ export default function BrandProfile() {
     if (isEditing) {
       return (
         <BrandProfileForm  
-       //   onSave={handleSave}
-        //  onCancel={() => setIsEditing(false)}
-       //   initialData={profileData}
+          // existing props
         />
       );
     }
-
-    return (
-      <BrandProfileView
-        onEdit={() => setIsEditing(true)}
-        profileData={profileData}
-      />
-    );
+  
+    switch (currentView) {
+      case 'profile-info':
+        return (
+          <BrandProfileInfo 
+            initialData={{
+              firstName: 'John', // Replace with actual data
+              lastName: 'Doe',
+              email: 'john@gmail.com',
+              phone: '+1 234 567 8900',
+              // socialLinks: {
+              //   instagram: 'username',
+              //   twitter: 'username',
+              //   linkedin: 'username',
+              //   website: 'www.example.com'
+              // }
+            }}
+            // onEdit={() => setIsEditing(true)}
+          />
+        );
+      default:
+        return (
+          <BrandProfileView
+            onEdit={() => setIsEditing(true)}
+            profileData={profileData}
+          />
+        );
+    }
   };
 
   return (

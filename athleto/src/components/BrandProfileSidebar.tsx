@@ -39,8 +39,8 @@ export const BrandSidebar: React.FC<BrandSidebarProps> = ({
 
   return (
     <div className="w-full bg-white rounded-xl shadow-sm p-6">
-      <div className="relative mb-8">
-        <div className="w-full aspect-square rounded-xl overflow-hidden bg-gradient-to-br from-blue-50 to-blue-100 border-2 border-blue-200">
+      <div className="relative mb-8  flex justify-center ">
+        <div className="w-32 h-32 rounded-full overflow-hidden bg-gradient-to-br from-blue-50 to-blue-100 border-2 border-blue-200 shadow-lg " >
           {profileImage ? (
             <img 
               src={profileImage} 
@@ -49,7 +49,7 @@ export const BrandSidebar: React.FC<BrandSidebarProps> = ({
             />
           ) : (
             <div className="flex flex-col items-center justify-center h-full text-blue-400">
-              <ImageIcon className="w-12 h-12 mb-2" />
+              {/* <ImageIcon className="w-12 h-12 mb-2" /> */}
               <p className="text-sm font-medium">Company Logo</p>
             </div>
           )}

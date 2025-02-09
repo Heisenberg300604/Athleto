@@ -26,11 +26,11 @@ export const BrandProfileView: React.FC<BrandProfileViewProps> = ({
             <h1 className="text-2xl font-semibold text-gray-900">
               {profileData.companyName || 'Company Name'}
             </h1>
-            <div className="flex items-center space-x-2">
-              <Badge variant={profileData.status === 'declined' ? 'destructive' : 'default'}>
+            <div className="flex items-center space-x-2 text-black">
+              <Badge variant={profileData.status === 'verified' ? 'default' : 'secondary'}>
                 {profileData.status || 'Status'}
               </Badge>
-              <Badge variant="secondary">Private</Badge>
+              {/* <Badge variant="secondary">Private</Badge> */}
             </div>
           </div>
           <Button
