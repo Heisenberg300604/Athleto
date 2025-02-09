@@ -106,7 +106,6 @@ const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
   return (
     <div className="flex flex-col min-h-screen bg-[#F8F9FB]">
       <BrandNavbar />
-      
       <div className="flex flex-1 gap-8 p-8">
         {/*tabs*/}
         <div className="flex-1 space-y-6">
@@ -149,7 +148,7 @@ const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
           <div className="space-y-6">
             {filteredPosts.map((post) => (
                 <Card key={post.id} className="bg-white shadow-sm hover:shadow-md transition-shadow w-3/4 mx-auto border-none shadow-lg align-left">
-                <CardContent className="p-6">
+                <CardContent className="p-6 ">
                   <div className="flex justify-between items-start mb-4">
                     <div className="flex items-center gap-4">
                       <img

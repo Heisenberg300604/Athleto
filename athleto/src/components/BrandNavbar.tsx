@@ -47,7 +47,7 @@ const BrandNavbar = () => {
           <div className="hidden md:block ml-10">
   <div className="flex items-center space-x-8">
     <Link 
-      href="/brand-opportunities" 
+      href="/brand-dashboard" 
       className="text-gray-600 hover:text-indigo-600 font-medium transition-colors duration-300 relative group"
     >
       OPPORTUNITIES

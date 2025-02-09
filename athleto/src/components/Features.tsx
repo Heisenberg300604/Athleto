@@ -46,6 +46,7 @@ export default function FeaturesSection() {
       <div className="container px-4 md:px-6">
         {/* Features Header */}
         <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
+          
           <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl bg-gradient-to-r from-blue-400 to-purple-600 bg-clip-text text-transparent">
             OUR FEATURES
           </h2>
