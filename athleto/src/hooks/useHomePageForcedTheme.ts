@@ -3,7 +3,7 @@
 import { useEffect } from "react"
 import { useTheme } from "next-themes"
 
-export function useForcedDarkMode() {
+export function useHomePageForcedTheme() {
   const { setTheme, theme,resolvedTheme} = useTheme()  
   useEffect(() => {
     if(resolvedTheme!==undefined && resolvedTheme!=="dark"){

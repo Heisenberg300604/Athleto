@@ -11,7 +11,7 @@ import BrandSignupModal from "@/components/Brandsignup";
 import { useRouter } from "next/navigation";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { User } from "@supabase/supabase-js";
-import { useForcedDarkMode} from "@/hooks/useForcedDarkTheme";
+import { useHomePageForcedTheme} from "@/hooks/useHomePageForcedTheme";
 
 export default function Home() {
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
@@ -65,7 +65,7 @@ export default function Home() {
     router.push("/brand-dashboard");
   };
 
-  useForcedDarkMode();
+  useHomePageForcedTheme();
 
   return (
     <div className="relative min-h-screen overflow-hidden">
