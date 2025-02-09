@@ -136,13 +136,13 @@ const ANewsFeed = ({ brandDetails }: { brandDetails: any }) => {
               </div>
               
             </div>
-            <Separator className="mt-2" />
+            
           </div>
 
           {/*Post Cards*/}
           <div className="space-y-6">
             {filteredPosts.map((post) => (
-                <Card key={post.id} className="bg-white shadow-sm hover:shadow-md transition-shadow w-3/4 mx-auto">
+                <Card key={post.id} className="bg-white shadow-md hover:shadow-lg transition-shadow w-full mx-auto border-none">
                 <CardContent className="p-6">
                   <div className="flex justify-between items-start mb-4">
                     <div className="flex items-center gap-4">
@@ -242,178 +242,7 @@ const ANewsFeed = ({ brandDetails }: { brandDetails: any }) => {
           </Card>
         </div>
 
-        {/*Dialog for creating new post
-        <Dialog open={isNewPostOpen} onOpenChange={setIsNewPostOpen}>
-          <DialogContent className="max-w-[800px] h-[90vh] overflow-y-auto bg-white p-0">
-            <div className="sticky top-0 z-50 bg-white border-b px-6 py-4 flex items-center justify-between">
-              <DialogTitle className="text-xl font-semibold text-gray-900">Create New Post</DialogTitle>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setIsNewPostOpen(false)}
-                className="h-8 w-8 rounded-full hover:bg-gray-100"
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
-
-            <div className="px-6 py-6 space-y-8">
-              <div className="grid grid-cols-2 gap-6">
-                <div className="space-y-6">
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700">Title</label>
-                    <Input
-                      value={newPost.title}
-                      onChange={(e) => setNewPost((prev) => ({ ...prev, title: e.target.value }))}
-                      placeholder="Enter post title"
-                      className="border-gray-200 h-11"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700">Brand Name</label>
-                    <Input
-                      value={newPost.brand}
-                      onChange={(e) => setNewPost((prev) => ({ ...prev, brand: e.target.value }))}
-                      placeholder="Enter brand name"
-                      className="border-gray-200 h-11"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700">Type</label>
-                    <Input
-                      value={newPost.type}
-                      onChange={(e) => setNewPost((prev) => ({ ...prev, type: e.target.value }))}
-                      placeholder="Enter post type"
-                      className="border-gray-200 h-11"
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-6">
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700">Price</label>
-                    <Input
-                      value={newPost.price}
-                      onChange={(e) => setNewPost((prev) => ({ ...prev, price: e.target.value }))}
-                      placeholder="Enter price"
-                      className="border-gray-200 h-11"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700">Location</label>
-                    <Input
-                      value={newPost.location}
-                      onChange={(e) => setNewPost((prev) => ({ ...prev, location: e.target.value }))}
-                      placeholder="Enter location"
-                      className="border-gray-200 h-11"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">Description</label>
-                <Textarea
-                  value={newPost.description}
-                  onChange={(e) => setNewPost((prev) => ({ ...prev, description: e.target.value }))}
-                  placeholder="Enter post description"
-                  rows={4}
-                  className="border-gray-200 resize-none"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">Brand Logo</label>
-                  <div className="flex items-center justify-center w-full">
-                    <label className="relative flex flex-col items-center justify-center w-full h-[200px] border-2 border-gray-200 border-dashed rounded-xl cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors duration-150 group">
-                      {newPost.brandlogo === "/api/placeholder/40/40" ? (
-                        <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                          <div className="p-4 rounded-full bg-gray-100 group-hover:bg-white transition-colors duration-150">
-                            <Upload className="w-8 h-8 text-gray-500" />
-                          </div>
-                          <p className="mt-4 text-sm text-gray-500">Click to upload brand logo</p>
-                          <p className="mt-1 text-xs text-gray-400">SVG, PNG, JPG or GIF</p>
-                        </div>
-                      ) : (
-                        <div className="relative w-full h-full">
-                          <img
-                            src={newPost.brandlogo || "/placeholder.svg"}
-                            alt="Brand logo preview"
-                            className="absolute inset-0 w-full h-full object-contain p-4"
-                          />
-                          <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-200">
-                            <p className="text-white text-sm">Change logo</p>
-                          </div>
-                        </div>
-                      )}
-                      <Input
-                        type="file"
-                        className="hidden"
-                        accept="image/*"
-                        onChange={(e) => {
-                          if (e.target.files?.[0]) {
-                            setNewPost((prev) => ({ ...prev, brandlogo: URL.createObjectURL(e.target.files![0]) }))
-                          }
-                        }}
-                      />
-                    </label>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">Post Image</label>
-                  <div className="flex items-center justify-center w-full">
-                    <label className="relative flex flex-col items-center justify-center w-full h-[200px] border-2 border-gray-200 border-dashed rounded-xl cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors duration-150 group">
-                      {newPost.image === "/api/placeholder/800/400" ? (
-                        <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                          <div className="p-4 rounded-full bg-gray-100 group-hover:bg-white transition-colors duration-150">
-                            <Upload className="w-8 h-8 text-gray-500" />
-                          </div>
-                          <p className="mt-4 text-sm text-gray-500">Click to upload post image</p>
-                          <p className="mt-1 text-xs text-gray-400">SVG, PNG, JPG or GIF</p>
-                        </div>
-                      ) : (
-                        <div className="relative w-full h-full">
-                          <img
-                            src={newPost.image || "/placeholder.svg"}
-                            alt="Post image preview"
-                            className="absolute inset-0 w-full h-full object-cover rounded-lg"
-                          />
-                          <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-200 rounded-lg">
-                            <p className="text-white text-sm">Change image</p>
-                          </div>
-                        </div>
-                      )}
-                      <Input
-                        type="file"
-                        className="hidden"
-                        accept="image/*"
-                        onChange={(e) => {
-                          if (e.target.files?.[0]) {
-                            setNewPost((prev) => ({ ...prev, image: URL.createObjectURL(e.target.files![0]) }))
-                          }
-                        }}
-                      />
-                    </label>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="sticky bottom-0 z-50 bg-white border-t px-6 py-4 flex justify-end gap-3">
-              <Button variant="outline" onClick={() => setIsNewPostOpen(false)} className="h-11 px-6 text-gray-700">
-                Cancel
-              </Button>
-              <Button onClick={handleCreatePost} className="h-11 px-8 bg-indigo-600 hover:bg-indigo-700 text-white">
-                Create Post
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog> */}
+        
       </div>
     </div>
   )
