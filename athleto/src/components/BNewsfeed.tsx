@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
-import AthleteNavbar from "./AthleteNavbar"
+import BrandNavbar from "./BrandNavbar"
 
 const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
   const [activeTab, setActiveTab] = useState("all")
@@ -105,7 +105,8 @@ const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
 
   return (
     <div className="flex flex-col min-h-screen bg-[#F8F9FB]">
-      <AthleteNavbar />
+      <BrandNavbar />
+      
       <div className="flex flex-1 gap-8 p-8">
         {/*tabs*/}
         <div className="flex-1 space-y-6">
