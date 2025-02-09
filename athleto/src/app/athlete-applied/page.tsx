@@ -8,6 +8,7 @@ import AthleteNavbar from "@/components/AthleteNavbar";
 import { CampaignCard } from "@/components/CampaignCard";
 import { useForceLightMode } from "@/hooks/useForcedLightTheme";
 // Sample data for demonstration
+
 const appliedCampaigns = [
   {
     id: 1,
