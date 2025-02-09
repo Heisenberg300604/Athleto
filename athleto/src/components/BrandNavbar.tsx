@@ -63,7 +63,7 @@ const BrandNavbar = () => {
     </Link>
 
     <Link 
-      href="/news-feed" 
+      href="/brand-dashboard/newsfeed" 
       className="text-gray-600 hover:text-indigo-600 font-medium transition-colors duration-300 relative group"
     >
       NEWS FEED
