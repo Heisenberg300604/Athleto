@@ -1,16 +1,17 @@
 "use client"
 import { useState } from "react"
 import { Heart, MapPin, Building2, Plus, Share2, ThumbsUp, Upload, X } from "lucide-react"
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
+import { Dialog, DialogContent, DialogTitle } from "../components/ui/dialog"
+import { Button } from "../components/ui/button"
+import { Input } from "../components/ui/input"
+import { Textarea } from "../components/ui/textarea"
+import { Badge } from "../components/ui/badge"
+import { Card, CardContent } from "../components/ui/card"
+import { Separator } from "../components/ui/separator"
 import AthleteNavbar from "./AthleteNavbar"
+import React from "react"
 
-const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
+const ANewsFeed = ({ brandDetails }: { brandDetails: any }) => {
   const [activeTab, setActiveTab] = useState("all")
   const [isNewPostOpen, setIsNewPostOpen] = useState(false)
   const [favorites, setFavorites] = useState<string[]>([])
@@ -133,13 +134,7 @@ const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
                   NEWS FROM FAVOURITES
                 </button>
               </div>
-              <Button
-                onClick={() => setIsNewPostOpen(true)}
-                className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg flex items-center gap-2 h-10"
-              >
-                <Plus className="h-5 w-5" />
-                NEW POST
-              </Button>
+              
             </div>
             <Separator className="mt-2" />
           </div>
@@ -247,7 +242,7 @@ const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
           </Card>
         </div>
 
-        {/*Dialog for creating new post*/}
+        {/*Dialog for creating new post
         <Dialog open={isNewPostOpen} onOpenChange={setIsNewPostOpen}>
           <DialogContent className="max-w-[800px] h-[90vh] overflow-y-auto bg-white p-0">
             <div className="sticky top-0 z-50 bg-white border-b px-6 py-4 flex items-center justify-between">
@@ -418,11 +413,10 @@ const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
               </Button>
             </div>
           </DialogContent>
-        </Dialog>
+        </Dialog> */}
       </div>
     </div>
   )
 }
 
-export default NewsFeed
-
+export default ANewsFeed
