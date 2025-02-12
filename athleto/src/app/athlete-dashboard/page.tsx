@@ -155,7 +155,8 @@ export default function AthleteDashboard() {
                     <span className="text-gray-700 font-medium">{filter}</span>
                     <button className="text-blue-600 text-sm hover:text-blue-800 transition-colors">Clear</button>
                   </div>
-                  <select className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ease-in-out">
+                  <label htmlFor={`filter-${index}`} className="sr-only">{filter}</label>
+                  <select id={`filter-${index}`} className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ease-in-out">
                     {(index === 0 ? countries : index === 1 ? cities : industries).map((option) => (
                       <option key={option}>{option}</option>
                     ))}
