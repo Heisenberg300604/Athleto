@@ -4,16 +4,11 @@ import { useEffect } from "react"
 import { useTheme } from "next-themes"
 
 export function useForceLightMode() {
-  const { setTheme, theme, systemTheme } = useTheme()
-
+  const { setTheme, theme, resolvedTheme } = useTheme()
   useEffect(() => {
-    // Force light mode
-    setTheme("light")
-
-    // Cleanup function to restore the original theme
-    return () => {
-      setTheme("dark")
+    if(resolvedTheme!==undefined && resolvedTheme!=="light"){
+      setTheme("light")
     }
-  }, [setTheme, theme, systemTheme])
+  }, [setTheme, resolvedTheme])
 }
 

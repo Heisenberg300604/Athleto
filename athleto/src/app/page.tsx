@@ -67,10 +67,9 @@ export default function Home() {
     setIsSignupModalOpen(false);
     router.push("/brand-dashboard");
   };
-  
-  // const {theme, setTheme} = useTheme();
+
   useHomePageForcedTheme();
-  
+
   return (
     <div className="relative min-h-screen overflow-hidden">
       {/* Sparkles Background */}

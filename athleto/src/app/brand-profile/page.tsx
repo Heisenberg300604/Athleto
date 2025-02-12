@@ -28,10 +28,6 @@ export default function BrandProfile() {
     setProfileImage(imageUrl);
   };
 
-  const handleSave = (newData: any) => {
-    setProfileData({ ...profileData, ...newData });
-    setIsEditing(false);
-  };
 
   const renderMainContent = () => {
     if (isEditing) {

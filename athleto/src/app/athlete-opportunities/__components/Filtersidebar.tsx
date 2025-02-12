@@ -15,7 +15,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 export function FilterSidebar() {
-  const [date, setDate] = React.useState<Date | undefined>(undefined);
+  // const [date, setDate] = React.useState<Date | undefined>(undefined);
   const [state, setState] = React.useState("all");
   const [city, setCity] = React.useState("all");
   const [budgetFrom, setBudgetFrom] = React.useState("");
@@ -24,7 +24,7 @@ export function FilterSidebar() {
   const [opportunityType, setOpportunityType] = React.useState("");
 
   const clearFilters = () => {
-    setDate(undefined);
+    // setDate(undefined);
     setState("all");
     setCity("all");
     setBudgetFrom("");
@@ -73,21 +73,21 @@ export function FilterSidebar() {
               Clear
             </Button>
           </div>
-          <div className="space-y-2">
+          {/* <div className="space-y-2">
             <Label>Date</Label>
-            {/* <Calendar 
+            <Calendar 
               mode="single" 
               selected={date} 
               onSelect={setDate} 
               className="rounded-md border w-full" 
-            /> */}
+            />
             <Button
               variant="link"
               className="px-0 text-sm text-muted-foreground"
               onClick={() => setDate(undefined)}>
               Clear
             </Button>
-          </div>
+          </div> */}
           <div className="space-y-2">
             <Label>Budget</Label>
             <div className="flex gap-2">
