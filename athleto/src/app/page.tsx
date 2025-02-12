@@ -12,6 +12,9 @@ import { useRouter } from "next/navigation";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { User } from "@supabase/supabase-js";
 import { useHomePageForcedTheme } from "@/hooks/useHomePageForcedTheme";
+import Footer from "@/components/Footer";
+import FeaturesSection from "@/components/Features";
+
 
 export default function Home() {
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
@@ -64,10 +67,9 @@ export default function Home() {
     setIsSignupModalOpen(false);
     router.push("/brand-dashboard");
   };
-  
-  // const {theme, setTheme} = useTheme();
+
   useHomePageForcedTheme();
-  
+
   return (
     <div className="relative min-h-screen overflow-hidden">
       {/* Sparkles Background */}
@@ -94,7 +96,7 @@ export default function Home() {
               </Link>
               <nav className="hidden space-x-6 md:block">
                 <Link
-                  href="#"
+                  href="#features"
                   className="text-sm text-gray-400 hover:text-white"
                 >
                   Features
@@ -192,7 +194,14 @@ export default function Home() {
             )}
           </div>
         </main>
+
+        {/*features section */}
+        <FeaturesSection/>
+
       </div>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

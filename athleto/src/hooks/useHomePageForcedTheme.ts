@@ -6,9 +6,9 @@ import { useTheme } from "next-themes"
 export function useHomePageForcedTheme() {
   const { setTheme, theme,resolvedTheme} = useTheme()  
   useEffect(() => {
-    if (resolvedTheme !== undefined && resolvedTheme !== "dark") {
-      setTheme("dark")
+    if(resolvedTheme!==undefined && resolvedTheme!=="dark"){
+      setTheme("dark");
     }
-  }, [setTheme, resolvedTheme])
+  }, [setTheme, resolvedTheme]);
 }
 
