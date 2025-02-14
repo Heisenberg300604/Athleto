@@ -121,6 +121,7 @@ export const PrivateInfoPanel: React.FC = () => {
               <label className="block text-sm font-medium text-muted-foreground mb-1">
                 Phone
               </label>
+
               {isEditingPhone ? (
                 <div className="flex items-center gap-2">
                   <Input
@@ -170,6 +171,10 @@ export const PrivateInfoPanel: React.FC = () => {
       {/* Bank Account Details */}
       <Card>
         <CardContent className="pt-6 space-y-4">
+         
+
+         
+
           <div>
             <label className="block text-sm font-medium text-muted-foreground mb-1">
               Bank Account Name

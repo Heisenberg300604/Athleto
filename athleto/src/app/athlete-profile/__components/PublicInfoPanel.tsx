@@ -85,6 +85,21 @@ interface FormData {
   sponsorship_needs: string;
 }
 
+// Add a helper function to format date
+const formatDate = (date: string) => {
+  if (!date) return null;
+  return new Date(date).toISOString().split('T')[0];
+};
+
+// Add this helper function
+const formatYoutubeUrl = (url: string) => {
+  if (!url) return '';
+  if (url.includes('youtube.com/watch?v=')) {
+    return url.replace('watch?v=', 'embed/');
+  }
+  return url;
+};
+
 export const PublicInfoPanel: React.FC<PublicInfoProps> = ({
   isEditing,
   onToggleEdit,
@@ -99,6 +114,7 @@ export const PublicInfoPanel: React.FC<PublicInfoProps> = ({
     facebook: athlete?.social_links?.facebook || "",
     linkedin: athlete?.social_links?.linkedin || "",
   });
+  const [youtubeUrl, setYoutubeUrl] = useState<string>(athlete?.video_link || "");
   useForceLightMode();
   console.log(athlete)
 
@@ -160,6 +176,9 @@ export const PublicInfoPanel: React.FC<PublicInfoProps> = ({
       if (athlete.social_links) {
         setSocialLinks(athlete.social_links);
       }
+
+      // Set YouTube URL
+      setYoutubeUrl(athlete.video_link || "");
     }
   }, [athlete, reset]);
 
@@ -203,26 +222,60 @@ export const PublicInfoPanel: React.FC<PublicInfoProps> = ({
     }
   }, [athlete]);
 
+  // Add function to update YouTube URL
+  const updateYoutubeUrl = async () => {
+    try {
+      if (!athlete?.id) return;
+
+      console.log('Saving URL:', youtubeUrl);
+
+      const { data, error } = await supabase
+        .from('athletes')
+        .update({ 
+          video_link: youtubeUrl,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', athlete.id);
+
+      if (error) throw error;
+      
+      console.log('Save response:', data);
+    } catch (error) {
+      console.error('Error updating YouTube URL:', error);
+    }
+  };
+
   if (loading || !athlete) return <Spinner />;
 
   const onSubmit = async (data: FormData) => {
     try {
-      // Combine skills array back into comma-separated string
+      if (!athlete?.id) return;
+
       const updatedData = {
-        ...data,
+        first_name: data.first_name,
+        last_name: data.last_name,
+        about: data.about,
+        video_link: data.video_link,
         skills: skills.join(', '),
+        location: data.location,
+        gender: data.gender,
+        date_of_birth: formatDate(data.date_of_birth),
+        status: data.status,
         social_links: socialLinks,
+        talent_level: data.talent_level,
+        affiliations: data.affiliations,
+        achievements: data.achievements,
+        sponsorship_status: data.sponsorship_status,
+        sponsorship_needs: data.sponsorship_needs,
         updated_at: new Date().toISOString(),
       };
 
-      // Update the athlete data in Supabase
-      // You'll need to implement the actual update function
-      // const { error } = await supabase
-      //   .from('athletes')
-      //   .update(updatedData)
-      //   .eq('id', athlete.id);
+      const { error } = await supabase
+        .from('athletes')
+        .update(updatedData)
+        .eq('id', athlete.id);
 
-      // if (error) throw error;
+      if (error) throw error;
 
       onToggleEdit(false);
     } catch (error) {
@@ -230,32 +283,93 @@ export const PublicInfoPanel: React.FC<PublicInfoProps> = ({
     }
   };
 
-  const addSkill = () => {
+  // Add function to update individual fields
+  const updateField = async (field: string, value: string | number | object) => {
+    try {
+      if (!athlete?.id) return;
+
+      const formattedValue = field === 'date_of_birth' ? formatDate(value as string) : value;
+
+      const { error } = await supabase
+        .from('athletes')
+        .update({ 
+          [field]: formattedValue,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', athlete.id);
+
+      if (error) throw error;
+    } catch (error) {
+      console.error(`Error updating ${field}:`, error);
+    }
+  };
+
+  // Add function to update skills
+  const updateSkills = async (newSkills: string[]) => {
+    try {
+      if (!athlete?.id) return;
+
+      const { error } = await supabase
+        .from('athletes')
+        .update({ 
+          skills: newSkills.join(', '),
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', athlete.id);
+
+      if (error) throw error;
+    } catch (error) {
+      console.error('Error updating skills:', error);
+    }
+  };
+
+  const addSkill = async () => {
     if (newSkill && !skills.includes(newSkill)) {
-      setSkills([...skills, newSkill]);
+      const updatedSkills = [...skills, newSkill];
+      setSkills(updatedSkills);
       setNewSkill("");
+      await updateSkills(updatedSkills);
     }
   };
 
-
-  const removeSkill = (skillToRemove: string) => {
-    setSkills(skills.filter((skill) => skill !== skillToRemove));
+  const removeSkill = async (skillToRemove: string) => {
+    const updatedSkills = skills.filter((skill) => skill !== skillToRemove);
+    setSkills(updatedSkills);
+    await updateSkills(updatedSkills);
   };
 
-  const cancelEditing = () => {
-    reset();
-    onToggleEdit(false);
+  // Add function to update tags
+  const updateTags = async (newTags: string[]) => {
+    try {
+      if (!athlete?.id) return;
+
+      const { error } = await supabase
+        .from('athletes')
+        .update({ 
+          tags: newTags.join(', '),
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', athlete.id);
+
+      if (error) throw error;
+    } catch (error) {
+      console.error('Error updating tags:', error);
+    }
   };
 
-  const addTag = () => {
+  const addTag = async () => {
     if (newTag && !tags.includes(newTag)) {
-      setTags([...tags, newTag]);
+      const updatedTags = [...tags, newTag];
+      setTags(updatedTags);
       setNewTag("");
+      await updateTags(updatedTags);
     }
   };
 
-  const removeTag = (tagToRemove: string) => {
-    setTags(tags.filter((tag) => tag !== tagToRemove));
+  const removeTag = async (tagToRemove: string) => {
+    const updatedTags = tags.filter((tag) => tag !== tagToRemove);
+    setTags(updatedTags);
+    await updateTags(updatedTags);
   };
 
   const handleVideoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -264,8 +378,6 @@ export const PublicInfoPanel: React.FC<PublicInfoProps> = ({
       setValue("video_link", URL.createObjectURL(file));
     }
   };
-
-
 
   if (!isEditing) {
     return (
@@ -291,7 +403,9 @@ export const PublicInfoPanel: React.FC<PublicInfoProps> = ({
                 <h3 className="text-sm font-semibold text-muted-foreground mb-2">
                   About
                 </h3>
-                <p className="text-sm text-muted-foreground">Not filled yet</p>
+                <p className="text-sm text-muted-foreground">
+                  {athlete.about || "Not filled yet"}
+                </p>
               </div>
             </div>
           </CardContent>
@@ -306,38 +420,46 @@ export const PublicInfoPanel: React.FC<PublicInfoProps> = ({
               <p className="block text-sm font-medium text-muted-foreground mb-1">
                 Status
               </p>
-              <p className="text-sm">Private</p>
+              <p className="text-sm capitalize">{athlete.status || "Not set"}</p>
               <p className="text-xs text-muted-foreground">
-                Your profile currently invisible to brands
+                {athlete.status === "private" 
+                  ? "Your profile is currently invisible to brands"
+                  : "Your profile is visible to brands"}
               </p>
             </div>
 
             <div className="grid md:grid-cols-2 gap-4">
               {[
-                { label: "Gender", value: "Not specified", hideField: true },
-                {
-                  label: "Date of Birth",
-                  value: "Not specified",
-                  hideField: true,
-                },
-                { label: "Country", value: "Not specified" },
-                { label: "City", value: "Not specified" },
-                { label: "Talent", value: "Not specified" },
-                { label: "Talent Status", value: "Not specified" },
-              ].map(({ label, value, hideField }) => (
+                { label: "Gender", value: athlete.gender },
+                { label: "Date of Birth", value: athlete.date_of_birth },
+                { label: "Location", value: athlete.location },
+                { label: "Phone", value: athlete.phone },
+                { label: "Talent Level", value: athlete.talent_level },
+                { label: "Sponsorship Status", value: athlete.sponsorship_status },
+              ].map(({ label, value }) => (
                 <div key={label}>
                   <p className="block text-sm font-medium text-muted-foreground mb-1">
                     {label}
                   </p>
-                  <p className="text-sm">{value}</p>
-                  {hideField && (
-                    <p className="text-xs text-muted-foreground">
-                      Required field to apply for opportunity
-                    </p>
-                  )}
+                  <p className="text-sm capitalize">{value || "Not set"}</p>
                 </div>
               ))}
             </div>
+
+            {athlete.skills && (
+              <div>
+                <p className="block text-sm font-medium text-muted-foreground mb-2">
+                  Skills
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {athlete.skills.split(',').map((skill) => (
+                    <Badge key={skill} variant="secondary">
+                      {skill.trim()}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
 
@@ -351,26 +473,32 @@ export const PublicInfoPanel: React.FC<PublicInfoProps> = ({
                 icon: Instagram,
                 color: "text-pink-500",
                 label: "Instagram",
-                value: socialLinks.instagram,
+                value: athlete.social_links?.instagram,
               },
               {
                 icon: Facebook,
                 color: "text-blue-600",
                 label: "Facebook",
-                value: socialLinks.facebook,
+                value: athlete.social_links?.facebook,
               },
               {
                 icon: LinkedinIcon,
                 color: "text-blue-400",
                 label: "LinkedIn",
-                value: socialLinks.linkedin,
+                value: athlete.social_links?.linkedin,
               },
             ].map(({ icon: Icon, color, label, value }) => (
               <div key={label} className="flex items-center justify-between">
                 <div className="flex items-center">
                   <Icon className={`mr-3 h-5 w-5 ${color}`} />
                   <span className="text-sm">
-                    {value || `Add your ${label} account`}
+                    {value ? (
+                      <a href={value} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+                        {value}
+                      </a>
+                    ) : (
+                      `Add your ${label} account`
+                    )}
                   </span>
                 </div>
                 {!value && (
@@ -397,15 +525,32 @@ export const PublicInfoPanel: React.FC<PublicInfoProps> = ({
             <CardTitle>Videos</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-2 gap-4">
-              {["Upload Video", "Attach YouTube Video"].map((action) => (
-                <div
-                  key={action}
-                  className="border border-dashed rounded-lg p-6 text-center hover:bg-accent transition-colors">
-                  <Upload className="mx-auto mb-4 h-10 w-10 text-muted-foreground" />
-                  <p className="text-sm text-muted-foreground">{action}</p>
+            <div className="space-y-4">
+              <div className="text-sm text-muted-foreground">
+                Current URL: {athlete?.video_link || 'No URL set'}
+              </div>
+              
+              {athlete?.video_link ? (
+                <div className="aspect-video">
+                  <iframe
+                    src={formatYoutubeUrl(athlete.video_link)}
+                    className="w-full h-full rounded-lg"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
                 </div>
-              ))}
+              ) : (
+                <div className="grid grid-cols-2 gap-4">
+                  {["Upload Video", "Attach YouTube Video"].map((action) => (
+                    <div
+                      key={action}
+                      className="border border-dashed rounded-lg p-6 text-center hover:bg-accent transition-colors">
+                      <Upload className="mx-auto mb-4 h-10 w-10 text-muted-foreground" />
+                      <p className="text-sm text-muted-foreground">{action}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -434,6 +579,9 @@ export const PublicInfoPanel: React.FC<PublicInfoProps> = ({
                     {...field}
                     placeholder="Enter first name"
                     className={errors.first_name ? "border-destructive" : ""}
+                    onBlur={async () => {
+                      await updateField('first_name', field.value);
+                    }}
                   />
                 )}
               />
@@ -457,6 +605,9 @@ export const PublicInfoPanel: React.FC<PublicInfoProps> = ({
                     {...field}
                     placeholder="Enter last name"
                     className={errors.last_name ? "border-destructive" : ""}
+                    onBlur={async () => {
+                      await updateField('last_name', field.value);
+                    }}
                   />
                 )}
               />
@@ -478,6 +629,9 @@ export const PublicInfoPanel: React.FC<PublicInfoProps> = ({
                   {...field}
                   placeholder="Tell us about yourself"
                   className="min-h-[100px]"
+                  onBlur={async () => {
+                    await updateField('about', field.value);
+                  }}
                 />
               )}
             />
@@ -525,19 +679,14 @@ export const PublicInfoPanel: React.FC<PublicInfoProps> = ({
                 options: ["Male", "Female", "Other", "Prefer not to say"],
               },
               {
-                name: "dateOfBirth",
+                name: "date_of_birth",
                 label: "Date of Birth",
                 hideName: "hideDateOfBirth",
                 type: "date",
               },
               {
-                name: "country",
-                label: "Country",
-                options: ["United States", "Canada", "UK", "Australia"],
-              },
-              {
-                name: "city",
-                label: "City",
+                name: "location",
+                label: "Location",
                 type: "text",
               },
               {
@@ -575,34 +724,20 @@ export const PublicInfoPanel: React.FC<PublicInfoProps> = ({
                 <Controller
                   name={name as keyof FormData}
                   control={control}
-                  render={({ field }) =>
-                    type === "select" ? (
-                      <Select 
-                      onValueChange={field.onChange}>
-                        <SelectTrigger>
-                          <SelectValue
-                            placeholder={`Select ${label.toLowerCase()}`}
-                          />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {options?.map((option) => (
-                            <SelectItem
-                              key={option}
-                              value={option.toLowerCase()}>
-                              {option}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    ) : (
-                      <Input
-                        type={type}
-                        placeholder={`Enter ${label.toLowerCase()}`}
-                      />
-                    )
-                  }
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      type="text"
+                      placeholder="Enter your location"
+                      value={field.value || ''}
+                      onChange={(e) => {
+                        field.onChange(e.target.value);
+                        updateField('location', e.target.value);
+                      }}
+                    />
+                  )}
                 />
-                {name !== "city" && (
+                {name !== "location" && (
                   <p className="text-xs text-muted-foreground mt-1">
                     Required field to apply for opportunity
                   </p>
@@ -730,17 +865,28 @@ export const PublicInfoPanel: React.FC<PublicInfoProps> = ({
               </label>
             </div>
             <div className="border border-dashed rounded-lg p-6">
-              <Input placeholder="Paste YouTube video URL" className="mb-2" />
-              <Button variant="outline" className="w-full" onClick={(e)=>e.preventDefault()}>
-                Attach YouTube Video
-              </Button>
+              <div className="flex gap-2">
+                <Input 
+                  placeholder="Paste YouTube video URL" 
+                  value={youtubeUrl}
+                  onChange={(e) => setYoutubeUrl(e.target.value)}
+                  className="mb-2" 
+                />
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={updateYoutubeUrl}
+                >
+                  Save
+                </Button>
+              </div>
             </div>
           </div>
         </CardContent>
       </Card>
 
       <div className="flex justify-end space-x-4">
-        <Button type="button" variant="outline" onClick={cancelEditing}>
+        <Button type="button" variant="outline" onClick={() => onToggleEdit(false)}>
           Cancel
         </Button>
         <Button type="submit">Save</Button>

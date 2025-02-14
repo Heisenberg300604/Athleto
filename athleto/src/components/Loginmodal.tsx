@@ -55,37 +55,6 @@ const LoginModal = ({ isOpen, onClose, onOpenBrandSignup, onOpenAthleteSignup }:
     }
   };
 
-  // const handleLogin = async (e: React.FormEvent) => {
-  //   e.preventDefault();
-
-  //   if (!email || !password) {
-  //     toast.error("Please fill in all fields.");
-  //     return;
-  //   }
-
-  //   setLoading(true);
-
-  //   try {
-  //     // Sign in with Supabase
-  //     const { data, error } = await supabase.auth.signInWithPassword({
-  //       email,
-  //       password,
-  //     });
-
-  //     if (error) {
-  //       throw error;
-  //     }
-
-  //     // Handle successful login
-  //     toast.success("Login successful!");
-  //     onClose(); // Close the modal
-  //     router.push("/athlete-dashboard"); // Redirect to the dashboard or another page
-  //   } catch (error: any) {
-  //     toast.error(error.message || "An error occurred during login.");
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
   
@@ -98,13 +67,17 @@ const LoginModal = ({ isOpen, onClose, onOpenBrandSignup, onOpenAthleteSignup }:
   
     try {
       // Sign in with Supabase
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { data, error: signInError } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
   
-      if (error) {
-        throw error;
+      if (signInError) {
+        // Handle specific authentication errors
+        if (signInError.message.includes('Invalid login credentials')) {
+          throw new Error('Invalid email or password');
+        }
+        throw signInError;
       }
   
       // Get logged-in user's email
@@ -113,36 +86,45 @@ const LoginModal = ({ isOpen, onClose, onOpenBrandSignup, onOpenAthleteSignup }:
         throw new Error("User email not found.");
       }
   
-      // Check if the user is an athlete
-      const { data: athlete, error: athleteError } = await supabase
-        .from("athletes")
-        .select("id") // Only fetching id for efficiency
-        .eq("email", userEmail)
-        .single();
+      try {
+        // Check if the user is an athlete
+        const { data: athlete, error: athleteError } = await supabase
+          .from("athletes")
+          .select("id")
+          .eq("email", userEmail)
+          .single();
   
-      if (athlete) {
-        toast.success("Login successful! Redirecting to Athlete Dashboard...");
-        onClose();
-        router.push("/athlete-dashboard");
-        return;
+        if (athlete) {
+          toast.success("Login successful! Redirecting to Athlete Dashboard...");
+          onClose();
+          router.push("/athlete-dashboard");
+          return;
+        }
+  
+        // Check if the user is a brand
+        const { data: brand, error: brandError } = await supabase
+          .from("brands")
+          .select("id")
+          .eq("email", userEmail)
+          .single();
+  
+        if (brand) {
+          toast.success("Login successful! Redirecting to Brand Dashboard...");
+          onClose();
+          router.push("/brand-dashboard");
+          return;
+        }
+  
+        // If user exists in neither table
+        throw new Error("Account not found. Please sign up first.");
+      } catch (error: any) {
+        // Handle database query errors
+        if (error.message.includes('Account not found')) {
+          throw error;
+        }
+        throw new Error("Error checking user role. Please try again.");
       }
   
-      // Check if the user is a brand
-      const { data: brand, error: brandError } = await supabase
-        .from("brands")
-        .select("id") // Only fetching id for efficiency
-        .eq("email", userEmail)
-        .single();
-  
-      if (brand) {
-        toast.success("Login successful! Redirecting to Brand Dashboard...");
-        onClose();
-        router.push("/brand-dashboard");
-        return;
-      }
-  
-      // If user exists in neither table
-      throw new Error("User role not found. Please contact support.");
     } catch (error: any) {
       toast.error(error.message || "An error occurred during login.");
     } finally {
