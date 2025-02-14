@@ -117,7 +117,7 @@ const BrandNavbar = () => {
             </button>
 
             {isFeedbackOpen && (
-              <Card className="absolute right-0 top-full mt-2 w-96 shadow-lg p-4">
+              <Card className="absolute right-0 top-full mt-2 w-96 shadow-lg p-4 bg-gray-100 border-none text-black ">
                 <CardHeader className="flex flex-row justify-between items-center">
                   <CardTitle>Provide Feedback</CardTitle>
                   <Button 
@@ -170,19 +170,19 @@ const BrandNavbar = () => {
             </button>
 
             {isHelpOpen && (
-              <Card className="absolute right-0 top-full mt-2 w-80 shadow-lg">
+              <Card className="absolute right-0 top-full mt-2 w-80 shadow-lg bg-gray-100 border-none text-black">
                 <CardHeader>
                   <CardTitle>Help Center</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2">
-                    <Link href="/brand-faq" className="block hover:text-indigo-600">
+                    <Link href="/brand-dashboard/brand-faq" className="block hover:text-indigo-600">
                       Frequently Asked Questions
                     </Link>
-                    <Link href="/brand-support" className="block hover:text-indigo-600">
+                    <Link href="/brand-dashboard/brand-support" className="block hover:text-indigo-600">
                       Contact Support
                     </Link>
-                    <Link href="/brand-guide" className="block hover:text-indigo-600">
+                    <Link href="/brand-dashboard/brand-guide" className="block hover:text-indigo-600">
                       User Guide
                     </Link>
                   </div>
