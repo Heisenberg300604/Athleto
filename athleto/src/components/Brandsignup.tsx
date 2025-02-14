@@ -14,7 +14,7 @@ import { toast } from "react-hot-toast";
 interface BrandSignupModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: () => void; 
+
 }
 
 const BrandSignupModal = ({ isOpen, onClose }: BrandSignupModalProps) => {
@@ -40,14 +40,25 @@ const BrandSignupModal = ({ isOpen, onClose }: BrandSignupModalProps) => {
   const router = useRouter();
 
   const handleGoogleLogin = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${window.location.origin}/athlete-dashboard`,
-      },
-    });
-    if (error) {
-      toast.error(error.message);
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: `${window.location.origin}/brand-dashboard`,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          }
+        },
+      });
+
+      if (error) throw error;
+
+      // Note: For Google signup, we'll need to create the brand profile after successful OAuth
+      // This should be handled in your OAuth callback route
+    } catch (error: any) {
+      console.error("Google login error:", error);
+      toast.error(error.message || "Failed to login with Google");
     }
   };
 
@@ -75,8 +86,8 @@ const BrandSignupModal = ({ isOpen, onClose }: BrandSignupModalProps) => {
     setLoading(true);
 
     try {
-      // Sign up with Supabase
-      const { data, error } = await supabase.auth.signUp({
+      // 1. Sign up with Supabase Auth
+      const { data: authData, error: authError } = await supabase.auth.signUp({
         email: businessEmail,
         password,
         options: {
@@ -90,23 +101,34 @@ const BrandSignupModal = ({ isOpen, onClose }: BrandSignupModalProps) => {
         },
       });
 
-      if (error) {
-        throw error;
+      if (authError) throw authError;
+
+      if (!authData.user) {
+        throw new Error("No user data returned from signup");
       }
 
-      // Create brand profile in the database
-      const { error: profileError } = await supabase.from("brands").insert([
-        {
-          id: data.user?.id,
-          first_name: firstName,
-          last_name: lastName,
-          brand_name: brandName,
-          brand_category: brandCategory,
-          business_email: businessEmail,
-        },
-      ]);
+      // 2. Create brand profile - use upsert to handle potential duplicates
+      const { error: profileError } = await supabase
+        .from("brands")
+        .upsert(
+          {
+            id: authData.user.id,
+            first_name: firstName,
+            last_name: lastName,
+            brand_name: brandName,
+            brand_category: brandCategory,
+            business_email: businessEmail,
+            status: "pending",
+          },
+          {
+            onConflict: "id",
+            ignoreDuplicates: false,
+          }
+        );
 
       if (profileError) {
+        // If profile creation fails, delete the auth user
+        await supabase.auth.admin.deleteUser(authData.user.id);
         throw profileError;
       }
 
@@ -114,7 +136,8 @@ const BrandSignupModal = ({ isOpen, onClose }: BrandSignupModalProps) => {
       onClose();
       router.push("/brand-dashboard");
     } catch (error: any) {
-      toast.error(error.message || "An error occurred during signup.");
+      console.error("Signup error:", error);
+      toast.error(error.message || "An error occurred during signup");
     } finally {
       setLoading(false);
     }

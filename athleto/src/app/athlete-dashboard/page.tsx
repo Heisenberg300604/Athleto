@@ -1,5 +1,4 @@
 "use client"
-
 import type React from "react"
 import { useState } from "react"
 import { Heart, Search, Sliders, MoreVertical, MapPin, Building2 } from "lucide-react"
