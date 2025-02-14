@@ -729,7 +729,7 @@ export const PublicInfoPanel: React.FC<PublicInfoProps> = ({
                       {...field}
                       type="text"
                       placeholder="Enter your location"
-                      value={field.value || ''}
+                      value={typeof field.value === 'string' ? field.value : ''}
                       onChange={(e) => {
                         field.onChange(e.target.value);
                         updateField('location', e.target.value);
