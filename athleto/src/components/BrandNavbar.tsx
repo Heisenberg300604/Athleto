@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Bell, UserCircle, HelpCircle, MessageSquare, X } from 'lucide-react';
+import { Bell, User, HelpCircle, MessageSquare, X } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -87,21 +87,18 @@ const BrandNavbar = () => {
               className="text-gray-600 hover:text-indigo-600 transition-colors duration-300 relative group"
               title="Notifications"
             >
-              <Bell className="h-6 w-6" />
-              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
-                0
-              </span>
-            </button>
-
-            {isNotificationOpen && (
-              <Card className="absolute right-0 top-full mt-2 w-80 shadow-lg">
-                <CardHeader>
-                  <CardTitle className="text-center">Notifications</CardTitle>
-                </CardHeader>
-                <CardContent className="text-center text-gray-500">
-                  No notifications yet
-                </CardContent>
-              </Card>
+               <Bell className="h-6 w-6 text-grey-900" />
+                            <span className="absolute top-0 right-0 h-3 w-3 bg-red-500 rounded-full border-2 border-white"></span>
+                          </button>
+                          {isNotificationOpen && (
+                            <Card className="absolute right-0 top-full mt-2 w-80 shadow-lg bg-gray-100 border-none">
+                              <CardHeader>
+                                <CardTitle className="text-center text-black p-4 border-b border-gray-400 bg-gray-100">Notifications</CardTitle>
+                              </CardHeader>
+                              <CardContent className="text-center text-black bg-gray-100 p-4">
+                                No notifications yet
+                              </CardContent>
+                            </Card>
             )}
           </div>
 
@@ -120,7 +117,7 @@ const BrandNavbar = () => {
             </button>
 
             {isFeedbackOpen && (
-              <Card className="absolute right-0 top-full mt-2 w-96 shadow-lg p-4">
+              <Card className="absolute right-0 top-full mt-2 w-96 shadow-lg p-4 bg-gray-100 border-none text-black ">
                 <CardHeader className="flex flex-row justify-between items-center">
                   <CardTitle>Provide Feedback</CardTitle>
                   <Button 
@@ -142,7 +139,7 @@ const BrandNavbar = () => {
                       />
                       <Button 
                         variant="outline" 
-                        className="w-full border-black hover:bg-gray-100"
+                        className="w-full bg-indigo-600 text-white hover:bg-indigo-800"
                         onClick={handleFeedbackSubmit}
                       >
                         Submit Feedback
@@ -173,19 +170,19 @@ const BrandNavbar = () => {
             </button>
 
             {isHelpOpen && (
-              <Card className="absolute right-0 top-full mt-2 w-80 shadow-lg">
+              <Card className="absolute right-0 top-full mt-2 w-80 shadow-lg bg-gray-100 border-none text-black">
                 <CardHeader>
                   <CardTitle>Help Center</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2">
-                    <Link href="/faq" className="block hover:text-indigo-600">
+                    <Link href="/brand-dashboard/brand-faq" className="block hover:text-indigo-600">
                       Frequently Asked Questions
                     </Link>
-                    <Link href="/support" className="block hover:text-indigo-600">
+                    <Link href="/brand-dashboard/brand-support" className="block hover:text-indigo-600">
                       Contact Support
                     </Link>
-                    <Link href="/guide" className="block hover:text-indigo-600">
+                    <Link href="/brand-dashboard/brand-guide" className="block hover:text-indigo-600">
                       User Guide
                     </Link>
                   </div>
@@ -200,7 +197,7 @@ const BrandNavbar = () => {
             className="text-gray-600 hover:text-indigo-600 transition-colors duration-300"
             title="User Profile"
           >
-            <UserCircle className="h-6 w-6" />
+            <User className="h-6 w-6" />
           </button>
         </div>
       </div>
