@@ -102,8 +102,8 @@ export default function BrandProfile() {
               isEditing={isEditing}
               profileImage={profileImage}
               onImageUpload={handleImageUpload}
-              brandName={brandProfile.brand_name}
-              brandCategory={brandProfile.brand_category}
+              //brandName={brandProfile.brand_name}
+             // brandCategory={brandProfile.brand_category}
             />
           </div>
           <div className="md:col-span-2">
