@@ -176,13 +176,13 @@ const AthleteNavbar: React.FC = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2">
-                    <Link href="/athlete-faq" className="block hover:text-indigo-600">
+                    <Link href="/athlete-dashboard/athlete-faq" className="block hover:text-indigo-600">
                       Frequently Asked Questions
                     </Link>
-                    <Link href="/athlete-support" className="block hover:text-indigo-600">
+                    <Link href="/athlete-dashboard/athlete-support" className="block hover:text-indigo-600">
                       Contact Support
                     </Link>
-                    <Link href="/athlete-guide" className="block hover:text-indigo-600">
+                    <Link href="/athlete-dashboard/athlete-guide" className="block hover:text-indigo-600">
                       User Guide
                     </Link>
                   </div>
