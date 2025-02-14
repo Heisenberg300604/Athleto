@@ -105,7 +105,7 @@ export default function Home() {
                   href="#"
                   className="text-sm text-gray-400 hover:text-white"
                 >
-                  About Us
+                  Our Team
                 </Link>
               </nav>
             </div>
