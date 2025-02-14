@@ -51,7 +51,8 @@ const AthleteNavbar: React.FC = () => {
         <div className="flex items-center gap-4">
           <Link 
             href="/athlete-dashboard" 
-            className="text-2xl font-bold mr-6 text-indigo-600 font-['Orbitron'] tracking-wider transition-colors duration-300 hover:text-indigo-800"
+            className="text-2xl font-bold mr-6 text-indigo-600 font-['Oswald'] tracking-wider transition-colors duration-300 hover:text-indigo-800"
+
           >
             ATHLETO
           </Link>
