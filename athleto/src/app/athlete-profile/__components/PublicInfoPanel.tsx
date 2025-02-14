@@ -29,6 +29,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import Spinner from "@/components/spinner";
+import { supabase } from "@/lib/supabase";
 
 interface PublicInfoProps {
   isEditing: boolean;
@@ -94,11 +95,12 @@ export const PublicInfoPanel: React.FC<PublicInfoProps> = ({
   const [skills, setSkills] = useState<string[]>([]);
   const [newSkill, setNewSkill] = useState<string>("");
   const [socialLinks, setSocialLinks] = useState({
-    instagram: "",
-    facebook: "",
-    linkedin: "",
+    instagram: athlete?.social_links?.instagram || "",
+    facebook: athlete?.social_links?.facebook || "",
+    linkedin: athlete?.social_links?.linkedin || "",
   });
   useForceLightMode();
+  console.log(athlete)
 
   const {
     control,
@@ -160,6 +162,47 @@ export const PublicInfoPanel: React.FC<PublicInfoProps> = ({
       }
     }
   }, [athlete, reset]);
+
+  // Add this function to update social links
+  const updateSocialLink = async (platform: 'instagram' | 'facebook' | 'linkedin', value: string) => {
+    try {
+      if (!athlete?.id) return;
+
+      const updatedSocialLinks = {
+        ...athlete.social_links,
+        [platform]: value
+      };
+
+      const { error } = await supabase
+        .from('athletes')
+        .update({ 
+          social_links: updatedSocialLinks,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', athlete.id);
+
+      if (error) throw error;
+
+      setSocialLinks(prev => ({
+        ...prev,
+        [platform]: value
+      }));
+    } catch (error) {
+      console.error('Error updating social link:', error);
+    }
+  };
+
+  // Update useEffect to set initial social links
+  useEffect(() => {
+    if (athlete?.social_links) {
+      setSocialLinks({
+        instagram: athlete.social_links.instagram || "",
+        facebook: athlete.social_links.facebook || "",
+        linkedin: athlete.social_links.linkedin || "",
+      });
+    }
+  }, [athlete]);
+
   if (loading || !athlete) return <Spinner />;
 
   const onSubmit = async (data: FormData) => {
@@ -308,31 +351,33 @@ export const PublicInfoPanel: React.FC<PublicInfoProps> = ({
                 icon: Instagram,
                 color: "text-pink-500",
                 label: "Instagram",
-                placeholder: "Add your Instagram account",
+                value: socialLinks.instagram,
               },
               {
                 icon: Facebook,
                 color: "text-blue-600",
                 label: "Facebook",
-                placeholder: "Add your Facebook account",
+                value: socialLinks.facebook,
               },
               {
                 icon: LinkedinIcon,
                 color: "text-blue-400",
                 label: "LinkedIn",
-                placeholder: "Add your LinkedIn account",
+                value: socialLinks.linkedin,
               },
-            ].map(({ icon: Icon, color, label, placeholder }) => (
+            ].map(({ icon: Icon, color, label, value }) => (
               <div key={label} className="flex items-center justify-between">
                 <div className="flex items-center">
                   <Icon className={`mr-3 h-5 w-5 ${color}`} />
-                  <span className="text-sm text-muted-foreground">
-                    {placeholder}
+                  <span className="text-sm">
+                    {value || `Add your ${label} account`}
                   </span>
                 </div>
-                <Button variant="outline" size="sm">
-                  ADD
-                </Button>
+                {!value && (
+                  <Button variant="outline" size="sm" onClick={() => onToggleEdit(true)}>
+                    ADD
+                  </Button>
+                )}
               </div>
             ))}
           </CardContent>
@@ -381,20 +426,20 @@ export const PublicInfoPanel: React.FC<PublicInfoProps> = ({
                 First Name
               </label>
               <Controller
-                name="firstName"
+                name="first_name"
                 control={control}
                 rules={{ required: "First name is required" }}
                 render={({ field }) => (
                   <Input
                     {...field}
                     placeholder="Enter first name"
-                    className={errors.firstName ? "border-destructive" : ""}
+                    className={errors.first_name ? "border-destructive" : ""}
                   />
                 )}
               />
-              {errors.firstName && (
+              {errors.first_name && (
                 <p className="text-destructive text-xs mt-1">
-                  {errors.firstName.message}
+                  {errors.first_name.message}
                 </p>
               )}
             </div>
@@ -579,39 +624,46 @@ export const PublicInfoPanel: React.FC<PublicInfoProps> = ({
               color: "text-pink-500",
               label: "Instagram",
               placeholder: "Enter Instagram handle",
+              platform: 'instagram' as const,
             },
             {
               icon: Facebook,
               color: "text-blue-600",
               label: "Facebook",
               placeholder: "Enter Facebook profile link",
+              platform: 'facebook' as const,
             },
             {
               icon: LinkedinIcon,
               color: "text-blue-400",
               label: "LinkedIn",
               placeholder: "Enter LinkedIn handle",
+              platform: 'linkedin' as const,
             },
-          ].map(({ icon: Icon, color, label, placeholder }) => (
+          ].map(({ icon: Icon, color, label, placeholder, platform }) => (
             <div key={label}>
               <label className="flex items-center text-sm font-medium mb-2">
                 <Icon className={`mr-2 h-5 w-5 ${color}`} />
                 {label}
               </label>
-              <Input
-                placeholder={placeholder}
-                value={
-                  socialAccounts[
-                    label.toLowerCase() as keyof typeof socialAccounts
-                  ]
-                }
-                onChange={(e) =>
-                  setSocialAccounts({
-                    ...socialAccounts,
-                    [label.toLowerCase()]: e.target.value,
-                  })
-                }
-              />
+              <div className="flex gap-2">
+                <Input
+                  placeholder={placeholder}
+                  value={socialLinks[platform]}
+                  onChange={(e) => setSocialLinks(prev => ({
+                    ...prev,
+                    [platform]: e.target.value
+                  }))}
+                  className="flex-1"
+                />
+                <Button 
+                  type="button"
+                  variant="outline"
+                  onClick={() => updateSocialLink(platform, socialLinks[platform])}
+                >
+                  Save
+                </Button>
+              </div>
             </div>
           ))}
         </CardContent>

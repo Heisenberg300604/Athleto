@@ -9,7 +9,7 @@ interface Athlete {
   first_name: string;
   last_name: string;
   email: string;
-  bio: string;
+  about: string;
   video_link: string;
   is_verified: boolean;
   skills: string;
@@ -26,6 +26,10 @@ interface Athlete {
   sponsorship_needs: string;
   created_at: string;
   updated_at: string;
+  phone?: string;
+  bank_account_name?: string;
+  iban?: string;
+  currency?: string;
 }
 
 interface UserContextType {
