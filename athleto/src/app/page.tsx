@@ -188,7 +188,7 @@ export default function Home() {
                 <BrandSignupModal
                   isOpen={isBrandSignupModalOpen}
                   onClose={() => setIsBrandSignupModalOpen(false)}
-                  onSubmit={handleBrandSignup}
+                //  onSubmit={handleBrandSignup}
                 />
               </>
             )}
