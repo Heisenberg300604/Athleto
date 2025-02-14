@@ -47,7 +47,7 @@ export const AthleteProfileSidebar: React.FC<AthleteSidebarProps> = ({
           ) : (
             <div className="flex flex-col items-center justify-center h-full text-blue-400">
               <ImageIcon className="w-12 h-12 mb-2" />
-              <p className="text-sm font-medium">Company Logo</p>
+              <p className="text-sm font-medium">Athlete Profile Image</p>
             </div>
           )}
         </div>

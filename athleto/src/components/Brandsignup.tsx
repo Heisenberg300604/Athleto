@@ -26,6 +26,7 @@ const BrandSignupModal = ({ isOpen, onClose }: BrandSignupModalProps) => {
     "Recovery & Wellness",
     "Athletic Footwear",
     "Athletic Accessories",
+    "Others",
   ];
 
   const [firstName, setFirstName] = useState("");

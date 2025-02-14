@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
+import { useUser } from "@/context/UserContext";
+import { useForceLightMode } from "@/hooks/useForcedLightTheme";
 import {
   User,
   Plus,
@@ -25,47 +27,79 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { useForceLightMode } from "@/hooks/useForcedLightTheme";
 import { Checkbox } from "@/components/ui/checkbox";
+import Spinner from "@/components/spinner";
 
 interface PublicInfoProps {
   isEditing: boolean;
   onToggleEdit: (editing: boolean) => void;
 }
 
-interface FormData {
-  firstName: string;
-  lastName: string;
-  status: string;
+interface AthleteData {
+  id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
   about: string;
-  tags: string[];
-  socialAccounts: {
+  video_link: string;
+  is_verified: boolean;
+  skills: string;
+  location: string;
+  gender: string;
+  date_of_birth: string;
+  status: string;
+  social_links: {
     instagram?: string;
     facebook?: string;
-    tiktok?: string;
+    linkedin?: string;
   };
-  video?: File | null;
+  talent_level: string;
+  affiliations: string;
+  achievements: string;
+  sponsorship_status: string;
+  sponsorship_needs: string;
+  created_at: string;
+  updated_at: string;
+}
+
+interface FormData {
+  first_name: string;
+  last_name: string;
+  about: string;
+  video_link: string;
+  skills: string;
+  location: string;
   gender: string;
-  dateOfBirth: string;
-  country: string;
-  city: string;
-  talent: string;
-  talentStatus: string;
-  hideGender: boolean;
-  hideDateOfBirth: boolean;
+  date_of_birth: string;
+  status: string;
+  social_links: {
+    instagram?: string;
+    facebook?: string;
+    linkedin?: string;
+  };
+  talent_level: string;
+  affiliations: string;
+  achievements: string;
+  sponsorship_status: string;
+  sponsorship_needs: string;
 }
 
 export const PublicInfoPanel: React.FC<PublicInfoProps> = ({
   isEditing,
   onToggleEdit,
 }) => {
+  const { athlete, loading } = useUser();
   const [tags, setTags] = useState<string[]>([]);
   const [newTag, setNewTag] = useState<string>("");
-  const [socialAccounts, setSocialAccounts] = useState({
+  const [skills, setSkills] = useState<string[]>([]);
+  const [newSkill, setNewSkill] = useState<string>("");
+  const [socialLinks, setSocialLinks] = useState({
     instagram: "",
     facebook: "",
-    linkedIn: "",
+    linkedin: "",
   });
+  useForceLightMode();
+
   const {
     control,
     handleSubmit,
@@ -74,31 +108,95 @@ export const PublicInfoPanel: React.FC<PublicInfoProps> = ({
     setValue,
   } = useForm<FormData>({
     defaultValues: {
-      firstName: "Chandan",
-      lastName: "Sahoo",
-      status: "Private",
+      first_name: "",
+      last_name: "",
       about: "",
-      tags: [],
-      socialAccounts: {},
-      video: null,
+      video_link: "",
+      skills: "",
+      location: "",
       gender: "",
-      dateOfBirth: "",
-      country: "",
-      city: "",
-      talent: "",
-      talentStatus: "",
-      hideGender: false,
-      hideDateOfBirth: false,
+      date_of_birth: "",
+      status: "private",
+      social_links: {},
+      talent_level: "",
+      affiliations: "",
+      achievements: "",
+      sponsorship_status: "",
+      sponsorship_needs: "",
     },
   });
 
-  const onSubmit = (data: FormData) => {
-    console.log({
-      ...data,
-      tags,
-      socialAccounts,
-    });
-    onToggleEdit(false);
+  useForceLightMode();
+
+  // Update the form when `athlete` changes
+  useEffect(() => {
+    if (athlete) {
+      reset({
+        first_name: athlete.first_name || "",
+        last_name: athlete.last_name || "",
+        about: athlete.about || "",
+        video_link: athlete.video_link || "",
+        skills: athlete.skills || "",
+        location: athlete.location || "",
+        gender: athlete.gender || "",
+        date_of_birth: athlete.date_of_birth || "",
+        status: athlete.status || "private",
+        social_links: athlete.social_links || {},
+        talent_level: athlete.talent_level || "",
+        affiliations: athlete.affiliations || "",
+        achievements: athlete.achievements || "",
+        sponsorship_status: athlete.sponsorship_status || "",
+        sponsorship_needs: athlete.sponsorship_needs || "",
+      });
+
+      // Set skills array from comma-separated string
+      if (athlete.skills) {
+        setSkills(athlete.skills.split(',').map(skill => skill.trim()));
+      }
+
+      // Set social links
+      if (athlete.social_links) {
+        setSocialLinks(athlete.social_links);
+      }
+    }
+  }, [athlete, reset]);
+  if (loading || !athlete) return <Spinner />;
+
+  const onSubmit = async (data: FormData) => {
+    try {
+      // Combine skills array back into comma-separated string
+      const updatedData = {
+        ...data,
+        skills: skills.join(', '),
+        social_links: socialLinks,
+        updated_at: new Date().toISOString(),
+      };
+
+      // Update the athlete data in Supabase
+      // You'll need to implement the actual update function
+      // const { error } = await supabase
+      //   .from('athletes')
+      //   .update(updatedData)
+      //   .eq('id', athlete.id);
+
+      // if (error) throw error;
+
+      onToggleEdit(false);
+    } catch (error) {
+      console.error('Error updating profile:', error);
+    }
+  };
+
+  const addSkill = () => {
+    if (newSkill && !skills.includes(newSkill)) {
+      setSkills([...skills, newSkill]);
+      setNewSkill("");
+    }
+  };
+
+
+  const removeSkill = (skillToRemove: string) => {
+    setSkills(skills.filter((skill) => skill !== skillToRemove));
   };
 
   const cancelEditing = () => {
@@ -120,11 +218,11 @@ export const PublicInfoPanel: React.FC<PublicInfoProps> = ({
   const handleVideoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setValue("video", file);
+      setValue("video_link", URL.createObjectURL(file));
     }
   };
 
-  useForceLightMode();
+
 
   if (!isEditing) {
     return (
@@ -144,7 +242,7 @@ export const PublicInfoPanel: React.FC<PublicInfoProps> = ({
             <div className="space-y-4">
               <div className="flex items-center">
                 <User className="mr-3 h-5 w-5 text-muted-foreground" />
-                <span className="font-medium">Chandan Sahoo</span>
+                <span className="font-medium">{athlete.first_name} {athlete.last_name}</span>
               </div>
               <div>
                 <h3 className="text-sm font-semibold text-muted-foreground mb-2">
@@ -306,20 +404,20 @@ export const PublicInfoPanel: React.FC<PublicInfoProps> = ({
                 Last Name
               </label>
               <Controller
-                name="lastName"
+                name="last_name"
                 control={control}
                 rules={{ required: "Last name is required" }}
                 render={({ field }) => (
                   <Input
                     {...field}
                     placeholder="Enter last name"
-                    className={errors.lastName ? "border-destructive" : ""}
+                    className={errors.last_name ? "border-destructive" : ""}
                   />
                 )}
               />
-              {errors.lastName && (
+              {errors.last_name && (
                 <p className="text-destructive text-xs mt-1">
-                  {errors.lastName.message}
+                  {errors.last_name.message}
                 </p>
               )}
             </div>
@@ -419,7 +517,7 @@ export const PublicInfoPanel: React.FC<PublicInfoProps> = ({
                       control={control}
                       render={({ field: { value, onChange } }) => (
                         <Checkbox
-                          checked={value as boolean}
+                          checked={Boolean(value)}
                           onCheckedChange={onChange}
                         />
                       )}
