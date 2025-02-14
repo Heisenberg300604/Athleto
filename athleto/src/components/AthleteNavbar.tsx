@@ -7,6 +7,7 @@ import Link from "next/link"
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
+import { useRouter } from "next/navigation"
 
 const AthleteNavbar: React.FC = () => {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
@@ -16,6 +17,7 @@ const AthleteNavbar: React.FC = () => {
   const [isHelpOpen, setIsHelpOpen] = useState(false)
   const [feedbackSubmitted, setFeedbackSubmitted] = useState(false)
   const [feedbackText, setFeedbackText] = useState('')
+  const router = useRouter() 
 
   const toggleUserMenu = () => {
     setIsUserMenuOpen(!isUserMenuOpen)
@@ -23,6 +25,10 @@ const AthleteNavbar: React.FC = () => {
     setIsFeedbackOpen(false)
     setIsHelpOpen(false)
   }
+
+  const handleProfileClick = () => {
+    router.push('/athlete-profile');
+  };
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen)
@@ -170,13 +176,13 @@ const AthleteNavbar: React.FC = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2">
-                    <Link href="/faq" className="block hover:text-indigo-600">
+                    <Link href="/athlete-dashboard/athlete-faq" className="block hover:text-indigo-600">
                       Frequently Asked Questions
                     </Link>
-                    <Link href="/support" className="block hover:text-indigo-600">
+                    <Link href="/athlete-dashboard/athlete-support" className="block hover:text-indigo-600">
                       Contact Support
                     </Link>
-                    <Link href="/guide" className="block hover:text-indigo-600">
+                    <Link href="/athlete-dashboard/athlete-guide" className="block hover:text-indigo-600">
                       User Guide
                     </Link>
                   </div>
@@ -186,32 +192,13 @@ const AthleteNavbar: React.FC = () => {
           </div>
 
           {/* User Menu */}
-          <div className="relative">
-            <button
-              className="text-gray-900 p-2 rounded-full transition-colors duration-200 flex items-center gap-2"
-              onClick={toggleUserMenu}
-              title="User Menu"
-            >
-              <User className="h-7 w-7" />
-            </button>
-            {isUserMenuOpen && (
-              <div className="absolute right-0 mt-2 w-48  rounded-md shadow-lg py-2 z-10 animate-fadeIn bg-gray-100 text-black">
-                {[
-                  { name: "Profile", href: "/athlete-profile" },
-                  { name: "Settings", href: "/athlete-settings" },
-                  { name: "Log out", href: "/logout", className: "text-red-500" }
-                ].map((item) => (
-                  <Link
-                    key={item.name}
-                    href={item.href}
-                    className={`block px-4 py-2 hover:bg-gray-700 transition-colors duration-200 ${item.className || "text-black"}`}
-                  >
-                    {item.name}
-                  </Link>
-                ))}
-              </div>
-            )}
-          </div>
+          <button 
+            onClick={handleProfileClick}
+            className="text-gray-600 hover:text-indigo-600 transition-colors duration-300"
+            title="User Profile"
+          >
+            <User className="h-6 w-6" />
+          </button>
 
           {/* Mobile Menu Toggle */}
           <button
