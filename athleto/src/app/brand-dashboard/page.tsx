@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { AlertTriangle, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { DialogContent } from '@/components/ui/dialog';
+import CreateOpportunityModal from '@/components/OpportunityModal';
 
 
 
@@ -19,6 +20,7 @@ interface OpportunityModalProps {
 
 const OpportunityModal: React.FC<OpportunityModalProps> = ({ isOpen, onClose }) => {
   const router = useRouter();
+
   
   const handleProvide = () => {
     router.push('/brand-profile');
@@ -93,6 +95,8 @@ const OpportunityModal: React.FC<OpportunityModalProps> = ({ isOpen, onClose }) 
 
 const BrandDashboard = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+
   const opportunities = [];
 
   return (
@@ -153,7 +157,7 @@ const BrandDashboard = () => {
               You have not posted any opportunities yet
             </h3>
             <button 
-                 onClick={() => setIsModalOpen(true)}
+                 onClick={() => setShowCreateModal(true)}
             className="mt-4 px-6 py-3 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors">
               CREATE AN OPPORTUNITY
             </button>
@@ -162,10 +166,10 @@ const BrandDashboard = () => {
           
         )}
 
-<OpportunityModal 
-          isOpen={isModalOpen} 
-          onClose={() => setIsModalOpen(false)} 
-        />
+<CreateOpportunityModal 
+  isOpen={showCreateModal}
+  onClose={() => setShowCreateModal(false)}
+/>
       </main>
     </div>
   );

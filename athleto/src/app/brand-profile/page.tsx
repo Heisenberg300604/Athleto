@@ -17,6 +17,7 @@ export default function BrandProfile() {
   const [profileImage, setProfileImage] = useState<string | null>(null);
   
   const { brand, loading } = useUser();
+  console.log(brand);
 
   const handleImageUpload = (file: File) => {
     const imageUrl = URL.createObjectURL(file);

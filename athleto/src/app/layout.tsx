@@ -6,6 +6,7 @@ import { Toaster } from "react-hot-toast";
 import { BrandProvider } from "@/context/BrandContext";
 import { UserProvider } from "@/context/UserContext";
 import { User } from "lucide-react";
+import { OpportunityProvider } from "@/context/OpportunityContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -40,10 +41,12 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <UserProvider>
+            <OpportunityProvider>
           <BrandProvider> {/* Wrap children inside BrandProvider */}
             <Toaster />
             {children}
           </BrandProvider>
+            </OpportunityProvider>
           </UserProvider>
         </ThemeProvider>
       </body>

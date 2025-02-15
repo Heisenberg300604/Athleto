@@ -1,64 +1,92 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
-import { CampaignCard } from "@/components/CampaignCard";
 import { FilterSidebar } from "./__components/Filtersidebar";
 import { Search } from "lucide-react";
 import AthleteNavbar from "@/components/AthleteNavbar";
 import { useForceLightMode } from "@/hooks/useForcedLightTheme";
+import { OpportunityCard } from "@/components/OpportunityCard";
+import { useOpportunity } from "@/context/OpportunityContext";
+import { useUser } from "@/context/UserContext";
 
-export default function Page() {
+export default function OpportunitiesPage() {
   useForceLightMode();
-  return (
-    <>
-      <div className="bg-gray-50">
-        <AthleteNavbar />
-        <div className="container mx-auto flex gap-6 p-6">
-          <FilterSidebar />
-          {/*Filter options will changed accordingly, we can also make a global fillter component if it is used in multiple pages*/}
-          <div className="flex-1 space-y-6">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <Input className="pl-9" placeholder="Search" />
-            </div>
-            <div className="space-y-4">
-              <CampaignCard
-                title="Wellington Clinic - Athlete Eye Surgery Campaign"
-                amount={5400}
-                location="Ireland, Dublin"
-                dueDate="20.01.2025"
-                postedDate="09.01.2025"
-                company={{
-                  name: "Wellington Eye Clinic",
-                  logo: "/placeholder.svg",
-                  description: "",
-                }}
-                status = {null}
-                dateRange=""
-                timeRange=""
-              />
-              <CampaignCard
-                title="WHOOP January Jumpstart Campaign"
-                amount={165}
-                location="Ireland, Dublin"
-                dueDate="26.12.2024"
-                postedDate="09.12.2024"
-                company={{
-                  name: "Whoop",
-                  logo: "/placeholder.svg",
-                  description: "",
-                }}
-                status = {null}
-                dateRange=""
-                timeRange=""
-              />
+  const { opportunities, loading, getOpenOpportunities } = useOpportunity();
+  const { athlete } = useUser();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredOpportunities, setFilteredOpportunities] = useState([]);
 
-              {/*Array will be mapped to show all the opporunities card wih props as:
-              title, amount, location, dueDate, postedDate, company :{name,logo,description}, dateRange, timeRange*/}
-            </div>
+  useEffect(() => {
+    const fetchOpportunities = async () => {
+      const openOpportunities = await getOpenOpportunities();
+      setFilteredOpportunities(openOpportunities);
+    };
+    fetchOpportunities();
+  }, [getOpenOpportunities]);
+
+  useEffect(() => {
+    if (opportunities.length > 0) {
+      const filtered = opportunities.filter(opp => 
+        opp.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        opp.brand_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        opp.location.city.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredOpportunities(filtered);
+    }
+  }, [searchTerm, opportunities]);
+
+  const handleApply = async (opportunityId) => {
+    // This would be implemented in your application logic
+    try {
+      // Add application logic here
+      // Example: await applyToOpportunity(opportunityId, athlete.id);
+      console.log(`Applied to opportunity ${opportunityId}`);
+    } catch (error) {
+      console.error('Failed to apply:', error);
+    }
+  };
+
+  return (
+    <div className="bg-gray-50 min-h-screen">
+      <AthleteNavbar />
+      <div className="container mx-auto flex gap-6 p-6">
+        <FilterSidebar />
+        <div className="flex-1 space-y-6">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input 
+              className="pl-9" 
+              placeholder="Search opportunities..." 
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+          
+          <div className="space-y-4">
+            {loading ? (
+              <div className="text-center py-8">Loading opportunities...</div>
+            ) : filteredOpportunities.length === 0 ? (
+              <div className="text-center py-8">
+                <h3 className="text-xl font-medium text-gray-900 mb-2">
+                  No opportunities found
+                </h3>
+                <p className="text-gray-500">
+                  Try adjusting your filters or search terms
+                </p>
+              </div>
+            ) : (
+              filteredOpportunities.map((opportunity) => (
+                <OpportunityCard
+                  key={opportunity.id}
+                  opportunity={opportunity}
+                  onApply={handleApply}
+                />
+              ))
+            )}
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
