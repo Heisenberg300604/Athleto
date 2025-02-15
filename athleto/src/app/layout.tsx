@@ -4,6 +4,8 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "react-hot-toast";
 import { BrandProvider } from "@/context/BrandContext";
+import { UserProvider } from "@/context/UserContext";
+import { User } from "lucide-react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,10 +39,12 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <UserProvider>
           <BrandProvider> {/* Wrap children inside BrandProvider */}
             <Toaster />
             {children}
           </BrandProvider>
+          </UserProvider>
         </ThemeProvider>
       </body>
     </html>

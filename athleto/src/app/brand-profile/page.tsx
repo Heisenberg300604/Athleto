@@ -8,7 +8,7 @@ import BrandProfileForm from '@/components/BrandProfileEdit';
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import BrandNavbar from '@/components/BrandNavbar';
 import BrandProfileInfo from '@/components/BrandProfileInfo';
-import { useBrand } from '@/context/BrandContext';
+import { useUser } from '@/context/UserContext';
 import { Loader2 } from 'lucide-react';
 
 export default function BrandProfile() {
@@ -16,7 +16,7 @@ export default function BrandProfile() {
   const [isEditing, setIsEditing] = useState(false);
   const [profileImage, setProfileImage] = useState<string | null>(null);
   
-  const { brandProfile, loading } = useBrand();
+  const { brand, loading } = useUser();
 
   const handleImageUpload = (file: File) => {
     const imageUrl = URL.createObjectURL(file);
@@ -31,7 +31,7 @@ export default function BrandProfile() {
     );
   }
 
-  if (!brandProfile) {
+  if (!brand) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <Alert variant="destructive">
@@ -47,7 +47,7 @@ export default function BrandProfile() {
     if (isEditing) {
       return (
         <BrandProfileForm
-          initialData={brandProfile}
+          initialData={brand}
           onSave={() => setIsEditing(false)}
           onCancel={() => setIsEditing(false)}
         />
@@ -59,10 +59,10 @@ export default function BrandProfile() {
         return (
           <BrandProfileInfo 
             initialData={{
-              firstName: brandProfile.first_name,
-              lastName: brandProfile.last_name,
-              email: brandProfile.business_email,
-              phone: brandProfile.phone,
+              firstName: brand.first_name,
+              lastName: brand.last_name,
+              email: brand.business_email,
+              phone: brand?.phone,
             }}
           />
         );
@@ -71,11 +71,11 @@ export default function BrandProfile() {
           <BrandProfileView
             onEdit={() => setIsEditing(true)}
             profileData={{
-              status: brandProfile.status,
-              companyName: brandProfile.brand_name,
-              industry: brandProfile.industry || 'Not specified',
-              location: brandProfile.city ? `${brandProfile.city}, ${brandProfile.country}` : 'Not specified',
-              about: brandProfile.about || 'No description available',
+              status: brand.status,
+              companyName: brand.brand_name,
+              industry: brand.industry || 'Not specified',
+              location: brand.city ? `${brand.city}, ${brand.country}` : 'Not specified',
+              about: brand.about || 'No description available',
             }}
           />
         );
@@ -86,7 +86,7 @@ export default function BrandProfile() {
     <div className="min-h-screen bg-gray-50">
       <BrandNavbar />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {brandProfile.status === 'declined' && (
+        {brand.status === 'declined' && (
           <Alert variant="destructive" className="mb-12">
             <AlertDescription>
               Verification request was declined. Please <a href="/support" className="underline font-medium">contact support</a> for assistance.
