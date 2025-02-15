@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -70,10 +70,12 @@ export const CreateOpportunityModal = ({ isOpen, onClose }) => {
 //       return;
 //     }
     
+const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
       await createOpportunity({
         ...formData,
-        brand_id: brand.id, 
+        brand_id: brand.id,
         status: 'published',
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
