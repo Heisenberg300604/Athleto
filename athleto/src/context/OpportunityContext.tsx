@@ -66,11 +66,12 @@ export const OpportunityProvider = ({ children }: { children: React.ReactNode })
   const fetchOpportunities = async () => {
     try {
       const { data, error } = await supabase
-        .from('opportunities')
+        .from('opportunity')
         .select('*');
 
       if (error) throw error;
       setOpportunities(data || []);
+      console.log(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
@@ -81,7 +82,7 @@ export const OpportunityProvider = ({ children }: { children: React.ReactNode })
   const createOpportunity = async (opportunity: Partial<OpportunityType>) => {
     try {
       const { data, error } = await supabase
-        .from('opportunities')
+        .from('opportunity')
         .insert([opportunity])
         .select()
         .single();
@@ -97,7 +98,7 @@ export const OpportunityProvider = ({ children }: { children: React.ReactNode })
   const updateOpportunity = async (id: string, updates: Partial<OpportunityType>) => {
     try {
       const { data, error } = await supabase
-        .from('opportunities')
+        .from('opportunity')
         .update(updates)
         .eq('id', id)
         .select()
@@ -114,7 +115,7 @@ export const OpportunityProvider = ({ children }: { children: React.ReactNode })
   const deleteOpportunity = async (id: string) => {
     try {
       const { error } = await supabase
-        .from('opportunities')
+        .from('opportunity')
         .delete()
         .eq('id', id);
 
@@ -129,7 +130,7 @@ export const OpportunityProvider = ({ children }: { children: React.ReactNode })
   const getOpportunityById = async (id: string) => {
     try {
       const { data, error } = await supabase
-        .from('opportunities')
+        .from('opportunity')
         .select('*')
         .eq('id', id)
         .single();
@@ -145,7 +146,7 @@ export const OpportunityProvider = ({ children }: { children: React.ReactNode })
   const getOpportunitiesByBrand = async (brandId: string) => {
     try {
       const { data, error } = await supabase
-        .from('opportunities')
+        .from('opportunity')
         .select('*')
         .eq('brand_id', brandId);
 
@@ -160,7 +161,7 @@ export const OpportunityProvider = ({ children }: { children: React.ReactNode })
   const getOpenOpportunities = async () => {
     try {
       const { data, error } = await supabase
-        .from('opportunities')
+        .from('opportunity')
         .select('*')
         .eq('status', 'published');
 

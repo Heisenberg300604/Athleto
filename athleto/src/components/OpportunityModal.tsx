@@ -11,6 +11,8 @@ import { Switch } from '@/components/ui/switch';
 import { useOpportunity } from '@/context/OpportunityContext';
 import { useUser } from '@/context/UserContext';
 import { useForceLightMode } from '@/hooks/useForcedLightTheme';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Loader2 } from 'lucide-react';
 
 const opportunityTypes = [
   { value: 'sponsorship', label: 'Sponsorship' },
@@ -34,7 +36,9 @@ const skillLevels = [
 export const CreateOpportunityModal = ({ isOpen, onClose }) => {
   const { createOpportunity } = useOpportunity();
   const { brand } = useUser();
-  console.log(brand);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  
   const [formData, setFormData] = useState({
     title: '',
     type: '',
@@ -63,30 +67,37 @@ export const CreateOpportunityModal = ({ isOpen, onClose }) => {
     }
   });
 
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-//     if (!brand || !brand.id) {
-//       console.error("Brand is not available yet");
-//       return;
-//     }
-    
-const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError('');
+
+    if (!brand?.id) {
+      setError('Brand information is not available. Please try again.');
+      setLoading(false);
+      return;
+    }
+
     try {
-      await createOpportunity({
+      const opportunityData = {
         ...formData,
         brand_id: brand.id,
         status: 'published',
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
-      });
+      };
+
+      await createOpportunity(opportunityData);
       onClose();
     } catch (error) {
+      setError('Failed to create opportunity. Please try again.');
       console.error('Failed to create opportunity:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleInputChange = (field: string, value: any) => {
+  const handleInputChange = (field, value) => {
     setFormData(prev => ({
       ...prev,
       [field]: value
@@ -96,169 +107,195 @@ const handleSubmit = async (e) => {
   return (
     useForceLightMode(),
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl bg-white text-black">
-        <DialogHeader>
-          <DialogTitle>Create New Opportunity</DialogTitle>
+      <DialogContent className="max-w-2xl bg-white text-black max-h-[90vh] overflow-hidden flex flex-col">
+        <DialogHeader className="px-6 py-4 border-b">
+          <DialogTitle className="text-xl font-semibold">Create New Opportunity</DialogTitle>
         </DialogHeader>
         
-        <form onSubmit={handleSubmit} className="space-y-2 bg-white p-6 rounded-lg shadow-sm text-black ">
-          <div className="space-y-">
-            <div>
-              <Label htmlFor="title">Opportunity Title</Label>
-              <Input
-                id="title"
-                value={formData.title}
-                onChange={(e) => handleInputChange('title', e.target.value)}
-                placeholder="Enter opportunity title"
-                required
-              />
-            </div>
+        {error && (
+          <Alert variant="destructive" className="mx-6 mt-4">
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
+        
+        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto px-6 py-4 space-y-6">
+          <div className="grid gap-6">
+            <section className="space-y-4">
+              <h3 className="text-lg font-medium">Basic Information</h3>
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="title">Opportunity Title</Label>
+                  <Input
+                    id="title"
+                    value={formData.title}
+                    onChange={(e) => handleInputChange('title', e.target.value)}
+                    placeholder="Enter opportunity title"
+                    className="mt-1"
+                    required
+                  />
+                </div>
 
-            <div>
-              <Label htmlFor="type">Opportunity Type</Label>
-              <Select
-                value={formData.type}
-                onValueChange={(value) => handleInputChange('type', value)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select opportunity type" />
-                </SelectTrigger>
-                <SelectContent>
-                  {opportunityTypes.map((type) => (
-                    <SelectItem key={type.value} value={type.value}>
-                      {type.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+                <div>
+                  <Label htmlFor="type">Opportunity Type</Label>
+                  <Select
+                    value={formData.type}
+                    onValueChange={(value) => handleInputChange('type', value)}
+                  >
+                    <SelectTrigger className="mt-1">
+                      <SelectValue placeholder="Select opportunity type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {opportunityTypes.map((type) => (
+                        <SelectItem key={type.value} value={type.value}>
+                          {type.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
 
-            <div>
-              <Label htmlFor="description">Description</Label>
-              <Textarea
-                id="description"
-                value={formData.description}
-                onChange={(e) => handleInputChange('description', e.target.value)}
-                placeholder="Describe the opportunity in detail"
-                required
-                className="h-32"
-              />
-            </div>
+                <div>
+                  <Label htmlFor="description">Description</Label>
+                  <Textarea
+                    id="description"
+                    value={formData.description}
+                    onChange={(e) => handleInputChange('description', e.target.value)}
+                    placeholder="Describe the opportunity in detail"
+                    className="mt-1 h-32"
+                    required
+                  />
+                </div>
+              </div>
+            </section>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="city">City</Label>
-                <Input
-                  id="city"
-                  value={formData.location.city}
-                  onChange={(e) => handleInputChange('location', {
+            <section className="space-y-4">
+              <h3 className="text-lg font-medium">Location Details</h3>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="city">City</Label>
+                  <Input
+                    id="city"
+                    value={formData.location.city}
+                    onChange={(e) => handleInputChange('location', {
+                      ...formData.location,
+                      city: e.target.value
+                    })}
+                    placeholder="City"
+                    className="mt-1"
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="country">Country</Label>
+                  <Input
+                    id="country"
+                    value={formData.location.country}
+                    onChange={(e) => handleInputChange('location', {
+                      ...formData.location,
+                      country: e.target.value
+                    })}
+                    placeholder="Country"
+                    className="mt-1"
+                    required
+                  />
+                </div>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Switch
+                  id="remote"
+                  checked={formData.location.is_remote}
+                  onCheckedChange={(checked) => handleInputChange('location', {
                     ...formData.location,
-                    city: e.target.value
-                  })}
-                  placeholder="City"
-                  required
-                />
-              </div>
-              <div>
-                <Label htmlFor="country">Country</Label>
-                <Input
-                  id="country"
-                  value={formData.location.country}
-                  onChange={(e) => handleInputChange('location', {
-                    ...formData.location,
-                    country: e.target.value
-                  })}
-                  placeholder="Country"
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="flex items-center space-x-2">
-              <Switch
-                id="remote"
-                checked={formData.location.is_remote}
-                onCheckedChange={(checked) => handleInputChange('location', {
-                  ...formData.location,
-                  is_remote: checked
-                })}
-              />
-              <Label htmlFor="remote">Remote opportunity available</Label>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="deadline">Application Deadline</Label>
-                <Input
-                  id="deadline"
-                  type="date"
-                  value={formData.deadline}
-                  onChange={(e) => handleInputChange('deadline', e.target.value)}
-                  required
-                />
-              </div>
-              <div>
-                <Label htmlFor="spots">Available Spots</Label>
-                <Input
-                  id="spots"
-                  type="number"
-                  min="1"
-                  value={formData.spots_available}
-                  onChange={(e) => handleInputChange('spots_available', parseInt(e.target.value))}
-                  required
-                />
-              </div>
-            </div>
-
-            <div>
-              <Label htmlFor="skill-level">Required Skill Level</Label>
-              <Select
-                value={formData.skill_level}
-                onValueChange={(value) => handleInputChange('skill_level', value)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select required skill level" />
-                </SelectTrigger>
-                <SelectContent>
-                  {skillLevels.map((level) => (
-                    <SelectItem key={level.value} value={level.value}>
-                      {level.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="min-funding">Minimum Funding Amount</Label>
-                <Input
-                  id="min-funding"
-                  type="number"
-                  value={formData.funding_amount.min}
-                  onChange={(e) => handleInputChange('funding_amount', {
-                    ...formData.funding_amount,
-                    min: parseInt(e.target.value)
+                    is_remote: checked
                   })}
                 />
+                <Label htmlFor="remote">Remote opportunity available</Label>
               </div>
-              <div>
-                <Label htmlFor="max-funding">Maximum Funding Amount</Label>
-                <Input
-                  id="max-funding"
-                  type="number"
-                  value={formData.funding_amount.max}
-                  onChange={(e) => handleInputChange('funding_amount', {
-                    ...formData.funding_amount,
-                    max: parseInt(e.target.value)
-                  })}
-                />
-              </div>
-            </div>
+            </section>
 
-            <div>
-              <Label>Selection Process</Label>
-              <div className="space-y-2">
+            <section className="space-y-4">
+              <h3 className="text-lg font-medium">Requirements & Details</h3>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="deadline">Application Deadline</Label>
+                  <Input
+                    id="deadline"
+                    type="date"
+                    value={formData.deadline}
+                    onChange={(e) => handleInputChange('deadline', e.target.value)}
+                    className="mt-1"
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="spots">Available Spots</Label>
+                  <Input
+                    id="spots"
+                    type="number"
+                    min="1"
+                    value={formData.spots_available}
+                    onChange={(e) => handleInputChange('spots_available', parseInt(e.target.value))}
+                    className="mt-1"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="skill-level">Required Skill Level</Label>
+                <Select
+                  value={formData.skill_level}
+                  onValueChange={(value) => handleInputChange('skill_level', value)}
+                >
+                  <SelectTrigger className="mt-1">
+                    <SelectValue placeholder="Select required skill level" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {skillLevels.map((level) => (
+                      <SelectItem key={level.value} value={level.value}>
+                        {level.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </section>
+
+            <section className="space-y-4">
+              <h3 className="text-lg font-medium">Funding Information</h3>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="min-funding">Minimum Funding Amount</Label>
+                  <Input
+                    id="min-funding"
+                    type="number"
+                    value={formData.funding_amount.min}
+                    onChange={(e) => handleInputChange('funding_amount', {
+                      ...formData.funding_amount,
+                      min: parseInt(e.target.value)
+                    })}
+                    className="mt-1"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="max-funding">Maximum Funding Amount</Label>
+                  <Input
+                    id="max-funding"
+                    type="number"
+                    value={formData.funding_amount.max}
+                    onChange={(e) => handleInputChange('funding_amount', {
+                      ...formData.funding_amount,
+                      max: parseInt(e.target.value)
+                    })}
+                    className="mt-1"
+                  />
+                </div>
+              </div>
+            </section>
+
+            <section className="space-y-4">
+              <h3 className="text-lg font-medium">Selection Process</h3>
+              <div className="grid grid-cols-2 gap-4">
                 <div className="flex items-center space-x-2">
                   <Switch
                     id="auto-shortlist"
@@ -293,33 +330,42 @@ const handleSubmit = async (e) => {
                   <Label htmlFor="interview">Interview Required</Label>
                 </div>
               </div>
-            </div>
+            </section>
 
-            <div>
-              <Label htmlFor="eligibility">Eligibility Criteria</Label>
-              <Textarea
-                id="eligibility"
-                value={formData.eligibility_criteria}
-                onChange={(e) => handleInputChange('eligibility_criteria', e.target.value)}
-                placeholder="Describe who can apply and any requirements"
-                className="h-24"
-              />
-            </div>
-          </div>
-
-          <div className="flex justify-end space-x-3">
-            <Button variant="outline" onClick={onClose}>
-              Cancel
-            </Button>
-            <Button type="submit">
-              Create Opportunity
-            </Button>
+            <section className="space-y-4">
+              <h3 className="text-lg font-medium">Eligibility</h3>
+              <div>
+                <Label htmlFor="eligibility">Eligibility Criteria</Label>
+                <Textarea
+                  id="eligibility"
+                  value={formData.eligibility_criteria}
+                  onChange={(e) => handleInputChange('eligibility_criteria', e.target.value)}
+                  placeholder="Describe who can apply and any requirements"
+                  className="mt-1 h-24"
+                />
+              </div>
+            </section>
           </div>
         </form>
+
+        <div className="px-6 py-4 border-t mt-auto flex justify-end space-x-3 bg-gray-50">
+          <Button variant="outline" onClick={onClose} disabled={loading}>
+            Cancel
+          </Button>
+          <Button type="submit" onClick={handleSubmit} disabled={loading}>
+            {loading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Creating...
+              </>
+            ) : (
+              'Create Opportunity'
+            )}
+          </Button>
+        </div>
       </DialogContent>
     </Dialog>
   );
 };
 
 export default CreateOpportunityModal;
-                

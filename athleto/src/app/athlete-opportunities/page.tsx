@@ -13,6 +13,7 @@ import { useUser } from "@/context/UserContext";
 export default function OpportunitiesPage() {
   useForceLightMode();
   const { opportunities, loading, getOpenOpportunities } = useOpportunity();
+  console.log(opportunities);
   const { athlete } = useUser();
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredOpportunities, setFilteredOpportunities] = useState([]);
