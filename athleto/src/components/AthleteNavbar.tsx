@@ -13,6 +13,7 @@ import { Montserrat } from "next/font/google"
 const montserrat = Montserrat({ subsets: ["latin"] })
 
 const AthleteNavbar: React.FC = () => {
+  const [activeLink, setActiveLink] = useState("/athlete-dashboard")
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isNotificationOpen, setIsNotificationOpen] = useState(false)
@@ -21,6 +22,13 @@ const AthleteNavbar: React.FC = () => {
   const [feedbackSubmitted, setFeedbackSubmitted] = useState(false)
   const [feedbackText, setFeedbackText] = useState("")
   const router = useRouter()
+
+  const navLinks = [
+    { name: "BRANDS", href: "/athlete-dashboard" },
+    { name: "OPPORTUNITIES", href: "/athlete-opportunities" },
+    { name: "APPLIED", href: "/athlete-applied" },
+    { name: "NEWS FEED", href: "/athlete-dashboard/newsfeed" },
+  ]
 
   const toggleUserMenu = () => {
     setIsUserMenuOpen(!isUserMenuOpen)
@@ -54,29 +62,30 @@ const AthleteNavbar: React.FC = () => {
         <div className="flex items-center gap-4">
           <Link
             href="/athlete-dashboard"
+            onClick={() => setActiveLink("/athlete-dashboard")}
             className={`text-3xl font-extrabold mr-6 text-indigo-600 ${montserrat.className} tracking-wider transition-colors duration-300 hover:text-indigo-800`}
           >
             Athleto
           </Link>
           <nav className="hidden md:flex items-center gap-6 text-gray-600">
-            {[
-              { name: "BRANDS", href: "/athlete-dashboard" },
-              { name: "OPPORTUNITIES", href: "/athlete-opportunities" },
-              { name: "APPLIED", href: "/athlete-applied" },
-              { name: "NEWS FEED", href: "/athlete-dashboard/newsfeed" },
-            ].map((link) => (
+            {navLinks.map((link) => (
               <Link
                 key={link.name}
                 href={link.href}
-                className={`hover:text-indigo-600 relative group transition-colors duration-300 text-sm font-medium ${montserrat.className}`}
+                onClick={() => setActiveLink(link.href)}
+                className={`relative group transition-colors duration-300 text-sm font-medium ${montserrat.className}
+                  ${activeLink === link.href ? 'text-indigo-600' : 'text-gray-600 hover:text-indigo-600'}`}
               >
                 {link.name}
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-indigo-600 transition-all duration-300 group-hover:w-full"></span>
+                <span className={`absolute bottom-0 left-0 h-0.5 bg-indigo-600 transition-all duration-300
+                  ${activeLink === link.href ? 'w-full' : 'w-0 group-hover:w-full'}`}>
+                </span>
               </Link>
             ))}
           </nav>
         </div>
 
+        {/* Rest of your existing code remains the same until Mobile Menu */}
         <div className="flex items-center gap-4">
           {/* Notification Icon */}
           <div className="relative">
@@ -211,16 +220,18 @@ const AthleteNavbar: React.FC = () => {
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
         <nav className="mt-4 md:hidden animate-fadeIn bg-white shadow-md">
-          {[
-            { name: "Brands", href: "/athlete-dashboard" },
-            { name: "Opportunities", href: "/athlete-opportunities" },
-            { name: "Applied", href: "/athlete-applied" },
-            { name: "News Feed", href: "/athlete-dashboard/newsfeed" },
-          ].map((item) => (
+          {navLinks.map((item) => (
             <Link
               key={item.name}
               href={item.href}
-              className="block py-2 px-4 hover:bg-gray-100 transition-colors duration-200 text-gray-700"
+              onClick={() => {
+                setActiveLink(item.href)
+                setIsMobileMenuOpen(false)
+              }}
+              className={`block py-2 px-4 transition-colors duration-200 
+                ${activeLink === item.href 
+                  ? 'text-indigo-600 bg-gray-50' 
+                  : 'text-gray-700 hover:bg-gray-100'}`}
             >
               {item.name}
             </Link>
@@ -232,4 +243,3 @@ const AthleteNavbar: React.FC = () => {
 }
 
 export default AthleteNavbar
-
