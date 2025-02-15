@@ -10,6 +10,8 @@ import {
   Image as ImageIcon,
 } from "lucide-react";
 import { useForceLightMode } from "@/hooks/useForcedLightTheme";
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { useRouter } from 'next/navigation'
 
 interface AthleteSidebarProps {
   isEditing?: boolean;
@@ -26,6 +28,9 @@ export const AthleteProfileSidebar: React.FC<AthleteSidebarProps> = ({
   activeTab,
   onTabChange,
 }) => {
+  const supabase = createClientComponentClient()
+  const router = useRouter()
+  
   const tabs = [
     { id: "public", label: "PUBLIC INFO", icon: User },
     { id: "private", label: "PRIVATE INFO", icon: Lock },
@@ -33,6 +38,18 @@ export const AthleteProfileSidebar: React.FC<AthleteSidebarProps> = ({
     { id: "analytics", label: "ANALYTICS", icon: BarChart2 },
   ];
   useForceLightMode();
+
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut()
+      // Clear local storage
+      window.localStorage.clear()
+      window.location.href = '/'
+    } catch (error) {
+      console.error('Error logging out:', error)
+    }
+  }
+
   return (
     <div className="w-full bg-white rounded-xl shadow-sm p-6">
       {/* Logo/Image Upload Section */}
@@ -47,7 +64,7 @@ export const AthleteProfileSidebar: React.FC<AthleteSidebarProps> = ({
           ) : (
             <div className="flex flex-col items-center justify-center h-full text-blue-400">
               <ImageIcon className="w-12 h-12 mb-2" />
-              <p className="text-sm font-medium">Company Logo</p>
+              <p className="text-sm font-medium">Athlete Profile Image</p>
             </div>
           )}
         </div>
@@ -101,7 +118,7 @@ export const AthleteProfileSidebar: React.FC<AthleteSidebarProps> = ({
         {/* Logout Button */}
         <button
           className="w-full flex items-center space-x-3 px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200 mt-6"
-          onClick={() => console.log("Logout clicked")}>
+          onClick={handleLogout}>
           <LogOut className="w-5 h-5" />
           <span className="font-medium text-sm">LOG OUT</span>
         </button>

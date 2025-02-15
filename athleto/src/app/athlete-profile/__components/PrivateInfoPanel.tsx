@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   CreditCard,
   Calendar,
@@ -10,6 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { useUser } from "@/context/UserContext";
 import {
   Select,
   SelectContent,
@@ -25,21 +26,76 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useForceLightMode } from "@/hooks/useForcedLightTheme";
+import { supabase } from "@/lib/supabase";
 
 export const PrivateInfoPanel: React.FC = () => {
-  const email = "chandansahoo02468@gmail.com";
-  const [phone, setPhone] = useState<string>("");
+  const { user,athlete } = useUser();
+  // console.log(user)
+  // console.log(athlete)
+  
+  const [phone, setPhone] = useState<string>(athlete?.phone || "");
   const [isEditingPhone, setIsEditingPhone] = useState<boolean>(false);
-  const [bankAccountName, setBankAccountName] = useState<string>("");
+  const [bankAccountName, setBankAccountName] = useState<string>(athlete?.bank_account_name || "");
   const [isEditingBankAccountName, setIsEditingBankAccountName] =
     useState<boolean>(false);
-  const [iban, setIban] = useState<string>("");
+  const [iban, setIban] = useState<string>(athlete?.iban || "");
   const [isEditingIban, setIsEditingIban] = useState<boolean>(false);
-  const [currency, setCurrency] = useState("EUR");
+  const [currency, setCurrency] = useState(athlete?.currency || "EUR");
+
+  useEffect(() => {
+    if (athlete) {
+      setPhone(athlete.phone || "");
+      setBankAccountName(athlete.bank_account_name || "");
+      setIban(athlete.iban || "");
+      setCurrency(athlete.currency || "EUR");
+    }
+  }, [athlete]);
 
   const handleCopyEmail = () => {
-    navigator.clipboard.writeText(email);
+    if (athlete?.email) {
+      navigator.clipboard.writeText(athlete.email);
+    }
   };
+
+  const updatePhone = async () => {
+    try {
+      if (!athlete?.id) return;
+      
+      const { error } = await supabase
+        .from('athletes')
+        .update({ phone: phone })
+        .eq('id', athlete.id);
+
+      if (error) throw error;
+      
+      setIsEditingPhone(false);
+    } catch (error) {
+      console.error('Error updating phone:', error);
+    }
+  };
+
+  const updateBankDetails = async () => {
+    try {
+      if (!athlete?.id) return;
+      
+      const { error } = await supabase
+        .from('athletes')
+        .update({ 
+          bank_account_name: bankAccountName,
+          iban: iban,
+          currency: currency
+        })
+        .eq('id', athlete.id);
+
+      if (error) throw error;
+      
+      setIsEditingBankAccountName(false);
+      setIsEditingIban(false);
+    } catch (error) {
+      console.error('Error updating bank details:', error);
+    }
+  };
+
   useForceLightMode();
   return (
     <div className="space-y-6">
@@ -52,7 +108,7 @@ export const PrivateInfoPanel: React.FC = () => {
                 Email
               </label>
               <div className="flex items-center">
-                <span className="text-sm">{email}</span>
+                <span className="text-sm">{athlete?.email || "Not set"}</span>
                 <button
                   title="Copy email"
                   onClick={handleCopyEmail}
@@ -77,13 +133,13 @@ export const PrivateInfoPanel: React.FC = () => {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => setIsEditingPhone(false)}>
+                    onClick={updatePhone}>
                     Save
                   </Button>
                 </div>
               ) : (
                 <div className="w-full h-12 flex justify-between items-center border rounded-lg px-3 py-2">
-                  <div className="text-gray-700">{phone || "Not set"}</div>
+                  <div className="text-gray-700">{athlete?.phone || "Not set"}</div>
                   <Button
                     variant="ghost"
                     size="icon"
@@ -134,7 +190,7 @@ export const PrivateInfoPanel: React.FC = () => {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => setIsEditingBankAccountName(false)}>
+                  onClick={updateBankDetails}>
                   Save
                 </Button>
               </div>
@@ -165,7 +221,7 @@ export const PrivateInfoPanel: React.FC = () => {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => setIsEditingBankAccountName(false)}>
+                  onClick={updateBankDetails}>
                   Save
                 </Button>
               </div>
@@ -199,7 +255,7 @@ export const PrivateInfoPanel: React.FC = () => {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => setIsEditingIban(false)}>
+                  onClick={updateBankDetails}>
                   Save
                 </Button>
               </div>
@@ -219,7 +275,12 @@ export const PrivateInfoPanel: React.FC = () => {
               <label className="block text-sm font-medium text-muted-foreground mb-1">
                 Currency
               </label>
-              <Select value={currency} onValueChange={setCurrency} >
+              <Select 
+                value={currency} 
+                onValueChange={(value) => {
+                  setCurrency(value);
+                  updateBankDetails();
+                }}>
                 <SelectTrigger className="h-12">
                   <SelectValue placeholder="Select currency" />
                 </SelectTrigger>

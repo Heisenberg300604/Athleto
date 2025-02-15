@@ -101,12 +101,7 @@ export default function Home() {
                 >
                   Features
                 </Link>
-                <Link
-                  href="#"
-                  className="text-sm text-gray-400 hover:text-white"
-                >
-                  Our Team
-                </Link>
+                
               </nav>
             </div>
             <div className="flex items-center gap-4">
