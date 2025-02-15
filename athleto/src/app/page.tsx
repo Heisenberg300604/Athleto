@@ -17,6 +17,10 @@ import Footer from "@/components/Footer"
 import FeaturesSection from "@/components/Features"
 import NumbersSection from "@/components/Numbersection"
 import TestimonialsSection from "@/components/Testimonial"
+import TeamSection from "@/components/Teamsection"
+import { Montserrat } from "next/font/google"
+
+const montserrat = Montserrat({ subsets: ["latin"] })
 
 export default function Home() {
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false)
@@ -91,6 +95,14 @@ export default function Home() {
     }
   }
 
+  const scrollToTeam = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault()
+    const teamSection = document.getElementById("team")
+    if (teamSection) {
+      teamSection.scrollIntoView({ behavior: "smooth" })
+    }
+  }
+
   return (
     <div className="relative min-h-screen overflow-hidden">
       {/* Sparkles Background */}
@@ -112,7 +124,7 @@ export default function Home() {
         <header className="fixed top-0 z-50 w-full border-b border-gray-800/20">
           <div className="container mx-auto flex h-16 items-center justify-between px-4">
             <div className="flex items-center gap-6">
-              <Link href="/" className="text-xl font-semibold text-white">
+              <Link href="/"  className={`text-2xl font-extrabold mr-6 text-white ${montserrat.className} tracking-wider transition-colors duration-300 `} >
                 Athleto
               </Link>
               <nav className="hidden space-x-6 md:block">
@@ -131,7 +143,7 @@ export default function Home() {
                 <Github className="h-5 w-5" />
                 <span className="sr-only">GitHub</span>
               </Link>
-              <Link href="/contact" className="text-sm text-gray-400 hover:text-white">
+              <Link href="/contact" className="text-sm text-gray-400 hover:text-white" onClick={scrollToTeam}>
                 Team
               </Link>
               {user ? (
@@ -151,7 +163,7 @@ export default function Home() {
         <main className="container mx-auto flex min-h-screen flex-col items-center justify-center px-4 pt-16 text-center">
           <h1 className="max-w-4xl text-4xl font-bold tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
             Empowering Dreams Overcoming Barriers with{" "}
-            <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">Athleto</span>
+            <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent ${montserrat.className} ">Athleto</span>
           </h1>
           <p className="mt-6 max-w-2xl text-lg text-gray-400 md:text-xl">
             Athleto bridges the gap for underprivileged athletes, providing financial support and mentorship to help
@@ -200,6 +212,11 @@ export default function Home() {
         {/* Testimonials Section */}
         <div id="testimonials">
           <TestimonialsSection />
+        </div>
+
+        {/* Team Section */}
+        <div id="team">
+          <TeamSection />
         </div>
         
       </div>
