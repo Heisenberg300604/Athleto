@@ -105,7 +105,7 @@ const LoginModal = ({ isOpen, onClose, onOpenBrandSignup, onOpenAthleteSignup }:
         const { data: brand, error: brandError } = await supabase
           .from("brands")
           .select("id")
-          .eq("email", userEmail)
+          .eq("business_email", userEmail)
           .single();
   
         if (brand) {
