@@ -180,8 +180,8 @@ const AthleteNavbar: React.FC = () => {
                     <Link href="/athlete-dashboard/athlete-faq" className="block hover:text-indigo-600">
                       Frequently Asked Questions
                     </Link>
-                    <Link href="/athlete-dashboard/athlete-support" className="block hover:text-indigo-600">
-                      Contact Support
+                    <Link href="/athlete-dashboard/athlete-team" className="block hover:text-indigo-600">
+                      Our team
                     </Link>
                     <Link href="/athlete-dashboard/athlete-guide" className="block hover:text-indigo-600">
                       User Guide
