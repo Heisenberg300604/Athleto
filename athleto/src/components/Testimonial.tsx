@@ -47,20 +47,22 @@ export default function TestimonialsSection() {
   }
 
   return (
-    <section className="w-full py-12 md:py-24 bg-black">
-      <div className="container px-4 md:px-6">
+    <section className="w-full py-8 sm:py-12 md:py-16 lg:py-24 bg-black">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col items-center space-y-4 text-center">
-          <Quote className="h-12 w-12 text-indigo-500"/>
-          <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-white">Voices of Success</h2>
-          <p className="max-w-[900px] text-gray-300 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+          <Quote className="h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 text-indigo-500"/>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tighter text-white">
+            Voices of Success
+          </h2>
+          <p className="max-w-[900px] text-sm sm:text-base md:text-lg lg:text-xl text-gray-300">
             Bridging the gap between exceptional talent and leading brands. Discover how we're transforming the landscape of sports partnerships in India.
           </p>
         </div>
-        <div className="mx-auto mt-16 max-w-4xl">
-          <div className="relative">
+        <div className="mx-auto mt-8 sm:mt-12 md:mt-16 max-w-4xl">
+          <div className="relative px-8 sm:px-12">
             <div className="relative h-full w-full">
               <div className="relative flex flex-col items-center space-y-4 text-center">
-                <div className="relative h-24 w-24 overflow-hidden rounded-full">
+                <div className="relative h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24 overflow-hidden rounded-full">
                   <Image
                     src={testimonials[currentIndex].image || "/placeholder.svg"}
                     alt={testimonials[currentIndex].author}
@@ -68,38 +70,42 @@ export default function TestimonialsSection() {
                     className="object-cover"
                   />
                 </div>
-                <blockquote className="max-w-2xl text-lg italic text-gray-300">
+                <blockquote className="max-w-2xl text-base sm:text-lg md:text-xl italic text-gray-300">
                   {testimonials[currentIndex].quote}
                 </blockquote>
                 <div className="mt-4">
-                  <cite className="not-italic font-semibold text-white">
+                  <cite className="not-italic font-semibold text-sm sm:text-base md:text-lg text-white">
                     {testimonials[currentIndex].author}
                   </cite>
-                  <p className="mt-1 text-sm text-indigo-500">{testimonials[currentIndex].role}</p>
+                  <p className="mt-1 text-xs sm:text-sm text-indigo-500">
+                    {testimonials[currentIndex].role}
+                  </p>
                 </div>
               </div>
             </div>
             <button
               onClick={previous}
-              className="absolute left-0 top-1/2 -translate-y-1/2 transform rounded-full bg-orange-500/10 p-2 text-white hover:bg-orange-500/20"
+              className="absolute left-0 top-1/2 -translate-y-1/2 transform rounded-full bg-orange-500/10 p-1 sm:p-2 text-white hover:bg-orange-500/20 focus:outline-none focus:ring-2 focus:ring-orange-500"
               aria-label="Previous testimonial"
             >
-              <ChevronLeft className="h-6 w-6" />
+              <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6" />
             </button>
             <button
               onClick={next}
-              className="absolute right-0 top-1/2 -translate-y-1/2 transform rounded-full bg-orange-500/10 p-2 text-white hover:bg-orange-500/20"
+              className="absolute right-0 top-1/2 -translate-y-1/2 transform rounded-full bg-orange-500/10 p-1 sm:p-2 text-white hover:bg-orange-500/20 focus:outline-none focus:ring-2 focus:ring-orange-500"
               aria-label="Next testimonial"
             >
-              <ChevronRight className="h-6 w-6" />
+              <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6" />
             </button>
           </div>
-          <div className="mt-8 flex justify-center space-x-2">
+          <div className="mt-6 sm:mt-8 flex justify-center space-x-2">
             {testimonials.map((_, index) => (
               <button
                 key={index}
                 onClick={() => setCurrentIndex(index)}
-                className={`h-2 w-2 rounded-full ${index === currentIndex ? "bg-orange-500" : "bg-gray-500/20"}`}
+                className={`h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full transition-colors duration-200 ${
+                  index === currentIndex ? "bg-orange-500" : "bg-gray-500/20"
+                }`}
                 aria-label={`Go to testimonial ${index + 1}`}
               />
             ))}
@@ -109,4 +115,3 @@ export default function TestimonialsSection() {
     </section>
   )
 }
-

@@ -132,7 +132,7 @@ export default function Home() {
                 <span className="sr-only">GitHub</span>
               </Link>
               <Link href="/contact" className="text-sm text-gray-400 hover:text-white">
-                Contact
+                Team
               </Link>
               {user ? (
                 <Button variant="outline" className="bg-white/5 text-white hover:bg-white/10" onClick={handleLogout}>
