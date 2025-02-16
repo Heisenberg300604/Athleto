@@ -16,7 +16,7 @@ export default function OpportunitiesPage() {
   console.log(opportunities);
   const { athlete } = useUser();
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredOpportunities, setFilteredOpportunities] = useState([]);
+  const [filteredOpportunities, setFilteredOpportunities] = useState<OpportunityType[]>([]);
 
   useEffect(() => {
     const fetchOpportunities = async () => {
