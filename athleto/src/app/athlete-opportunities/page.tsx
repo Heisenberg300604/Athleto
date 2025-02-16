@@ -38,7 +38,7 @@ export default function OpportunitiesPage() {
   
   
 
-  const handleApply = async (opportunityId) => {
+  const handleApply = async (opportunityId: string) => {
     // This would be implemented in your application logic
     try {
       // Add application logic here
