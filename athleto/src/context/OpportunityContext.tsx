@@ -6,7 +6,7 @@ import { supabase } from '@/lib/supabase';
 // Types for opportunity creation
 export interface OpportunityType {
   id: string;
-  brand_id: string;
+  brand_name?: string;
   title: string;
   type: 'sponsorship' | 'training_camp' | 'endorsement_deal' | 'tournament' | 'equipment_grant' | 'scholarship' | 'job_offer' | 'internship' | 'other';
   description: string;
