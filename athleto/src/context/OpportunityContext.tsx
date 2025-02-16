@@ -15,7 +15,7 @@ export interface OpportunityType {
     city: string;
     state: string;
     country: string;
-    is_remote: boolean;
+    is_remote: boolean; 
   };
   deadline: string;
   spots_available: number;
