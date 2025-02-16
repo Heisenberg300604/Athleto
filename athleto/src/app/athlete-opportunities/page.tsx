@@ -29,12 +29,13 @@ export default function OpportunitiesPage() {
     if (opportunities.length > 0) {
       const filtered = opportunities.filter(opp => 
         opp.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (opp.brand_name?.toLowerCase().includes(searchTerm.toLowerCase()) ?? false) ||
+        (opp.brand_name?.toLowerCase() ?? "").includes(searchTerm.toLowerCase()) ||
         opp.location.city.toLowerCase().includes(searchTerm.toLowerCase())
       );
       setFilteredOpportunities(filtered);
     }
   }, [searchTerm, opportunities]);
+  
   
 
   const handleApply = async (opportunityId) => {
