@@ -7,13 +7,12 @@ import Link from "next/link"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
-import { useRouter } from "next/navigation"
+import { useRouter, usePathname } from "next/navigation"
 import { Montserrat } from "next/font/google"
 
 const montserrat = Montserrat({ subsets: ["latin"] })
 
 const AthleteNavbar: React.FC = () => {
-  const [activeLink, setActiveLink] = useState("/athlete-dashboard")
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isNotificationOpen, setIsNotificationOpen] = useState(false)
@@ -22,6 +21,7 @@ const AthleteNavbar: React.FC = () => {
   const [feedbackSubmitted, setFeedbackSubmitted] = useState(false)
   const [feedbackText, setFeedbackText] = useState("")
   const router = useRouter()
+  const pathname = usePathname()
 
   const navLinks = [
     { name: "BRANDS", href: "/athlete-dashboard" },
@@ -62,7 +62,6 @@ const AthleteNavbar: React.FC = () => {
         <div className="flex items-center gap-4">
           <Link
             href="/athlete-dashboard"
-            onClick={() => setActiveLink("/athlete-dashboard")}
             className={`text-3xl font-extrabold mr-6 text-indigo-600 ${montserrat.className} tracking-wider transition-colors duration-300 hover:text-indigo-800`}
           >
             Athleto
@@ -72,20 +71,18 @@ const AthleteNavbar: React.FC = () => {
               <Link
                 key={link.name}
                 href={link.href}
-                onClick={() => setActiveLink(link.href)}
                 className={`relative group transition-colors duration-300 text-sm font-medium ${montserrat.className}
-                  ${activeLink === link.href ? 'text-indigo-600' : 'text-gray-600 hover:text-indigo-600'}`}
+                  ${pathname === link.href ? 'text-indigo-600' : 'text-gray-600 hover:text-indigo-600'}`}
               >
                 {link.name}
                 <span className={`absolute bottom-0 left-0 h-0.5 bg-indigo-600 transition-all duration-300
-                  ${activeLink === link.href ? 'w-full' : 'w-0 group-hover:w-full'}`}>
+                  ${pathname === link.href ? 'w-full' : 'w-0 group-hover:w-full'}`}>
                 </span>
               </Link>
             ))}
           </nav>
         </div>
 
-        {/* Rest of your existing code remains the same until Mobile Menu */}
         <div className="flex items-center gap-4">
           {/* Notification Icon */}
           <div className="relative">
@@ -129,7 +126,7 @@ const AthleteNavbar: React.FC = () => {
               <MessageSquare className="h-6 w-6" />
             </button>
             {isFeedbackOpen && (
-              <Card className="absolute right-0 top-full mt-2 w-96 shadow-lg p-4   bg-gray-100 border-none">
+              <Card className="absolute right-0 top-full mt-2 w-96 shadow-lg p-4 bg-gray-100 border-none">
                 <CardHeader className="flex flex-row justify-between items-center text-black">
                   <CardTitle>Provide Feedback</CardTitle>
                   <Button variant="ghost" size="icon" onClick={() => setIsFeedbackOpen(false)}>
@@ -225,11 +222,10 @@ const AthleteNavbar: React.FC = () => {
               key={item.name}
               href={item.href}
               onClick={() => {
-                setActiveLink(item.href)
                 setIsMobileMenuOpen(false)
               }}
               className={`block py-2 px-4 transition-colors duration-200 
-                ${activeLink === item.href 
+                ${pathname === item.href 
                   ? 'text-indigo-600 bg-gray-50' 
                   : 'text-gray-700 hover:bg-gray-100'}`}
             >
