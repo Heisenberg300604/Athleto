@@ -1,7 +1,6 @@
-"use client";
-
 import React, { useEffect, useRef, useState } from 'react';
 import { AnimatedNumber } from "./Numberanimation";
+import { SparklesCore } from '@/app/sparkles';
 
 const stats = [
   {
@@ -50,14 +49,24 @@ export default function NumbersSection() {
   return (
     <section 
       ref={sectionRef}
-      className="relative w-full overflow-hidden bg-black py-20 md:py-32"
+      className="relative w-full overflow-hidden py-10 md:py-20"
     >
-      {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/50 to-indigo-950/20" />
+      {/* Sparkles Background */}
+      <div className="absolute inset-0 z-0">
+        <SparklesCore
+          id="tsparticles-numbers"
+          background="transparent"
+          particleColor="#4A90E2"
+          particleDensity={70}
+          className="h-full w-full"
+          minSize={0.9}
+          maxSize={2.2}
+        />
+      </div>
 
-      <div className="container relative px-4 md:px-6 mx-auto">
+      <div className="container relative z-10 px-4 md:px-6 mx-auto">
         {/* Grid pattern */}
-        <div className="absolute inset-0 grid grid-cols-8 gap-x-4 opacity-[0.03]">
+        <div className="absolute inset-0 grid grid-cols-8 gap-x-4 opacity-[0.02]">
           {Array.from({ length: 8 }).map((_, i) => (
             <div key={i} className="h-full w-px bg-gradient-to-b from-indigo-800" />
           ))}
@@ -69,7 +78,7 @@ export default function NumbersSection() {
               {stats.map((stat, index) => (
                 <div
                   key={index}
-                  className={`group relative overflow-hidden rounded-2xl bg-black/30 p-8 backdrop-blur-sm transition-all duration-500 hover:bg-black/40 w-full max-w-sm transform ${
+                  className={`group relative overflow-hidden rounded-2xl bg-black/10 backdrop-blur-sm transition-all duration-500 hover:bg-black/20 w-full max-w-sm transform ${
                     isVisible 
                       ? 'translate-y-0 opacity-100' 
                       : 'translate-y-16 opacity-0'
@@ -79,12 +88,12 @@ export default function NumbersSection() {
                   }}
                 >
                   {/* Gradient border */}
-                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-indigo-800/50 to-transparent p-[1px]">
-                    <div className="h-full w-full rounded-2xl bg-black/90" />
+                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-indigo-800/30 to-transparent p-[1px]">
+                    <div className="h-full w-full rounded-2xl bg-black/40" />
                   </div>
 
                   {/* Content */}
-                  <div className="relative space-y-4">
+                  <div className="relative p-8 space-y-4">
                     <div className="flex h-16 items-end">
                       <span
                         className={`block bg-gradient-to-r ${stat.gradient} bg-clip-text text-5xl font-bold tracking-tight text-transparent transition-transform duration-300 group-hover:scale-110 lg:text-6xl`}
@@ -106,4 +115,3 @@ export default function NumbersSection() {
     </section>
   );
 }
-
