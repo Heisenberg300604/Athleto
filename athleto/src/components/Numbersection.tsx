@@ -74,39 +74,24 @@ export default function NumbersSection() {
 
         <div className="relative">
           <div className="mx-auto max-w-4xl">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 justify-items-center">
-              {stats.map((stat, index) => (
-                <div
-                  key={index}
-                  className={`group relative overflow-hidden rounded-2xl bg-black/10 backdrop-blur-sm transition-all duration-500 hover:bg-black/20 w-full max-w-sm transform ${
-                    isVisible 
-                      ? 'translate-y-0 opacity-100' 
-                      : 'translate-y-16 opacity-0'
-                  }`}
-                  style={{
-                    transitionDelay: `${index * 200}ms`
-                  }}
-                >
-                  {/* Gradient border */}
-                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-indigo-800/30 to-transparent p-[1px]">
-                    <div className="h-full w-full rounded-2xl bg-black/40" />
-                  </div>
-
-                  {/* Content */}
-                  <div className="relative p-8 space-y-4">
-                    <div className="flex h-16 items-end">
-                      <span
-                        className={`block bg-gradient-to-r ${stat.gradient} bg-clip-text text-5xl font-bold tracking-tight text-transparent transition-transform duration-300 group-hover:scale-110 lg:text-6xl`}
-                      >
-                        {isVisible && (
-                          <AnimatedNumber value={stat.value} suffix={stat.suffix} />
-                        )}
-                      </span>
-                    </div>
-                    <div className="h-px w-12 bg-gradient-to-r from-indigo-800 to-transparent" />
-                    <p className="text-sm font-medium text-indigo-200/80">{stat.label}</p>
-                  </div>
+            {/* Mobile-specific layout */}
+            <div className="md:hidden grid grid-cols-2 gap-8">
+              <div className="space-y-8">
+                <StatCard stat={stats[0]} index={0} isVisible={isVisible} />
+              </div>
+              <div className="space-y-8">
+                <StatCard stat={stats[1]} index={1} isVisible={isVisible} />
+              </div>
+                {/* Third stat - centered and spanning both columns */}
+                <div className="col-span-2 flex justify-center items-center">
+                <StatCard stat={stats[2]} index={2} isVisible={isVisible} />
                 </div>
+            </div>
+
+            {/* Desktop layout */}
+            <div className="hidden md:grid md:grid-cols-3 gap-8">
+              {stats.map((stat, index) => (
+                <StatCard key={index} stat={stat} index={index} isVisible={isVisible} />
               ))}
             </div>
           </div>
@@ -115,3 +100,44 @@ export default function NumbersSection() {
     </section>
   );
 }
+
+// Extracted StatCard component for reusability
+interface Stat {
+  value: number;
+  suffix?: string;
+  label: string;
+  gradient: string;
+}
+
+const StatCard = ({ stat, index, isVisible }: { stat: Stat; index: number; isVisible: boolean }) => (
+  <div
+    className={`group relative overflow-hidden rounded-2xl bg-black/10 backdrop-blur-sm transition-all duration-500 hover:bg-black/20 w-full max-w-sm transform ${
+      isVisible 
+        ? 'translate-y-0 opacity-100' 
+        : 'translate-y-16 opacity-0'
+    }`}
+    style={{
+      transitionDelay: `${index * 200}ms`
+    }}
+  >
+    {/* Gradient border */}
+    <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-indigo-800/30 to-transparent p-[1px]">
+      <div className="h-full w-full rounded-2xl bg-black/40" />
+    </div>
+
+    {/* Content */}
+    <div className="relative p-8 space-y-4">
+      <div className="flex h-16 items-end">
+        <span
+          className={`block bg-gradient-to-r ${stat.gradient} bg-clip-text text-5xl font-bold tracking-tight text-transparent transition-transform duration-300 group-hover:scale-110 lg:text-6xl`}
+        >
+          {isVisible && (
+            <AnimatedNumber value={stat.value} suffix={stat.suffix} />
+          )}
+        </span>
+      </div>
+      <div className="h-px w-12 bg-gradient-to-r from-indigo-800 to-transparent" />
+      <p className="text-sm font-medium text-indigo-200/80">{stat.label}</p>
+    </div>
+  </div>
+);
