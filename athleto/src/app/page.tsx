@@ -1,8 +1,9 @@
 "use client"
 
 import type React from "react"
+
 import { Button } from "@/components/ui/button"
-import { Github, Menu, X } from "lucide-react"
+import { Github } from "lucide-react"
 import Link from "next/link"
 import { SparklesCore } from "./sparkles"
 import { useEffect, useState } from "react"
@@ -24,21 +25,23 @@ const montserrat = Montserrat({ subsets: ["latin"] })
 export default function Home() {
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false)
   const [isBrandSignupModalOpen, setIsBrandSignupModalOpen] = useState(false)
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const router = useRouter()
   const supabase = createClientComponentClient()
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    // Create a single function to handle auth state
     const setupAuth = async () => {
       try {
+        // Get initial session
         const {
           data: { session },
         } = await supabase.auth.getSession()
         setUser(session?.user ?? null)
         setLoading(false)
 
+        // Listen for auth changes
         const {
           data: { subscription },
         } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -60,19 +63,49 @@ export default function Home() {
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut()
     if (error) console.error("Logout error:", error)
+    // No need to update state here - the auth listener will handle it
   }
 
-  const scrollToSection = (sectionId: string, e?: React.MouseEvent<HTMLAnchorElement>) => {
-    e?.preventDefault()
-    const section = document.getElementById(sectionId)
-    if (section) {
-      section.scrollIntoView({ behavior: "smooth" })
-      setIsMobileMenuOpen(false)
+  const handleAthleteSignup = () => {
+    setIsSignupModalOpen(false)
+    router.push("/athlete-dashboard")
+  }
+
+  const handleBrandSignup = () => {
+    setIsSignupModalOpen(false)
+    router.push("/brand-dashboard")
+  }
+
+  useHomePageForcedTheme()
+
+  // Add smooth scroll behavior
+  const scrollToFeatures = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault()
+    const featuresSection = document.getElementById("features")
+    if (featuresSection) {
+      featuresSection.scrollIntoView({ behavior: "smooth" })
+    }
+  }
+  
+  const scrollToTestimonials = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault()
+    const testimonialsSection = document.getElementById("testimonials")
+    if (testimonialsSection) {
+      testimonialsSection.scrollIntoView({ behavior: "smooth" })
+    }
+  }
+
+  const scrollToTeam = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault()
+    const teamSection = document.getElementById("team")
+    if (teamSection) {
+      teamSection.scrollIntoView({ behavior: "smooth" })
     }
   }
 
   return (
     <div className="relative min-h-screen overflow-hidden">
+      {/* Sparkles Background */}
       <div className="absolute inset-0 z-0">
         <SparklesCore
           id="tsparticles"
@@ -85,102 +118,61 @@ export default function Home() {
         />
       </div>
 
+      {/* Content with background gradient */}
       <div className="relative z-10 min-h-screen">
-        {/* Navigation - Desktop sticky, Mobile not sticky */}
-        <header className="md:fixed md:top-0 md:z-50 w-full border-b border-gray-800/20 bg-black/50 backdrop-blur-sm">
+        {/* Navigation */}
+        <header className="fixed top-0 z-50 w-full border-b border-gray-800/20">
           <div className="container mx-auto flex h-16 items-center justify-between px-4">
             <div className="flex items-center gap-6">
-              <Link href="/" className={`text-2xl font-extrabold text-white ${montserrat.className} tracking-wider transition-colors duration-300`}>
+              <Link href="/"  className={`text-2xl font-extrabold mr-6 text-white ${montserrat.className} tracking-wider transition-colors duration-300 `} >
                 Athleto
               </Link>
-              
-              {/* Desktop Navigation */}
-              <nav className="hidden md:flex space-x-6">
-                <Link href="#features" className="text-sm text-gray-400 hover:text-white" onClick={(e) => scrollToSection('features', e)}>
+              <nav className="hidden space-x-6 md:block">
+                <Link href="#features" className="text-sm text-gray-400 hover:text-white" onClick={scrollToFeatures}>
                   Features
                 </Link>
-                <Link href="#testimonials" className="text-sm text-gray-400 hover:text-white" onClick={(e) => scrollToSection('testimonials', e)}>
+              </nav>
+              <nav className="hidden space-x-6 md:block">
+                <Link href="#testimonials" className="text-sm text-gray-400 hover:text-white" onClick={scrollToTestimonials}>
                   Testimonials
-                </Link>
-                <Link href="#team" className="text-sm text-gray-400 hover:text-white" onClick={(e) => scrollToSection('team', e)}>
-                  Team
                 </Link>
               </nav>
             </div>
-
-            {/* Desktop Actions */}
-            <div className="hidden md:flex items-center gap-4">
+            <div className="flex items-center gap-4">
               <Link href="https://github.com/ArshTiwari2004/Athleto" className="text-gray-400 hover:text-white">
                 <Github className="h-5 w-5" />
                 <span className="sr-only">GitHub</span>
+              </Link>
+              <Link href="/contact" className="text-sm text-gray-400 hover:text-white" onClick={scrollToTeam}>
+                Team
               </Link>
               {user ? (
                 <Button variant="outline" className="bg-white/5 text-white hover:bg-white/10" onClick={handleLogout}>
                   Logout
                 </Button>
               ) : (
-                <Button variant="outline" className="bg-white/5 text-white hover:bg-white/10">
+                <Button variant="outline" className="hidden bg-white/5 text-white hover:bg-white/10 md:inline-flex">
                   Get a Demo now !
                 </Button>
               )}
             </div>
-
-            {/* Mobile Menu Button */}
-            <button
-              className="md:hidden text-white p-2"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            >
-              {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-            </button>
           </div>
-
-          {/* Mobile Menu */}
-          {isMobileMenuOpen && (
-            <div className="md:hidden absolute top-16 left-0 right-0 bg-black/95 border-b border-gray-800/20 backdrop-blur-sm">
-              <nav className="flex flex-col p-4 space-y-4">
-                <Link href="#features" className="text-gray-400 hover:text-white px-4 py-2" onClick={(e) => scrollToSection('features', e)}>
-                  Features
-                </Link>
-                <Link href="#testimonials" className="text-gray-400 hover:text-white px-4 py-2" onClick={(e) => scrollToSection('testimonials', e)}>
-                  Testimonials
-                </Link>
-                <Link href="#team" className="text-gray-400 hover:text-white px-4 py-2" onClick={(e) => scrollToSection('team', e)}>
-                  Team
-                </Link>
-                <Link href="https://github.com/ArshTiwari2004/Athleto" className="text-gray-400 hover:text-white px-4 py-2 flex items-center gap-2">
-                  <Github className="h-5 w-5" />
-                  GitHub
-                </Link>
-                {user ? (
-                  <Button variant="outline" className="bg-white/5 text-white hover:bg-white/10 w-full" onClick={handleLogout}>
-                    Logout
-                  </Button>
-                ) : (
-                  <Button variant="outline" className="bg-white/5 text-white hover:bg-white/10 w-full">
-                    Get a Demo now !
-                  </Button>
-                )}
-              </nav>
-            </div>
-          )}
         </header>
 
-        {/* Hero Section  */}
-        <main className="container mx-auto flex min-h-screen flex-col items-center justify-center px-4 text-center">
-          <h1 className="max-w-4xl text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight text-white">
+        {/* Hero Section */}
+        <main className="container mx-auto flex min-h-screen flex-col items-center justify-center px-4 pt-16 text-center">
+          <h1 className="max-w-4xl text-4xl font-bold tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
             Empowering Dreams Overcoming Barriers with{" "}
-            <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent ${montserrat.className}">
-              Athleto
-            </span>
+            <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent ${montserrat.className} ">Athleto</span>
           </h1>
-          <p className="mt-6 max-w-2xl text-base sm:text-lg md:text-xl text-gray-400">
+          <p className="mt-6 max-w-2xl text-lg text-gray-400 md:text-xl">
             Athleto bridges the gap for underprivileged athletes, providing financial support and mentorship to help
             them reach their full potential. Join us in shaping the future of Indian football.
           </p>
-          <div className="mt-10 flex flex-col w-full sm:w-auto gap-4 sm:flex-row sm:gap-6 px-4">
+          <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:gap-6">
             {user ? (
               <Button
-                className="bg-white px-8 text-black hover:bg-gray-100 w-full sm:w-auto"
+                className="bg-white px-8 text-black hover:bg-gray-100"
                 onClick={() => router.push("/athlete-dashboard")}
               >
                 Go to Dashboard
@@ -188,7 +180,7 @@ export default function Home() {
             ) : (
               <>
                 <Button
-                  className="bg-white px-8 text-black hover:bg-gray-100 w-full sm:w-auto"
+                  className="bg-white px-8 text-black hover:bg-gray-100"
                   onClick={() => setIsSignupModalOpen(true)}
                 >
                   Athlete Sign up
@@ -196,19 +188,23 @@ export default function Home() {
                 <Button
                   onClick={() => setIsBrandSignupModalOpen(true)}
                   variant="outline"
-                  className="border-gray-600 bg-transparent text-white hover:bg-white/10 w-full sm:w-auto"
+                  className="border-gray-600 bg-transparent text-white hover:bg-white/10"
                 >
                   Brand Sign up
                 </Button>
+
+                <AthleteSignupModal isOpen={isSignupModalOpen} onClose={() => setIsSignupModalOpen(false)} />
+
+                <BrandSignupModal isOpen={isBrandSignupModalOpen} onClose={() => setIsBrandSignupModalOpen(false)} />
               </>
             )}
           </div>
         </main>
 
-        {/* Numbers Sections */}
+        {/* Numbers Section */}
         <NumbersSection />
-          
-          {/* Features Section */}
+
+        {/* Features Section */}
         <div id="features">
           <FeaturesSection />
         </div>
@@ -222,13 +218,12 @@ export default function Home() {
         <div id="team">
           <TeamSection />
         </div>
+        
       </div>
-
-      <AthleteSignupModal isOpen={isSignupModalOpen} onClose={() => setIsSignupModalOpen(false)} />
-      <BrandSignupModal isOpen={isBrandSignupModalOpen} onClose={() => setIsBrandSignupModalOpen(false)} />
 
       {/* Footer */}
       <Footer />
     </div>
   )
 }
+
