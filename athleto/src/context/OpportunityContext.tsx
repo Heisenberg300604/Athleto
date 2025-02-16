@@ -8,18 +8,20 @@ export interface OpportunityType {
   id: string;
   brand_name?: string;
   title: string;
-  type: 'sponsorship' | 'training_camp' | 'endorsement_deal' | 'tournament' | 'equipment_grant' | 'scholarship' | 'job_offer' | 'internship' | 'other';
+  // type: 'sponsorship' | 'training_camp' | 'endorsement_deal' | 'tournament' | 'equipment_grant' | 'scholarship' | 'job_offer' | 'internship' | 'other';
+  type: string;
   description: string;
   location: {
     city: string;
     state: string;
     country: string;
-    is_remote: boolean;
+    is_remote: boolean; 
   };
   deadline: string;
   spots_available: number;
   sport_category: string;
-  skill_level: 'beginner' | 'intermediate' | 'advanced' | 'pro';
+  // skill_level: 'beginner' | 'intermediate' | 'advanced' | 'pro';
+  skill_level: string;
   eligibility_criteria: string;
   required_documents: string[];
   funding_amount: {
@@ -33,7 +35,8 @@ export interface OpportunityType {
     physical_trial: boolean;
     interview_required: boolean;
   };
-  status: 'draft' | 'published' | 'closed';
+  // status: 'draft' | 'published' | 'closed';
+  status: string;
   applications_count: number;
   created_at: string;
   updated_at: string;

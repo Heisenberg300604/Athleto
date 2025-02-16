@@ -13,6 +13,7 @@ import { useUser } from '@/context/UserContext';
 import { useForceLightMode } from '@/hooks/useForcedLightTheme';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader2 } from 'lucide-react';
+import { OpportunityType } from '@/context/OpportunityContext';
 
 const opportunityTypes = [
   { value: 'sponsorship', label: 'Sponsorship' },
@@ -33,7 +34,12 @@ const skillLevels = [
   { value: 'pro', label: 'Professional' }
 ];
 
-export const CreateOpportunityModal = ({ isOpen, onClose }) => {
+interface CreateOpportunityModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+export const CreateOpportunityModal: React.FC<CreateOpportunityModalProps> = ({ isOpen, onClose }) => {
   const { createOpportunity } = useOpportunity();
   const { brand } = useUser();
   const [loading, setLoading] = useState(false);
@@ -67,7 +73,7 @@ export const CreateOpportunityModal = ({ isOpen, onClose }) => {
     }
   });
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e:any) => {
     e.preventDefault();
     setLoading(true);
     setError('');
@@ -84,10 +90,11 @@ export const CreateOpportunityModal = ({ isOpen, onClose }) => {
         brand_id: brand.id,
         status: 'published',
         created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
       };
 
       await createOpportunity(opportunityData);
+      console.log('Opportunity created:', opportunityData);
     
       onClose();
     } catch (error) {
@@ -98,7 +105,7 @@ export const CreateOpportunityModal = ({ isOpen, onClose }) => {
     }
   };
 
-  const handleInputChange = (field, value) => {
+  const handleInputChange = (field:any, value:any) => {
     setFormData(prev => ({
       ...prev,
       [field]: value
