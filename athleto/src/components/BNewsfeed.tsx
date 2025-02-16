@@ -1,13 +1,12 @@
 "use client"
 import { useState } from "react"
-import { Heart, MapPin, Building2, Plus, Share2, ThumbsUp, Upload, X } from "lucide-react"
+import { Heart, MapPin, Building2, Plus, Share2, ThumbsUp, Upload, X, ChevronLeft, ChevronRight } from "lucide-react"
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
 import BrandNavbar from "./BrandNavbar"
 
 const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
@@ -20,29 +19,68 @@ const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
   const [posts, setPosts] = useState([
     {
       id: 1,
-      brand: "WHOOP",
-      title: "January Jumpstart Campaign",
-      price: "€165",
-      location: "Ireland, Dublin",
-      date: "26.12.24 - 01.02.25",
-      type: "One-off product / company endorsement",
+      brand: "Puma India",
+      title: "Puma Unveils High-Tech Goalkeeper Gloves with Gurpreet Singh Sandhu",
+      price: "₹7,500",
+      location: "India, Bengaluru",
+      date: "10.03.2025",
+      type: "Product Endorsement",
       description:
-        "WHOOP, the human performance company, is looking to work with up to 20 athletes / creators based in Ireland for their upcoming January Jumpstart campaign.",
-      image: "/api/placeholder/800/400",
-      brandlogo: "/api/placeholder/40/40"
+        "Puma India has launched advanced goalkeeper gloves in collaboration with Indian national team star Gurpreet Singh Sandhu. These gloves feature superior grip, shock absorption, and breathable fabric for maximum performance under pressure.",
+      images: ["/n3.jpg?height=400&width=400", "/n4.png?height=400&width=600"],
+      brandlogo: "/puma.png?height=40&width=40",
     },
     {
       id: 2,
-      brand: "Sleek N Easy",
-      title: "BA Sleek N Easy",
-      price: "€85",
-      location: "Ireland, Online (Ireland)",
-      date: "05.02.25 - 27.02.25",
-      type: "Strategic brand ambassador",
+      brand: "Adidas India",
+      title: "Adidas Sponsors Indian Football Team",
+      price: "Undisclosed",
+      location: "India, Delhi",
+      date: "20.07.2023",
+      type: "Team Sponsorship",
       description:
-        "Are you an athlete passionate about top-quality products? We're launching our Brand Ambassador program and looking for athletes worldwide to join us!",
-      image: "/api/placeholder/800/400",
-      brandlogo: "/api/placeholder/40/40"
+        "Adidas India has announced a multi-year sponsorship deal with the Indian National Football Team. This partnership aims to boost the development of football in India.",
+      image: "/n5.png?height=400&width=600",
+      brandlogo: "/adidas.png?height=40&width=40",
+    },
+    {
+      id: 3,
+      brand: "PUMA India",
+      title: "PUMA Signs Sunil Chhetri as Brand Ambassador",
+      price: "₹5 Crore/Year",
+      location: "India, Bangalore",
+      date: "25.07.2023",
+      type: "Brand Ambassador",
+      description:
+        "PUMA India has signed Indian football captain Sunil Chhetri as their new brand ambassador. Chhetri will be the face of PUMA's football category in India.",
+      image: "/n6.png?height=400&width=600",
+      brandlogo: "/puma.png?height=40&width=40",
+    },
+    {
+      id: 4,
+      brand: "Under Armour India",
+      title: "Under Armour Unveils High-Performance Football Kits with Jeakson Singh",
+      price: "₹5,000",
+      location: "India, Imphal",
+      date: "30.07.2023",
+      type: "Product Endorsement",
+      description:
+        "Under Armour India teams up with midfield powerhouse Jeakson Singh to introduce a new line of breathable, moisture-wicking football kits. These kits promise enhanced performance and comfort for both training and match days.",
+      images: ["/n10.png?height=400&width=600", "/n9.png?height=400&width=600"],
+      brandlogo: "/ua.png?height=40&width=40",
+    },
+    {
+      id: 5,
+      brand: "Hero Motocorp",
+      title: "Hero Motocorp Announces Football Academy Sponsorship",
+      price: "₹10 Crore",
+      location: "India, Gurgaon",
+      date: "05.08.2023",
+      type: "Academy Sponsorship",
+      description:
+        "Hero Motocorp has announced a significant sponsorship deal with a leading football academy in India. This move aims to nurture young football talent in the country.",
+      image: "/n7.png?height=400&width=600",
+      brandlogo: "/hero1.avif?height=40&width=40",
     },
   ])
 
@@ -103,6 +141,48 @@ const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
   const filteredPosts =
     activeTab === "favorites" ? posts.filter((post) => favorites.includes(post.id.toString())) : posts
 
+  const ImageCarousel = ({ images }: { images: string[] }) => {
+    const [currentIndex, setCurrentIndex] = useState(0)
+
+    const nextImage = () => {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length)
+    }
+
+    const prevImage = () => {
+      setCurrentIndex((prevIndex) => (prevIndex - 1 + images.length) % images.length)
+    }
+
+    return (
+      <div className="relative">
+        <img
+          src={images[currentIndex] || "/placeholder.svg"}
+          alt={`Image ${currentIndex + 1}`}
+          className="w-full h-64 rounded-lg object-cover mt-4"
+        />
+        {images.length > 1 && (
+          <>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white/50 hover:bg-white/75"
+              onClick={prevImage}
+            >
+              <ChevronLeft className="h-6 w-6" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white/50 hover:bg-white/75"
+              onClick={nextImage}
+            >
+              <ChevronRight className="h-6 w-6" />
+            </Button>
+          </>
+        )}
+      </div>
+    )
+  }
+
   return (
     <div className="flex flex-col min-h-screen bg-[#F8F9FB]">
       <BrandNavbar />
@@ -141,18 +221,20 @@ const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
                 NEW POST
               </Button>
             </div>
-            {/* <Separator className="mt-2" /> */}
           </div>
 
           {/*Post Cards*/}
           <div className="space-y-6">
             {filteredPosts.map((post) => (
-                <Card key={post.id} className="bg-white shadow-sm hover:shadow-md transition-shadow w-3/4 mx-auto border-none shadow-lg align-left">
+              <Card
+                key={post.id}
+                className="bg-white shadow-md hover:shadow-lg transition-shadow w-full mx-auto border-none"
+              >
                 <CardContent className="p-6 ">
                   <div className="flex justify-between items-start mb-4">
                     <div className="flex items-center gap-4">
                       <img
-                        src={post.image || "/placeholder.svg"}
+                        src={post.brandlogo || "/placeholder.svg"}
                         alt={post.brand}
                         className="w-12 h-12 rounded-full object-cover"
                       />
@@ -206,19 +288,21 @@ const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
 
                   <p className="text-gray-900 text-sm leading-relaxed">{post.description}</p>
 
-                  {post.image && (
+                  {post.images ? (
+                    <ImageCarousel images={post.images} />
+                  ) : post.image ? (
                     <img
                       src={post.image || "/placeholder.svg"}
                       alt={post.title}
                       className="w-full h-64 object-cover rounded-lg mt-4"
                     />
-                  )}
+                  ) : null}
                 </CardContent>
               </Card>
             ))}
           </div>
         </div>
-                {/*New Brands Card*/}
+        {/*New Brands Card*/}
         <div className="w-80">
           <Card className="bg-white shadow-sm sticky top-8">
             <CardContent className="p-6">
@@ -410,7 +494,11 @@ const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
             </div>
 
             <div className="sticky bottom-0 z-50 bg-white border-t px-6 py-4 flex justify-end gap-3">
-              <Button variant="outline" onClick={() => setIsNewPostOpen(false)} className="h-11 px-6 text-black bg-white hover:bg-gray-50 border-gray-200 hover:text-gray-800">
+              <Button
+                variant="outline"
+                onClick={() => setIsNewPostOpen(false)}
+                className="h-11 px-6 text-black bg-white hover:bg-gray-50 border-gray-200 hover:text-gray-800"
+              >
                 Cancel
               </Button>
               <Button onClick={handleCreatePost} className="h-11 px-8 bg-indigo-600 hover:bg-indigo-700 text-white">
@@ -425,4 +513,5 @@ const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
 }
 
 export default NewsFeed
+
 

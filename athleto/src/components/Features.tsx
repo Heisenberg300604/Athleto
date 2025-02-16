@@ -3,6 +3,7 @@
 import { UserCheck, Building2, Cpu, Compass, Newspaper, Trophy } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
+import { SparklesCore } from '@/app/sparkles'
 
 export default function FeaturesSection() {
   const features = [
@@ -42,8 +43,21 @@ export default function FeaturesSection() {
   ]
 
   return (
-    <section className="w-full py-8 sm:py-12 md:py-16 lg:py-24">
-      <div className="container px-4 md:px-6 mx-auto max-w-7xl">
+    <section className="w-full py-8 sm:py-12 md:py-16 lg:py-24 relative">
+      {/* Sparkles Background */}
+      <div className="absolute inset-0 z-0">
+        <SparklesCore
+          id="tsparticles-features"
+          background="transparent"
+          particleColor="#4A90E2"
+          particleDensity={70}
+          className="h-full w-full"
+          minSize={0.9}
+          maxSize={2.2}
+        />
+      </div>
+
+      <div className="container px-4 md:px-6 mx-auto max-w-7xl relative z-10">
         {/* Features Header */}
         <div className="flex flex-col items-center justify-center space-y-2 sm:space-y-3 md:space-y-4 text-center mb-8 sm:mb-10 md:mb-12">
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tighter bg-gradient-to-r from-blue-400 to-purple-600 bg-clip-text text-transparent">
@@ -59,7 +73,7 @@ export default function FeaturesSection() {
           {features.map((feature, index) => (
             <Card
               key={index}
-              className="group relative overflow-hidden bg-black/50 border border-gray-800 p-4 sm:p-5 md:p-6 hover:border-blue-400/50 transition-colors"
+              className="group relative overflow-hidden bg-black/50 border border-gray-800 p-4 sm:p-5 md:p-6 hover:border-blue-400/50 transition-colors backdrop-blur-sm"
             >
               <div className="space-y-3 sm:space-y-4">
                 {feature.icon}
