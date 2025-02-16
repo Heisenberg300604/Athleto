@@ -149,6 +149,7 @@ export const OpportunityCard: React.FC<OpportunityCardProps> = ({ opportunity, o
               </Button>
               
               <Button
+              className="bg-indigo-600 text-white hover:bg-indigo-800"
                 onClick={(e) => {
                   e.stopPropagation();
                   handleApply();

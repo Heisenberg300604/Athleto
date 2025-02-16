@@ -88,6 +88,7 @@ export const CreateOpportunityModal = ({ isOpen, onClose }) => {
       };
 
       await createOpportunity(opportunityData);
+    
       onClose();
     } catch (error) {
       setError('Failed to create opportunity. Please try again.');
@@ -352,10 +353,12 @@ export const CreateOpportunityModal = ({ isOpen, onClose }) => {
           <Button variant="outline" onClick={onClose} disabled={loading}>
             Cancel
           </Button>
-          <Button type="submit" onClick={handleSubmit} disabled={loading}>
+          <Button 
+          className="bg-indigo-600 text-white hover:bg-indigo-800"
+          type="submit" onClick={handleSubmit} disabled={loading}>
             {loading ? (
               <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <Loader2 className="mr-2 h-4 w-4 animate-spin  " />
                 Creating...
               </>
             ) : (
