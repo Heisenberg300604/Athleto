@@ -42,6 +42,9 @@ const BrandSignupModal = ({ isOpen, onClose }: BrandSignupModalProps) => {
 
   const handleGoogleLogin = async () => {
     try {
+      // Prevent form validation toast messages
+      setLoading(true);
+      
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
@@ -55,11 +58,11 @@ const BrandSignupModal = ({ isOpen, onClose }: BrandSignupModalProps) => {
 
       if (error) throw error;
 
-      // Note: For Google signup, we'll need to create the brand profile after successful OAuth
-      // This should be handled in your OAuth callback route
     } catch (error: any) {
       console.error("Google login error:", error);
       toast.error(error.message || "Failed to login with Google");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -264,6 +267,7 @@ const BrandSignupModal = ({ isOpen, onClose }: BrandSignupModalProps) => {
           </div>
 
           <Button
+            type="button"
             onClick={handleGoogleLogin}
             className="w-full h-12 flex items-center justify-center gap-2 bg-white/10 text-white hover:bg-white/20 rounded-lg transition-all border border-gray-700/30"
           >
