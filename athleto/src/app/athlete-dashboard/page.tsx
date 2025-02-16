@@ -191,7 +191,7 @@ export default function AthleteDashboard() {
           }`}
           onClick={() => setActiveTab('all')}
         >
-          All Talents
+          All Brands
         </button>
         <button
           className={`flex-1 py-2 rounded-md text-sm font-medium transition-all duration-300 ${
@@ -201,7 +201,7 @@ export default function AthleteDashboard() {
           }`}
           onClick={() => setActiveTab('favorites')}
         >
-          Favorite Talents
+          Favorite Brands
         </button>
       </div>
           </div>

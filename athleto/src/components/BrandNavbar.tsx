@@ -1,3 +1,4 @@
+"use client"
 import React, { useState } from 'react';
 import { Bell, User, HelpCircle, MessageSquare, X } from 'lucide-react';
 import Link from 'next/link';
@@ -177,11 +178,11 @@ const BrandNavbar = () => {
                       <Link href="/brand-dashboard/brand-faq" className="block hover:text-indigo-600">
                         Frequently Asked Questions
                       </Link>
-                      <Link href="/brand-dashboard/brand-support" className="block hover:text-indigo-600">
-                        Contact Support
+                      <Link href="/brand-dashboard/brand-team" className="block hover:text-indigo-600">
+                        Our team
                       </Link>
                       <Link href="/brand-dashboard/brand-guide" className="block hover:text-indigo-600">
-                        User Guide
+                        User guide
                       </Link>
                     </div>
                   </CardContent>

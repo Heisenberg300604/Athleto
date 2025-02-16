@@ -26,7 +26,7 @@ const teamMembers = [
   },
   {
     name: "Nibedan Pati",
-    role: "Full stack Developer",
+    role: "Full Stack Developer",
     image: "/nibedan.png",
     socials: {
       github: "https://github.com/Heisenberg300604",
@@ -63,7 +63,7 @@ export default function TeamSection() {
       </div>
 
       {/* Content with backdrop blur */}
-      <div className="relative z-10 w-full h-full ">
+      <div className="relative z-10 w-full h-full">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
           <div className="flex flex-col items-center space-y-4 text-center">
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tighter text-white">
@@ -78,9 +78,9 @@ export default function TeamSection() {
             {teamMembers.map((member, index) => (
               <div
                 key={index}
-                className="group relative overflow-hidden rounded-lg bg-black/40 p-4 sm:p-6 transition-all hover:bg-black/60 hover:transform hover:scale-105 duration-300"
+                className="group relative overflow-hidden rounded-lg bg-black/40 p-4 sm:p-6 transition-all hover:bg-black/60 hover:transform hover:scale-105 duration-300 flex flex-col items-center justify-between h-full"
               >
-                <div className="flex flex-col items-center">
+                <div className="flex flex-col items-center w-full">
                   <div className="relative h-24 w-24 sm:h-28 sm:w-28 md:h-32 md:w-32 overflow-hidden rounded-full">
                     <Image
                       src={member.image}
@@ -89,12 +89,16 @@ export default function TeamSection() {
                       className="object-cover transition-transform duration-300 group-hover:scale-110"
                     />
                   </div>
-                  <h3 className="mt-4 sm:mt-6 text-lg sm:text-xl font-semibold text-white text-center">
-                    {member.name}
-                  </h3>
-                  <p className="mt-1 sm:mt-2 text-xs sm:text-sm text-indigo-400 text-center px-2">
-                    {member.role}
-                  </p>
+                  {/* Fixed height container for name and role */}
+                  <div className="mt-4 sm:mt-6 min-h-[80px] flex flex-col items-center justify-center">
+                    <h3 className="text-lg sm:text-xl font-semibold text-white text-center">
+                      {member.name}
+                    </h3>
+                    <p className="mt-1 sm:mt-2 text-xs sm:text-sm text-indigo-400 text-center px-2 max-w-[200px]">
+                      {member.role}
+                    </p>
+                  </div>
+                  {/* Social links at the bottom */}
                   <div className="mt-3 sm:mt-4 flex space-x-3 sm:space-x-4">
                     <Link 
                       href={member.socials.github} 
