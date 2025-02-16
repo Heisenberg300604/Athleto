@@ -122,7 +122,6 @@ const LoginModal = ({ isOpen, onClose, onOpenBrandSignup, onOpenAthleteSignup }:
         if (error.message.includes('Account not found')) {
           throw error;
         }
-        throw new Error("Error checking user role. Please try again.");
       }
   
     } catch (error: any) {
