@@ -9,13 +9,13 @@ import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { MapPin, Calendar, Users, DollarSign, MessageCircle } from 'lucide-react';
 import { useUser } from '@/context/UserContext';
-import { useOpportunity } from '@/context/OpportunityContext';
+import { OpportunityType } from '@/context/OpportunityContext';
 
 interface OpportunityCardProps {
   opportunity: OpportunityType;
   onApply: (opportunityId: string) => Promise<void>;
-
 }
+
 
 export const OpportunityCard: React.FC<OpportunityCardProps> = ({ opportunity, onApply }) => {
   const [showDetails, setShowDetails] = useState(false);
