@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { ChevronLeft, ChevronRight, Quote } from "lucide-react"
 import Image from "next/image"
+import { SparklesCore } from '@/app/sparkles'
 
 const testimonials = [
   {
@@ -47,8 +48,21 @@ export default function TestimonialsSection() {
   }
 
   return (
-    <section className="w-full py-8 sm:py-12 md:py-16 lg:py-24 bg-black">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="w-full py-8 sm:py-12 md:py-16 lg:py-24 relative">
+      {/* Sparkles Background */}
+      <div className="absolute inset-0 z-0">
+        <SparklesCore
+          id="tsparticles-numbers"
+          background="transparent"
+          particleColor="#4A90E2"
+          particleDensity={70}
+          className="h-full w-full"
+          minSize={0.9}
+          maxSize={2.2}
+        />
+      </div>
+      
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="flex flex-col items-center space-y-4 text-center">
           <Quote className="h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 text-indigo-500"/>
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tighter text-white">
