@@ -354,7 +354,7 @@ export const CreateOpportunityModal = ({ isOpen, onClose }) => {
             Cancel
           </Button>
           <Button 
-          className="bg-indigo-600 text-white hover:bg-indigo-800
+          className="bg-indigo-600 text-white hover:bg-indigo-800"
           type="submit" onClick={handleSubmit} disabled={loading}>
             {loading ? (
               <>
