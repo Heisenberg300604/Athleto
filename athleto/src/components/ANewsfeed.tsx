@@ -5,6 +5,21 @@ import { Button } from "../components/ui/button"
 import { Badge } from "../components/ui/badge"
 import { Card, CardContent } from "../components/ui/card"
 import AthleteNavbar from "./AthleteNavbar"
+;<style jsx global>{`
+  .overflow-y-auto::-webkit-scrollbar {
+    width: 4px;
+  }
+  .overflow-y-auto::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+  .overflow-y-auto::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+  }
+  .overflow-y-auto::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+`}</style>
 
 const ANewsFeed = ({ brandDetails }: { brandDetails: any }) => {
   const [activeTab, setActiveTab] = useState("all")
@@ -21,12 +36,9 @@ const ANewsFeed = ({ brandDetails }: { brandDetails: any }) => {
       location: "India, Bengaluru",
       date: "10.03.2025",
       type: "Product Endorsement",
-      description:"Puma India has launched advanced goalkeeper gloves in collaboration with Indian national team star Gurpreet Singh Sandhu. These gloves feature superior grip, shock absorption, and breathable fabric for maximum performance under pressure.",
-      images: [
-        "/n3.jpg?height=400&width=400",
-        "/n4.png?height=400&width=600",
-        
-      ],
+      description:
+        "Puma India has launched advanced goalkeeper gloves in collaboration with Indian national team star Gurpreet Singh Sandhu. These gloves feature superior grip, shock absorption, and breathable fabric for maximum performance under pressure.",
+      images: ["/n3.jpg?height=400&width=400", "/n4.png?height=400&width=600"],
       brandlogo: "/puma.png?height=40&width=40",
     },
     {
@@ -59,11 +71,12 @@ const ANewsFeed = ({ brandDetails }: { brandDetails: any }) => {
       id: 4,
       brand: "Under Armour India",
       title: "Under Armour Unveils High-Performance Football Kits with Jeakson Singh",
-      price:  "₹5,000",
+      price: "₹5,000",
       location: "India, Imphal",
       date: "30.07.2023",
       type: "Product Endorsement",
-      description:"Under Armour India teams up with midfield powerhouse Jeakson Singh to introduce a new line of breathable, moisture-wicking football kits. These kits promise enhanced performance and comfort for both training and match days.",
+      description:
+        "Under Armour India teams up with midfield powerhouse Jeakson Singh to introduce a new line of breathable, moisture-wicking football kits. These kits promise enhanced performance and comfort for both training and match days.",
       images: ["/n10.png?height=400&width=600", "/n9.png?height=400&width=600"],
       brandlogo: "/ua.png?height=40&width=40",
     },
@@ -122,8 +135,6 @@ const ANewsFeed = ({ brandDetails }: { brandDetails: any }) => {
           src={images[currentIndex] || "/placeholder.svg"}
           alt={`Image ${currentIndex + 1}`}
           className="w-full h-64 rounded-lg object-cover mt-4"
-
-
         />
         {images.length > 1 && (
           <>
@@ -183,7 +194,7 @@ const ANewsFeed = ({ brandDetails }: { brandDetails: any }) => {
           </div>
 
           {/*Post Cards*/}
-          <div className="space-y-6">
+          <div className="space-y-6 max-h-[calc(100vh-200px)] overflow-y-auto pr-4">
             {filteredPosts.map((post) => (
               <Card
                 key={post.id}
@@ -265,23 +276,21 @@ const ANewsFeed = ({ brandDetails }: { brandDetails: any }) => {
         <div className="w-80">
           <Card className="bg-white shadow-sm sticky top-8">
             <CardContent className="p-6">
-              <h2 className="text-lg font-semibold mb-6 text-gray-900">NEW BRANDS</h2>
-              <div className="space-y-6">
-                {brands.map((brand, index) => (
+              <h2 className="text-lg font-semibold mb-6 text-gray-900">ALL BRANDS</h2>
+              <div className="space-y-6 max-h-[calc(100vh-200px)] overflow-y-auto pr-4">
+                {[...Array(20)].map((_, index) => (
                   <div key={index} className="flex items-center gap-4">
                     <img
-                      src={brand.image || "/placeholder.svg"}
-                      alt={brand.name}
+                      src={`/placeholder.svg?height=48&width=48&text=${index + 1}`}
+                      alt={`Brand ${index + 1}`}
                       className="w-12 h-12 rounded-full object-cover"
                     />
                     <div>
-                      <h3 className="font-medium text-gray-900">{brand.name}</h3>
-                      {brand.verified && (
-                        <Badge variant="secondary" className="bg-green-50 text-green-700 text-xs">
-                          Verified
-                        </Badge>
-                      )}
-                      <p className="text-sm text-gray-500">{brand.industry}</p>
+                      <h3 className="font-medium text-gray-900">Brand {index + 1}</h3>
+                      <Badge variant="secondary" className="bg-green-50 text-green-700 text-xs">
+                        {Math.random() > 0.5 ? "Verified" : "New"}
+                      </Badge>
+                      <p className="text-sm text-gray-500">Industry {["Sports", "Fashion", "Technology"][index % 3]}</p>
                     </div>
                   </div>
                 ))}
@@ -295,4 +304,5 @@ const ANewsFeed = ({ brandDetails }: { brandDetails: any }) => {
 }
 
 export default ANewsFeed
+
 
