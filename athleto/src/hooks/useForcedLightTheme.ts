@@ -1,14 +1,21 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useTheme } from "next-themes"
 
 export function useForceLightMode() {
-  const { setTheme, theme, resolvedTheme } = useTheme()
+  const { setTheme, resolvedTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
+
   useEffect(() => {
-    if(resolvedTheme!==undefined && resolvedTheme!=="light"){
+    setMounted(true)
+  }, [])
+
+  useEffect(() => {
+    if (mounted && resolvedTheme && resolvedTheme !== "light") {
       setTheme("light")
     }
-  }, [setTheme, resolvedTheme])
-}
+  }, [mounted, setTheme, resolvedTheme])
 
+  return mounted
+}
