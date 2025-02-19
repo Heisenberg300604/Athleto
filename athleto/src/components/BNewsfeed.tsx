@@ -1,6 +1,6 @@
 "use client"
 import { useState } from "react"
-import { Heart, MapPin, Building2, Plus, Share2, ThumbsUp, Upload, X, ChevronLeft, ChevronRight } from "lucide-react"
+import { Heart, MapPin, Building2, Plus, Share2, ThumbsUp, Upload, X, ChevronLeft, ChevronRight, UserPlus } from "lucide-react"
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -15,6 +15,7 @@ const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
   const [favorites, setFavorites] = useState<string[]>([])
   const [likes, setLikes] = useState<{ [key: number]: number }>({})
   const [likedPosts, setLikedPosts] = useState<number[]>([])
+  const [following, setFollowing] = useState<string[]>([])
 
   const [posts, setPosts] = useState([
     {
@@ -84,6 +85,50 @@ const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
     },
   ])
 
+  //  athletes data
+  const athletes = [
+    {
+      id: "athlete1",
+      name: "Sunil Chhetri",
+      age: 39,
+      sport: "Football",
+      image: "/sunil1.png?height=400&width=400",
+      verified: true
+    },
+    {
+      id: "athlete2",
+      name: "Gurpreet Singh Sandhu",
+      age: 32,
+      sport: "Football",
+      image: "/gurpreet.jpeg?height=400&width=400",
+      verified: true
+    },
+    {
+      id: "athlete3",
+      name: "Jeakson Singh",
+      age: 23,
+      sport: "Football",
+      image: "/jeakson.png?height=400&width=400",
+      verified: false
+    },
+    {
+      id: "athlete4",
+      name: "Sandesh Jhingan",
+      age: 31,
+      sport: "Football",
+      image: "/sandesh.jpg?height=400&width=400",
+      verified: true
+    },
+    {
+      id: "athlete5",
+      name: "Anirudh Thapa",
+      age: 26,
+      sport: "Football",
+      image: "/anirudh.png?height=400&width=400",
+      verified: false
+    }
+  ]
+
   const [newPost, setNewPost] = useState({
     brand: "",
     title: "",
@@ -138,6 +183,12 @@ const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
     setLikedPosts((prev) => (prev.includes(postId) ? prev.filter((id) => id !== postId) : [...prev, postId]))
   }
 
+  const toggleFollow = (athleteId: string) => {
+    setFollowing((prev) =>
+      prev.includes(athleteId) ? prev.filter((id) => id !== athleteId) : [...prev, athleteId]
+    )
+  }
+
   const filteredPosts =
     activeTab === "favorites" ? posts.filter((post) => favorites.includes(post.id.toString())) : posts
 
@@ -184,47 +235,45 @@ const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#F8F9FB]">
+    <div className="flex flex-col h-screen bg-[#F8F9FB]">
       <BrandNavbar />
-      <div className="flex flex-1 gap-8 p-8">
-        {/*tabs*/}
-        <div className="flex-1 space-y-6">
-          <div className="flex flex-col">
-            <div className="flex items-center justify-between">
-              <div className="flex gap-8">
-                <button
-                  onClick={() => setActiveTab("all")}
-                  className={`px-4 py-2 transition-colors font-medium ${
-                    activeTab === "all"
-                      ? "text-indigo-600 border-b-2 border-indigo-600"
-                      : "text-gray-500 hover:text-gray-700"
-                  }`}
-                >
-                  ALL NEWS
-                </button>
-                <button
-                  onClick={() => setActiveTab("favorites")}
-                  className={`px-4 py-2 transition-colors font-medium ${
-                    activeTab === "favorites"
-                      ? "text-indigo-600 border-b-2 border-indigo-600"
-                      : "text-gray-500 hover:text-gray-700"
-                  }`}
-                >
-                  NEWS FROM FAVOURITES
-                </button>
-              </div>
-              <Button
-                onClick={() => setIsNewPostOpen(true)}
-                className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg flex items-center gap-2 h-10"
+      <div className="flex flex-1 gap-8 p-8 h-[calc(100vh-64px)] overflow-hidden">
+        {/*tabs and news feed section*/}
+        <div className="flex-1 flex flex-col h-full">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex gap-8">
+              <button
+                onClick={() => setActiveTab("all")}
+                className={`px-4 py-2 transition-colors font-medium ${
+                  activeTab === "all"
+                    ? "text-indigo-600 border-b-2 border-indigo-600"
+                    : "text-gray-500 hover:text-gray-700"
+                }`}
               >
-                <Plus className="h-5 w-5" />
-                NEW POST
-              </Button>
+                ALL NEWS
+              </button>
+              <button
+                onClick={() => setActiveTab("favorites")}
+                className={`px-4 py-2 transition-colors font-medium ${
+                  activeTab === "favorites"
+                    ? "text-indigo-600 border-b-2 border-indigo-600"
+                    : "text-gray-500 hover:text-gray-700"
+                }`}
+              >
+                NEWS FROM FAVOURITES
+              </button>
             </div>
+            <Button
+              onClick={() => setIsNewPostOpen(true)}
+              className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg flex items-center gap-2 h-10"
+            >
+              <Plus className="h-5 w-5" />
+              NEW POST
+            </Button>
           </div>
 
-          {/*Post Cards*/}
-          <div className="space-y-6">
+          {/*Scrollable Post Cards*/}
+          <div className="overflow-y-auto flex-1 pr-4 space-y-6">
             {filteredPosts.map((post) => (
               <Card
                 key={post.id}
@@ -302,31 +351,56 @@ const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
             ))}
           </div>
         </div>
-        {/*New Brands Card*/}
+        
+        {/*New Athletes Card*/}
         <div className="w-80">
-          <Card className="bg-white shadow-sm sticky top-8">
+          <Card className="bg-white shadow-sm sticky top-8 max-h-[calc(100vh-96px)] overflow-y-auto">
             <CardContent className="p-6">
               <h2 className="text-lg font-semibold mb-6 text-gray-900">TALENTS</h2>
-              <div className="space-y-6">
-                {brands.map((brand, index) => (
-                  <div key={index} className="flex items-center gap-4">
-                    <img
-                      src={brand.image || "/placeholder.svg"}
-                      alt={brand.name}
-                      className="w-12 h-12 rounded-full object-cover"
-                    />
-                    <div>
-                      <h3 className="font-medium text-gray-900">{brand.name}</h3>
-                      {brand.verified && (
-                        <Badge variant="secondary" className="bg-green-50 text-green-700 text-xs">
-                          Verified
-                        </Badge>
-                      )}
-                      <p className="text-sm text-gray-500">{brand.industry}</p>
+              <div className="space-y-8">
+                {athletes.map((athlete) => (
+                  <div key={athlete.id} className="flex flex-col">
+                    <div className="flex items-center gap-4 mb-2">
+                      <img
+                        src={athlete.image || "/placeholder.svg"}
+                        alt={athlete.name}
+                        className="w-12 h-12 rounded-full object-cover"
+                      />
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2">
+                          <h3 className="font-medium text-gray-900">{athlete.name}</h3>
+                          {athlete.verified && (
+                            <Badge variant="secondary" className="bg-green-50 text-green-700 text-xs">
+                              Verified
+                            </Badge>
+                          )}
+                        </div>
+                        <p className="text-sm text-gray-500">{athlete.sport} • {athlete.age} years</p>
+                      </div>
                     </div>
+                    <Button 
+                      onClick={() => toggleFollow(athlete.id)}
+                      className={`mt-2 w-full flex items-center justify-center gap-2 text-sm h-9 ${
+                        following.includes(athlete.id) 
+                          ? "bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-300" 
+                          : "bg-indigo-500 hover:bg-indigo-800 text-white"
+                      }`}
+                    >
+                      {following.includes(athlete.id) ? (
+                        "Following"
+                      ) : (
+                        <>
+                          <UserPlus className="h-2 w-2" />
+                          Follow
+                        </>
+                      )}
+                    </Button>
                   </div>
                 ))}
               </div>
+              
+             
+                
             </CardContent>
           </Card>
         </div>
@@ -513,5 +587,4 @@ const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
 }
 
 export default NewsFeed
-
 
