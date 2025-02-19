@@ -38,6 +38,7 @@ const BrandNavbar = () => {
     { href: '/brand-dashboard', label: 'OPPORTUNITIES' },
     { href: '/brand-talent', label: 'TALENT' },
     { href: '/brand-dashboard/newsfeed', label: 'NEWS FEED' },
+    { href: '/brand-leaderboard', label: 'LEADERBOARD' },
   ];
 
   return (

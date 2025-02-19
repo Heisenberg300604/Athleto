@@ -38,8 +38,14 @@ import {
   Mail,
   Info
 } from 'lucide-react';
+import { OpportunityType } from '@/context/OpportunityContext';
 
-export const OpportunityCard = ({ opportunity, onApply }) => {
+interface OpportunityCardProps {
+  opportunity: OpportunityType;
+  onApply: (id: string) => void;
+}
+
+export const OpportunityCard: React.FC<OpportunityCardProps> = ({ opportunity, onApply }) => {
     const [showDetailsDialog, setShowDetailsDialog] = useState(false);
     const [activeTab, setActiveTab] = useState('details');
     const [message, setMessage] = useState('');
@@ -97,7 +103,7 @@ export const OpportunityCard = ({ opportunity, onApply }) => {
         <CardHeader className="flex flex-row items-center justify-between pb-2">
           <div className="flex items-center space-x-4">
             <Avatar className="h-12 w-12 ring-2 ring-blue-100">
-              <AvatarImage src={opportunity.brand_logo} alt={opportunity.brand_name} />
+              {/* <AvatarImage src={opportunity.brand_logo} alt={opportunity.brand_name} /> */}
               <AvatarFallback>{opportunity.brand_name?.[0] || 'B'}</AvatarFallback>
             </Avatar>
             <div>
@@ -201,7 +207,7 @@ export const OpportunityCard = ({ opportunity, onApply }) => {
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center space-x-4">
                   <Avatar className="h-12 w-12 ring-2 ring-blue-100">
-                    <AvatarImage src={opportunity.brand_logo} alt={opportunity.brand_name} />
+                    {/* <AvatarImage src={opportunity.brand_logo} alt={opportunity.brand_name} /> */}
                     <AvatarFallback>{opportunity.brand_name?.[0] || 'B'}</AvatarFallback>
                   </Avatar>
                   <div>
@@ -324,7 +330,7 @@ export const OpportunityCard = ({ opportunity, onApply }) => {
                   <section>
                     <h3 className="text-lg font-semibold mb-3">Brand Representative</h3>
                     <div className="bg-gray-50 p-4 rounded-lg">
-                      {opportunity.brand_representative ? (
+                      {/* {opportunity.brand_representative ? (
                         <div className="flex items-center space-x-4">
                           <Avatar className="h-10 w-10">
                             <AvatarImage src={opportunity.brand_representative.avatar} />
@@ -349,7 +355,7 @@ export const OpportunityCard = ({ opportunity, onApply }) => {
                           <Info className="h-5 w-5" />
                           <span>Contact information will be provided after application</span>
                         </div>
-                      )}
+                      )} */}
                     </div>
                   </section>
 

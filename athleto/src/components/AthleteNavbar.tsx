@@ -28,6 +28,7 @@ const AthleteNavbar: React.FC = () => {
     { name: "OPPORTUNITIES", href: "/athlete-opportunities" },
     { name: "APPLIED", href: "/athlete-applied" },
     { name: "NEWS FEED", href: "/athlete-dashboard/newsfeed" },
+    { name: "LEADERBOARD", href: "/athlete-leaderboard" },
   ]
 
   const toggleUserMenu = () => {
