@@ -17,7 +17,7 @@ export const MOCK_TALENTS = [
     performanceLevel: "International",
     verificationStatus: "Verified",
     sponsorshipStatus: "Actively Seeking",
-    profilePicture: "/sunil.jpg",
+    profilePicture: "/sunil1.png",
     talentLevel: "Elite",
     achievementSummary: "Captain of Indian National Team, All-time top goalscorer for India",
     currentSponsorships: ["Puma", "Nike"],

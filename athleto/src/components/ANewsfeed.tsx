@@ -12,7 +12,7 @@ const ANewsFeed = ({ brandDetails }: { brandDetails: any }) => {
   const [likes, setLikes] = useState<{ [key: number]: number }>({})
   const [likedPosts, setLikedPosts] = useState<number[]>([])
 
-  const [posts, setPosts] = useState([
+const [posts, setPosts] = useState([
     {
       id: 1,
       brand: "Puma India",
@@ -29,7 +29,7 @@ const ANewsFeed = ({ brandDetails }: { brandDetails: any }) => {
       ],
       brandlogo: "/puma.png?height=40&width=40",
     },
-    {
+    {  
       id: 2,
       brand: "Adidas India",
       title: "Adidas Sponsors Indian Football Team",
