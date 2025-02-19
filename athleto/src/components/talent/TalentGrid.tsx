@@ -82,6 +82,23 @@ export const MOCK_TALENTS = [
   },
 ]
 
+// Define the TalentGridProps type
+interface TalentGridProps {
+  filters: {
+    sportType?: string;
+    performanceLevel?: string;
+    verificationStatus?: string;
+    sponsorshipAvailability?: string;
+    location: {
+      country?: string;
+      city?: string;
+    };
+  };
+  searchTerm?: string;
+  activeTab: string;
+  sortOption: string;
+}
+
 // ... (rest of the code remains the same)
 
 const TalentCard: React.FC<any> = ({ talent, onFavoriteToggle }) => {
