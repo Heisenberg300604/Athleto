@@ -1,137 +1,168 @@
-import React, { useState } from 'react';
-import { HeartIcon } from '@heroicons/react/24/outline';
-import { useRouter } from 'next/navigation';
+"use client"
 
-// Mock Talent Data (Replace with your actual data source)
-const MOCK_TALENTS = [
+import type React from "react"
+import { HeartIcon } from "@heroicons/react/24/outline"
+import { useRouter } from "next/navigation"
+import Image from "next/image"
+import { useState } from "react"
+
+// Updated Mock Talent Data with Indian football players
+export const MOCK_TALENTS = [
   {
-    id: '1',
-    name: 'Ronaldo',
-    sport: 'Football',
-    position: 'Striker',
-    location: 'New York, USA',
-    performanceLevel: 'National',
-    verificationStatus: 'Verified',
-    sponsorshipStatus: 'Actively Seeking',
-    profilePicture: '/ronaldo.jpg',
-    isFavorite: false
+    id: "1",
+    name: "Sunil Chhetri",
+    sport: "Football",
+    position: "Forward",
+    location: "Bengaluru, India",
+    performanceLevel: "International",
+    verificationStatus: "Verified",
+    sponsorshipStatus: "Actively Seeking",
+    profilePicture: "/sunil.jpg",
+    talentLevel: "Elite",
+    achievementSummary: "Captain of Indian National Team, All-time top goalscorer for India",
+    currentSponsorships: ["Puma", "Nike"],
+    isFavorite: false,
+    performanceStats: {
+      matchesPlayed: 131,
+      goalsScored: 84,
+      assists: 26, 
+    },
+    ranking: "1st in India, 39th in Asia",
+    affiliations: ["Bengaluru FC", "Indian National Team"],
+    fundingRequestStatus: "Ongoing with 2 brands",
+    sponsorshipNeeds: ["Equipment", "Travel Expenses", "Training Facilities"],
   },
-    {
-        id: '2',
-        name: 'LeBron James',
-        sport: 'Basketball',
-        position: 'Small Forward',
-        location: 'Los Angeles, USA',
-        performanceLevel: 'National',
-        verificationStatus: 'Verified',
-        sponsorshipStatus: 'Actively Seeking',
-        profilePicture: '/ronaldo.jpg',
-        isFavorite: false
+  {
+    id: "2",
+    name: "Sandesh Jhingan",
+    sport: "Football",
+    position: "Defender",
+    location: "Chandigarh, India",
+    performanceLevel: "International",
+    verificationStatus: "Verified",
+    sponsorshipStatus: "Open to Offers",
+    profilePicture: "/sandesh.jpg",
+    talentLevel: "Professional",
+    achievementSummary: "AIFF Player of the Year 2020, 2021",
+    currentSponsorships: ["Adidas"],
+    isFavorite: false,
+    performanceStats: {
+      matchesPlayed: 46,
+      goalsScored: 4,
+      cleanSheets: 12,
     },
-    {
-        id: '3',
-        name: 'Serena Williams',
-        sport: 'Tennis',
-        position: 'Singles',
-        location: 'Miami, USA',
-        performanceLevel: 'National',
-        verificationStatus: 'Verified',
-        sponsorshipStatus: 'Actively Seeking',
-        profilePicture: '/ronaldo.jpg',
-        isFavorite: false
+    ranking: "3rd in India, 78th in Asia",
+    affiliations: ["ATK Mohun Bagan", "Indian National Team"],
+    fundingRequestStatus: "Not active",
+    sponsorshipNeeds: ["Nutrition Supplements", "Fitness Equipment"],
+  },
+  {
+    id: "3",
+    name: "Gurpreet Singh Sandhu",
+    sport: "Football",
+    position: "Goalkeeper",
+    location: "Mohali, India",
+    performanceLevel: "International",
+    verificationStatus: "Verified",
+    sponsorshipStatus: "Actively Seeking",
+    profilePicture: "/gurpreet.jpeg",
+    talentLevel: "Elite",
+    achievementSummary: "First Indian to play in UEFA Europa League",
+    currentSponsorships: ["Under Armour"],
+    isFavorite: false,
+    performanceStats: {
+      matchesPlayed: 51,
+      cleanSheets: 18,
+      savePercentage: 72,
     },
-    {
-        id: '4',
-        name: 'Usain Bolt',
-        sport: 'Athletics',
-        position: 'Sprinter',
-        location: 'Kingston, Jamaica',
-        performanceLevel: 'National',
-        verificationStatus: 'Verified',
-        sponsorshipStatus: 'Actively Seeking',
-        profilePicture: '/usain.jpg',
-        isFavorite: false
-    },
-    {
-        id: '5',
-        name: 'Simone Biles',
-        sport: 'Gymnastics',
-        position: 'Artistic',
-        location: 'Houston, USA',
-        performanceLevel: 'National',
-        verificationStatus: 'Verified',
-        sponsorshipStatus: 'Actively Seeking',
-        profilePicture: '/simone.jpg',
-        isFavorite: false
-    },
-];
+    ranking: "2nd in India, 56th in Asia",
+    affiliations: ["Bengaluru FC", "Indian National Team"],
+    fundingRequestStatus: "Ongoing with 1 brand",
+    sponsorshipNeeds: ["Goalkeeper Training Equipment", "International Exposure Trips"],
+  },
+]
 
+// Define the TalentGridProps type
 interface TalentGridProps {
-  filters: any;
-  searchTerm: string;
+  filters: {
+    sportType?: string;
+    performanceLevel?: string;
+    verificationStatus?: string;
+    sponsorshipAvailability?: string;
+    location: {
+      country?: string;
+      city?: string;
+    };
+  };
+  searchTerm?: string;
   activeTab: string;
   sortOption: string;
 }
 
+// ... (rest of the code remains the same)
+
 const TalentCard: React.FC<any> = ({ talent, onFavoriteToggle }) => {
-  const router = useRouter();
+  const router = useRouter()
 
   const handleCardClick = () => {
-    router.push(`/talent/${talent.id}`);
-  };
+    router.push(`/talent/${talent.id}`)
+  }
 
   return (
-    <div 
+    <div
       className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-1 cursor-pointer"
       onClick={handleCardClick}
     >
       <div className="relative">
-        <img 
-          src={talent.profilePicture} 
-          alt={talent.name} 
+        <Image
+          src={talent.profilePicture || "/placeholder.svg"}
+          alt={talent.name}
+          width={400}
+          height={300}
           className="w-full h-48 object-cover"
         />
-        <button 
+        <button
           title="Toggle Favorite"
           className="absolute top-3 right-3 p-1.5 bg-white/80 rounded-full hover:bg-white shadow-sm"
           onClick={(e) => {
-            e.stopPropagation();
-            onFavoriteToggle(talent.id);
+            e.stopPropagation()
+            onFavoriteToggle(talent.id)
           }}
         >
-          <HeartIcon 
+          <HeartIcon
             className={`h-6 w-6 transition-all duration-300 ${
-              talent.isFavorite 
-                ? 'text-red-500 fill-current' 
-                : 'text-gray-400 hover:text-red-500'
-            }`} 
+              talent.isFavorite ? "text-red-500 fill-current" : "text-gray-400 hover:text-red-500"
+            }`}
           />
         </button>
       </div>
-      
+
       <div className="p-4 space-y-2">
         <div className="flex justify-between items-center">
           <h3 className="text-lg font-semibold text-gray-800">{talent.name}</h3>
-          <span 
+          <span
             className={`px-2.5 py-1 rounded-full text-xs font-medium ${
-              talent.verificationStatus === 'Verified' 
-                ? 'bg-green-100 text-green-800' 
-                : 'bg-gray-100 text-gray-800'
+              talent.verificationStatus === "Verified" ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
             }`}
           >
             {talent.verificationStatus}
           </span>
         </div>
-        
+
         <div className="text-sm text-gray-600 space-y-1.5">
-          <p className="font-medium">{talent.sport} | {talent.position}</p>
+          <p className="font-medium">
+            {talent.sport} | {talent.position}
+          </p>
           <p>{talent.location}</p>
+          <p>Talent Level: {talent.talentLevel}</p>
+          <p>Achievement: {talent.achievementSummary}</p>
+          <p>Current Sponsorships: {talent.currentSponsorships.join(", ")}</p>
           <div className="flex items-center space-x-2">
-            <span 
+            <span
               className={`px-2.5 py-1 rounded-full text-xs font-medium ${
-                talent.sponsorshipStatus === 'Actively Seeking'
-                  ? 'bg-blue-100 text-blue-800'
-                  : 'bg-gray-100 text-gray-800'
+                talent.sponsorshipStatus === "Actively Seeking"
+                  ? "bg-blue-100 text-blue-800"
+                  : "bg-gray-100 text-gray-800"
               }`}
             >
               {talent.sponsorshipStatus}
@@ -143,8 +174,9 @@ const TalentCard: React.FC<any> = ({ talent, onFavoriteToggle }) => {
         </div>
       </div>
     </div>
-  );
+  )
 }
+
 
 const TalentGrid: React.FC<TalentGridProps> = ({ 
     filters, 
