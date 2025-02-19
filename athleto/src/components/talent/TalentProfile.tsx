@@ -69,7 +69,7 @@ const TalentProfile: React.FC<TalentProfileProps> = ({ talent }) => {
                   {Object.entries(talent.performanceStats).map(([key, value]) => (
                     <div key={key} className="flex justify-between mb-2 last:mb-0">
                       <span className="text-gray-600 capitalize">{key.replace(/([A-Z])/g, " $1").trim()}:</span>
-                      <span className="font-medium">{value}</span>
+                      <span className="font-medium">{value as React.ReactNode}</span>
                     </div>
                   ))}
                 </div>
