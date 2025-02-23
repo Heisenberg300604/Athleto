@@ -10,6 +10,8 @@ import BrandNavbar from '@/components/BrandNavbar';
 import BrandProfileInfo from '@/components/BrandProfileInfo';
 import { useUser } from '@/context/UserContext';
 import { Loader2 } from 'lucide-react';
+import { PaymentHistoryPanel } from './__components/PaymentHistoryPanel';
+import AnalyticsPanel from './__components/AnalyticsPanel';
 
 export default function BrandProfile() {
   const [currentView, setCurrentView] = useState('brand-info');
@@ -67,6 +69,10 @@ export default function BrandProfile() {
             }}
           />
         );
+      case 'payment-history':
+        return (<PaymentHistoryPanel/>)
+      case 'analytics':
+        return (<AnalyticsPanel/>)
       default:
         return (
           <BrandProfileView

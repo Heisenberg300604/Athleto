@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useForceLightMode } from '@/hooks/useForcedLightTheme'
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { useRouter } from 'next/navigation'
 
 interface Brand {
   id: string
@@ -223,6 +224,7 @@ const SAMPLE_BRANDS: Brand[] = [
 
 export default function AthleteDashboard() {
   useForceLightMode()
+  const router = useRouter();
   const [favorites, setFavorites] = useState<string[]>([])
   const [activeTab, setActiveTab] = useState("all")
   const [selectedBrand, setSelectedBrand] = useState<Brand | null>(null)
@@ -729,7 +731,7 @@ export default function AthleteDashboard() {
                     <div className="bg-white p-6 rounded-xl shadow-sm">
                       <h3 className="text-md font-semibold mb-4">Actions</h3>
                       <div className="space-y-3">
-                        <Button className="w-full bg-indigo-600 hover:bg-indigo-700">
+                        <Button className="w-full bg-indigo-600 hover:bg-indigo-700" onClick={()=>router.push(`/athlete-sponsor/${selectedBrand.name}`)}>
                           Apply for Sponsorship
                         </Button>
                         <Button variant="outline" className="w-full">

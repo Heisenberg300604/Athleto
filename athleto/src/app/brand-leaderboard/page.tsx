@@ -115,7 +115,6 @@ export default function BrandLeaderboardPage() {
 
   return (
     <>
-      <BrandNavbar />
       <div className="container mx-auto p-8 max-w-7xl">
         <div className="space-y-6">
           <div className="flex flex-col space-y-2">
