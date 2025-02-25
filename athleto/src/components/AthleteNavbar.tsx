@@ -2,13 +2,14 @@
 
 import type React from "react"
 import { useState } from "react"
-import { Bell, User, Menu, HelpCircle, MessageSquare, X } from "lucide-react"
+import { Bell, User, Menu, HelpCircle, MessageSquare, X, ChevronDown, Star } from "lucide-react"
 import Link from "next/link"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { useRouter, usePathname } from "next/navigation"
 import { Montserrat } from "next/font/google"
+import { supabase } from "@/lib/supabase"
 
 const montserrat = Montserrat({ subsets: ["latin"] })
 
@@ -18,8 +19,12 @@ const AthleteNavbar: React.FC = () => {
   const [isNotificationOpen, setIsNotificationOpen] = useState(false)
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false)
   const [isHelpOpen, setIsHelpOpen] = useState(false)
+  const [isFundingOpen, setIsFundingOpen] = useState(false)
   const [feedbackSubmitted, setFeedbackSubmitted] = useState(false)
   const [feedbackText, setFeedbackText] = useState("")
+  const [userName, setUserName] = useState("")
+  const [rating, setRating] = useState(5)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const router = useRouter()
   const pathname = usePathname()
 
@@ -27,10 +32,20 @@ const AthleteNavbar: React.FC = () => {
     { name: "BRANDS", href: "/athlete-dashboard" },
     { name: "OPPORTUNITIES", href: "/athlete-opportunities" },
     { name: "APPLIED", href: "/athlete-applied" },
-    {name: "FUNDING", href: "/athlete-funding" },  
+    { 
+      name: "FUNDING", 
+      href: "/athlete-funding",
+      isDropdown: true,
+      dropdownItems: [
+        { name: "Crowdfunding", href: "/athlete-funding/crowdfunding" },
+        { name: "Train-Now-Pay-Later", href: "/athlete-funding/train-now-pay-later" },
+        { name: "Micro-Investment", href: "/athlete-funding/micro-investment" },
+        { name: "Athlete Marketplace", href: "/athlete-funding/athlete-marketplace" },
+        { name: "Scholarship & Grants Portal", href: "/athlete-funding/scholarship-grants" },
+      ]
+    },  
     { name: "LEADERBOARD", href: "/athlete-combined-leaderboard" },
     { name: "NEWS FEED", href: "/athlete-dashboard/newsfeed" },
-  
   ]
 
   const toggleUserMenu = () => {
@@ -48,15 +63,74 @@ const AthleteNavbar: React.FC = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen)
   }
 
-  const handleFeedbackSubmit = () => {
-    if (feedbackText.trim()) {
-      setFeedbackSubmitted(true)
-      setTimeout(() => {
-        setFeedbackSubmitted(false)
-        setIsFeedbackOpen(false)
-        setFeedbackText("")
-      }, 2000)
+  const handleFeedbackSubmit = async () => {
+    if (!feedbackText.trim() || !userName.trim()) {
+      alert("Please fill in all fields")
+      return
     }
+
+    setIsSubmitting(true)
+
+    try {
+      //This would be the actual implementation with Supabase
+      const { data, error } = await supabase
+        .from('feedback')
+        .insert([
+          { 
+            user_id: 'current-user-id', // This would be the actual user ID
+            author: userName,
+            quote: feedbackText,
+            role: 'ATHLETE', // Or could be dynamic based on user role
+            image: '/placeholder.svg', // Could be the user's profile image
+            rating: rating,
+            created_at: new Date()
+          }
+        ])
+      
+      if (error) throw error
+
+      // For demonstration, we'll simulate a successful submission
+    //   setTimeout(() => {
+    //     setFeedbackSubmitted(true)
+    //     setIsSubmitting(false)
+        
+    //     // Reset form after 2 seconds
+    //     setTimeout(() => {
+    //       setIsFeedbackOpen(false)
+    //       setFeedbackText("")
+    //       setUserName("")
+    //       setRating(5)
+    //       setFeedbackSubmitted(false)
+    //     }, 2000)
+    //   }, 1000)
+    } catch (error) {
+      console.error('Error submitting feedback:', error)
+      setIsSubmitting(false)
+    }
+  }
+
+  // Render star rating input
+  const renderStarInput = () => {
+    return (
+      <div className="flex space-x-2 justify-center my-3">
+        {[1, 2, 3, 4, 5].map((star) => (
+          <button
+            key={star}
+            onClick={() => setRating(star)}
+            className="focus:outline-none"
+            title={`Rate ${star} star${star > 1 ? 's' : ''}`}
+          >
+            <Star
+              className={`h-6 w-6 transition-colors ${
+                star <= rating 
+                  ? 'text-yellow-500 fill-yellow-500' 
+                  : 'text-gray-400'
+              }`}
+            />
+          </button>
+        ))}
+      </div>
+    )
   }
 
   return (
@@ -71,17 +145,39 @@ const AthleteNavbar: React.FC = () => {
           </Link>
           <nav className="hidden md:flex items-center gap-6 text-gray-600">
             {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                href={link.href}
-                className={`relative group transition-colors duration-300 text-sm font-medium ${montserrat.className}
-                  ${pathname === link.href ? 'text-indigo-600' : 'text-gray-600 hover:text-indigo-600'}`}
-              >
-                {link.name}
-                <span className={`absolute bottom-0 left-0 h-0.5 bg-indigo-600 transition-all duration-300
-                  ${pathname === link.href ? 'w-full' : 'w-0 group-hover:w-full'}`}>
-                </span>
-              </Link>
+              <div key={link.name} className="relative group">
+                <Link
+                  href={link.href}
+                  className={`relative group transition-colors duration-300 text-sm font-medium ${montserrat.className} flex items-center
+                    ${pathname === link.href ? 'text-indigo-600' : 'text-gray-600 hover:text-indigo-600'}`}
+                  onMouseEnter={() => link.isDropdown && setIsFundingOpen(true)}
+                >
+                  {link.name}
+                  {link.isDropdown && <ChevronDown className="ml-1 h-4 w-4" />}
+                  <span className={`absolute bottom-0 left-0 h-0.5 bg-indigo-600 transition-all duration-300
+                    ${pathname === link.href ? 'w-full' : 'w-0 group-hover:w-full'}`}>
+                  </span>
+                </Link>
+                
+                {link.isDropdown && isFundingOpen && (
+                  <div 
+                    className="absolute left-0 mt-2 w-64 bg-white shadow-lg rounded-md overflow-hidden z-50 border border-gray-200"
+                    onMouseEnter={() => setIsFundingOpen(true)}
+                    onMouseLeave={() => setIsFundingOpen(false)}
+                  >
+                    {link.dropdownItems?.map((item, index) => (
+                      <Link
+                        key={item.name}
+                        href={item.href}
+                        className={`block px-4 py-3 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors duration-200
+                          ${index !== link.dropdownItems.length - 1 ? 'border-b border-gray-100' : ''}`}
+                      >
+                        {item.name}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
             ))}
           </nav>
         </div>
@@ -131,7 +227,7 @@ const AthleteNavbar: React.FC = () => {
             {isFeedbackOpen && (
               <Card className="absolute right-0 top-full mt-2 w-96 shadow-lg p-4 bg-gray-100 border-none">
                 <CardHeader className="flex flex-row justify-between items-center text-black">
-                  <CardTitle>Provide Feedback</CardTitle>
+                  <CardTitle>Share Your Experience</CardTitle>
                   <Button variant="ghost" size="icon" onClick={() => setIsFeedbackOpen(false)}>
                     <X className="h-5 w-5" />
                   </Button>
@@ -139,6 +235,17 @@ const AthleteNavbar: React.FC = () => {
                 <CardContent>
                   {!feedbackSubmitted ? (
                     <>
+                      <h3 className="text-md font-medium text-gray-700 mb-2">Rate Your Experience</h3>
+                      {renderStarInput()}
+                      
+                      <input
+                        type="text"
+                        value={userName}
+                        onChange={(e) => setUserName(e.target.value)}
+                        placeholder="Your Name"
+                        className="w-full p-2 mb-3 border border-gray-300 rounded-md text-black"
+                      />
+                      
                       <Textarea
                         placeholder="Share your thoughts..."
                         value={feedbackText}
@@ -146,15 +253,18 @@ const AthleteNavbar: React.FC = () => {
                         className="mb-4 text-black"
                       />
                       <Button
-                        variant="outline"
                         className="w-full bg-indigo-600 text-white hover:bg-indigo-800"
                         onClick={handleFeedbackSubmit}
+                        disabled={isSubmitting}
                       >
-                        Submit Feedback
+                        {isSubmitting ? "Submitting..." : "Submit Feedback"}
                       </Button>
                     </>
                   ) : (
-                    <div className="text-green-600 text-center">Your feedback has been submitted</div>
+                    <div className="text-green-600 text-center py-4">
+                      <p className="text-lg font-semibold">Thank you for your feedback!</p>
+                      <p className="text-sm mt-1">Your feedback has been successfully submitted.</p>
+                    </div>
                   )}
                 </CardContent>
               </Card>
@@ -221,19 +331,38 @@ const AthleteNavbar: React.FC = () => {
       {isMobileMenuOpen && (
         <nav className="mt-4 md:hidden animate-fadeIn bg-white shadow-md">
           {navLinks.map((item) => (
-            <Link
-              key={item.name}
-              href={item.href}
-              onClick={() => {
-                setIsMobileMenuOpen(false)
-              }}
-              className={`block py-2 px-4 transition-colors duration-200 
-                ${pathname === item.href 
-                  ? 'text-indigo-600 bg-gray-50' 
-                  : 'text-gray-700 hover:bg-gray-100'}`}
-            >
-              {item.name}
-            </Link>
+            <div key={item.name}>
+              <Link
+                href={item.href}
+                onClick={() => {
+                  if (!item.isDropdown) setIsMobileMenuOpen(false);
+                }}
+                className={`block py-2 px-4 transition-colors duration-200 
+                  ${pathname === item.href 
+                    ? 'text-indigo-600 bg-gray-50' 
+                    : 'text-gray-700 hover:bg-gray-100'}`}
+              >
+                <div className="flex justify-between items-center">
+                  {item.name}
+                  {item.isDropdown && <ChevronDown className="h-4 w-4" />}
+                </div>
+              </Link>
+              
+              {item.isDropdown && (
+                <div className="bg-gray-50 pl-6">
+                  {item.dropdownItems?.map((dropdownItem) => (
+                    <Link
+                      key={dropdownItem.name}
+                      href={dropdownItem.href}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="block py-2 px-4 text-gray-600 hover:text-indigo-600 hover:bg-gray-100 text-sm border-l border-gray-200"
+                    >
+                      {dropdownItem.name}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
           ))}
         </nav>
       )}
