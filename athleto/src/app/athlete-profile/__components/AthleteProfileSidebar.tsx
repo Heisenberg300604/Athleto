@@ -41,14 +41,23 @@ export const AthleteProfileSidebar: React.FC<AthleteSidebarProps> = ({
 
   const handleLogout = async () => {
     try {
-      await supabase.auth.signOut()
-      // Clear local storage
-      window.localStorage.clear()
-      window.location.href = '/'
+      const { error } = await supabase.auth.signOut()
+      if (error) throw error
+
+      // Clear localStorage & Supabase session
+      localStorage.clear()
+      sessionStorage.clear()
+
+      // Refresh Supabase auth state (ensure user is logged out)
+      router.refresh()
+
+      // Redirect to home page
+      router.push("/")
     } catch (error) {
-      console.error('Error logging out:', error)
+      console.error("Logout error:", error)
     }
   }
+
 
   return (
     <div className="w-full bg-white rounded-xl shadow-sm p-6">

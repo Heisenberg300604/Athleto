@@ -24,54 +24,49 @@ const LoginModal = ({ isOpen, onClose, onOpenBrandSignup, onOpenAthleteSignup }:
 
   const handleResetPassword = async (e: React.MouseEvent) => {
     e.preventDefault();
-    
+
     if (!email) {
       toast.error("Please enter your email address");
       return;
     }
-  
+
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: `${window.location.origin}/reset-password`,
       });
-  
+
       if (error) throw error;
-      
+
       toast.success("Password reset link sent to your email!");
     } catch (error: any) {
       toast.error(error.message || "Error sending reset link");
     }
   };
 
-  const handleGoogleLogin = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${window.location.origin}/athlete-dashboard`,
-      },
-    });
-    if (error) {
-      toast.error(error.message);
-    }
-  };
+  // const handleGoogleLogin = async () => {
+  //   const { error } = await supabase.auth.signInWithOAuth({
+  //     provider: "google",
+  //     options: {
+  //       redirectTo: `${window.location.origin}/athlete-dashboard`,
+  //     },
+  //   });
+  //   if (error) {
+  //     toast.error(error.message);
+  //   }
+  // };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-  
-    if (!email || !password) {
-      toast.error("Please fill in all fields.");
-      return;
-    }
-  
+
     setLoading(true);
-  
+
     try {
       // Sign in with Supabase
       const { data, error: signInError } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
-  
+
       if (signInError) {
         // Handle specific authentication errors
         if (signInError.message.includes('Invalid login credentials')) {
@@ -79,42 +74,42 @@ const LoginModal = ({ isOpen, onClose, onOpenBrandSignup, onOpenAthleteSignup }:
         }
         throw signInError;
       }
-  
+
       // Get logged-in user's email
       const userEmail = data.user?.email;
       if (!userEmail) {
         throw new Error("User email not found.");
       }
-  
+
       try {
         // Check if the user is an athlete
         const { data: athlete, error: athleteError } = await supabase
           .from("athletes")
           .select("id")
-          .eq("email", userEmail)
+          .eq("email", userEmail.toLowerCase())
           .single();
-  
+
         if (athlete) {
           toast.success("Login successful! Redirecting to Athlete Dashboard...");
           onClose();
           router.push("/athlete-dashboard");
           return;
         }
-  
+
         // Check if the user is a brand
         const { data: brand, error: brandError } = await supabase
           .from("brands")
           .select("id")
           .eq("business_email", userEmail)
           .single();
-  
+
         if (brand) {
           toast.success("Login successful! Redirecting to Brand Dashboard...");
           onClose();
           router.push("/brand-dashboard");
           return; 
         }
-  
+
         // If user exists in neither table
         throw new Error("Account not found. Please sign up first.");
       } catch (error: any) {
@@ -123,14 +118,14 @@ const LoginModal = ({ isOpen, onClose, onOpenBrandSignup, onOpenAthleteSignup }:
           throw error;
         }
       }
-  
+
     } catch (error: any) {
       toast.error(error.message || "An error occurred during login.");
     } finally {
       setLoading(false);
     }
   };
-  
+
   const handleBrandSignupClick = () => {
     onClose();
     onOpenBrandSignup();
@@ -186,6 +181,7 @@ const LoginModal = ({ isOpen, onClose, onOpenBrandSignup, onOpenAthleteSignup }:
               onChange={(e) => setEmail(e.target.value)}
               className="bg-[#1A2233]/50 border-gray-700/30 text-white h-12 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all hover:bg-[#1A2233]/70"
               placeholder="Enter your email address"
+              required
             />
           </div>
 
@@ -201,6 +197,7 @@ const LoginModal = ({ isOpen, onClose, onOpenBrandSignup, onOpenAthleteSignup }:
                 onChange={(e) => setPassword(e.target.value)}
                 className="bg-[#1A2233]/50 border-gray-700/30 text-white h-12 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all hover:bg-[#1A2233]/70 pr-10"
                 placeholder="Enter your password"
+                required
               />
               <button
                 type="button"
@@ -218,7 +215,7 @@ const LoginModal = ({ isOpen, onClose, onOpenBrandSignup, onOpenAthleteSignup }:
 
           <div className="text-right">
             <a href="#" className="text-sm text-blue-400 hover:underline"
-            onClick={handleResetPassword}>
+              onClick={handleResetPassword}>
               Forgot password?
             </a>
           </div>
@@ -255,19 +252,19 @@ const LoginModal = ({ isOpen, onClose, onOpenBrandSignup, onOpenAthleteSignup }:
             </Button>
           </div>
         </form>
-        <Button
-            type="button"
-            onClick={handleGoogleLogin}
-            className="w-full h-12 flex items-center justify-center gap-2 bg-white/10 text-white hover:bg-white/20 rounded-xl transition-all backdrop-blur-sm border border-white/10"
-          >
-            <svg className="w-5 h-5" viewBox="0 0 24 24">
-              <path
-                fill="currentColor"
-                d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z"
-              />
-            </svg>
-            Login with Google
-          </Button>
+        {/* <Button
+          type="button"
+          onClick={handleGoogleLogin}
+          className="w-full h-12 flex items-center justify-center gap-2 bg-white/10 text-white hover:bg-white/20 rounded-xl transition-all backdrop-blur-sm border border-white/10"
+        >
+          <svg className="w-5 h-5" viewBox="0 0 24 24">
+            <path
+              fill="currentColor"
+              d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z"
+            />
+          </svg>
+          Login with Google
+        </Button> */}
       </DialogContent>
     </Dialog>
   );
