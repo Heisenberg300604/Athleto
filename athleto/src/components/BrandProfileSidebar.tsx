@@ -29,12 +29,42 @@ export const BrandSidebar: React.FC<BrandSidebarProps> = ({
   ];
   const router = useRouter();
   
+  // const handleLogout = async () => {
+  //   try {
+  //     const { error } = await supabase.auth.signOut()
+  //     if (error) throw error
+
+  //     // Clear localStorage & Supabase session
+  //     localStorage.clear()
+  //     sessionStorage.clear()
+
+  //     // Refresh Supabase auth state (ensure user is logged out)
+  //     router.refresh()
+
+  //     // Redirect to home page
+  //     router.push("/")
+  //   } catch (error) {
+  //     console.error("Logout error:", error)
+  //   }
+  // }
+
   const handleLogout = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) console.error('Logout error:', error);
-    // No need to update state here - the auth listener will handle it
-    router.push('/');
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+  
+      // Clear localStorage & Supabase session
+      localStorage.clear();
+      sessionStorage.clear();
+  
+      // Refresh the auth state immediately
+      await router.replace("/"); // Ensures full reload
+      router.refresh(); // Ensures state update
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
   };
+  
 
   return (
     <div className="w-full bg-white rounded-xl shadow-sm p-6">
@@ -93,7 +123,7 @@ export const BrandSidebar: React.FC<BrandSidebarProps> = ({
           );
         })}
         
-        <button className="w-full flex items-center space-x-3 px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200 mt-6">
+        <button onClick={handleLogout} className="w-full flex items-center space-x-3 px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200 mt-6">
           <LogOut className="w-5 h-5" />
           <span className="font-medium text-sm">LOG OUT</span>
         </button>

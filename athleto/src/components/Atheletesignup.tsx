@@ -24,18 +24,18 @@ const AthleteSignupModal = ({ isOpen, onClose }: AthleteSignupModalProps) => {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const router = useRouter();
 
-  const handleGoogleLogin = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: `${window.location.origin}/athlete-dashboard`,
-        // redirectTo: `${window.location.origin}/auth/callback`,
-      },
-    });
-    if (error) {
-      toast.error(error.message);
-    }
-  };
+  // const handleGoogleLogin = async () => {
+  //   const { error } = await supabase.auth.signInWithOAuth({
+  //     provider: 'google',
+  //     options: {
+  //       redirectTo: `${window.location.origin}/athlete-dashboard`,
+  //       // redirectTo: `${window.location.origin}/auth/callback`,
+  //     },
+  //   });
+  //   if (error) {
+  //     toast.error(error.message);
+  //   }
+  // };
 
   const validateForm = () => {
     if (!firstName || !lastName || !email || !password || !confirmPassword) {
@@ -187,7 +187,7 @@ const AthleteSignupModal = ({ isOpen, onClose }: AthleteSignupModalProps) => {
               placeholder="Confirm your password"
             />
           </div>
-
+{/* 
           <Button
             type="button"
             onClick={handleGoogleLogin}
@@ -200,7 +200,7 @@ const AthleteSignupModal = ({ isOpen, onClose }: AthleteSignupModalProps) => {
               />
             </svg>
             Continue with Google
-          </Button>
+          </Button> */}
 
           <div className="text-sm text-gray-400 text-center">
             By creating an account, you agree to Athleto's{" "}
