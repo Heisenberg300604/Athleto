@@ -28,7 +28,7 @@ const AthleteNavbar: React.FC = () => {
     { name: "OPPORTUNITIES", href: "/athlete-opportunities" },
     { name: "APPLIED", href: "/athlete-applied" },
     {name: "FUNDING", href: "/athlete-funding" },  
-    { name: "LEADERBOARD", href: "/athlete-leaderboard" },
+    { name: "LEADERBOARD", href: "/athlete-combined-leaderboard" },
     { name: "NEWS FEED", href: "/athlete-dashboard/newsfeed" },
   
   ]

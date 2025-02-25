@@ -1,6 +1,6 @@
 "use client"
 import { useState } from "react"
-import { Heart, MapPin, Building2, Share2, ThumbsUp, ChevronLeft, ChevronRight } from "lucide-react"
+import { Heart, MapPin, Building2, Share2, ThumbsUp, ChevronLeft, ChevronRight, UserPlus } from "lucide-react"
 import { Button } from "../components/ui/button"
 import { Badge } from "../components/ui/badge"
 import { Card, CardContent } from "../components/ui/card"
@@ -11,6 +11,7 @@ const ANewsFeed = ({ brandDetails }: { brandDetails: any }) => {
   const [favorites, setFavorites] = useState<string[]>([])
   const [likes, setLikes] = useState<{ [key: number]: number }>({})
   const [likedPosts, setLikedPosts] = useState<number[]>([])
+  const [followedBrands, setFollowedBrands] = useState<string[]>([])
 
 const [posts, setPosts] = useState([
     {
@@ -82,6 +83,52 @@ const [posts, setPosts] = useState([
     },
   ])
 
+  // New brands section 
+  const footballBrands = [
+    {
+      name: "Nike India",
+      verified: true,
+      industry: "Sportswear & Equipment",
+      type: "Global Brand",
+      image: "/nike.png?height=40&width=40",
+    },
+    {
+      name: "JSW Sports",
+      verified: true,
+      industry: "Sports Management",
+      type: "Corporate Sponsor",
+      image: "/jsw.png?height=40&width=40",
+    },
+    {
+      name: "Nivia Sports",
+      verified: true,
+      industry: "Sports Equipment",
+      type: "Indian Manufacturer",
+      image: "/nivia.png?height=40&width=40",
+    },
+    {
+      name: "Dream11",
+      verified: true,
+      industry: "Fantasy Sports",
+      type: "Digital Partner",
+      image: "/dream11.png?height=40&width=40",
+    },
+    {
+      name: "HCL Technologies",
+      verified: true,
+      industry: "Technology",
+      type: "Digital Transformation Partner",
+      image: "/hcl.png?height=40&width=40",
+    },
+    {
+      name: "Fast&Up",
+      verified: false,
+      industry: "Sports Nutrition",
+      type: "Nutrition Partner",
+      image: "/fastup.png?height=40&width=40",
+    }
+  ]
+
   const brands = Object.entries(brandDetails || {}).map(([name, details]: [string, any]) => ({
     name,
     ...details,
@@ -100,6 +147,12 @@ const [posts, setPosts] = useState([
       [postId]: (prev[postId] || 0) + (likedPosts.includes(postId) ? -1 : 1),
     }))
     setLikedPosts((prev) => (prev.includes(postId) ? prev.filter((id) => id !== postId) : [...prev, postId]))
+  }
+
+  const toggleFollow = (brandName: string) => {
+    setFollowedBrands((prev) =>
+      prev.includes(brandName) ? prev.filter((name) => name !== brandName) : [...prev, brandName]
+    )
   }
 
   const filteredPosts =
@@ -122,8 +175,6 @@ const [posts, setPosts] = useState([
           src={images[currentIndex] || "/placeholder.svg"}
           alt={`Image ${currentIndex + 1}`}
           className="w-full h-64 rounded-lg object-cover mt-4"
-
-
         />
         {images.length > 1 && (
           <>
@@ -182,8 +233,8 @@ const [posts, setPosts] = useState([
             </div>
           </div>
 
-          {/*Post Cards*/}
-          <div className="space-y-6">
+          {/*Post Cards with Scrollbar*/}
+          <div className="space-y-6 h-[calc(100vh-200px)] overflow-y-auto pr-4 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
             {filteredPosts.map((post) => (
               <Card
                 key={post.id}
@@ -261,30 +312,50 @@ const [posts, setPosts] = useState([
             ))}
           </div>
         </div>
-        {/*New Brands Card*/}
+        {/*New Brands Card with Scrollbar*/}
         <div className="w-80">
           <Card className="bg-white shadow-sm sticky top-8">
             <CardContent className="p-6">
               <h2 className="text-lg font-semibold mb-6 text-gray-900">NEW BRANDS</h2>
-              <div className="space-y-6">
-                {brands.map((brand, index) => (
-                  <div key={index} className="flex items-center gap-4">
-                    <img
-                      src={brand.image || "/placeholder.svg"}
-                      alt={brand.name}
-                      className="w-12 h-12 rounded-full object-cover"
-                    />
-                    <div>
-                      <h3 className="font-medium text-gray-900">{brand.name}</h3>
-                      {brand.verified && (
-                        <Badge variant="secondary" className="bg-green-50 text-green-700 text-xs">
-                          Verified
-                        </Badge>
-                      )}
-                      <p className="text-sm text-gray-500">{brand.industry}</p>
+              <div className="h-[calc(100vh-200px)] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+                <div className="space-y-6">
+                  {footballBrands.map((brand, index) => (
+                    <div key={index} className="flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        <img
+                          src={brand.image || "/placeholder.svg"}
+                          alt={brand.name}
+                          className="w-12 h-12 rounded-full object-cover"
+                        />
+                        <div>
+                          <h3 className="font-medium text-gray-900">{brand.name}</h3>
+                          {brand.verified && (
+                            <Badge variant="secondary" className="bg-green-50 text-green-700 text-xs">
+                              Verified
+                            </Badge>
+                          )}
+                          <p className="text-sm text-gray-500">{brand.industry}</p>
+                          <span className="text-xs text-gray-400">{brand.type}</span>
+                        </div>
+                      </div>
+                      <Button
+                        variant={followedBrands.includes(brand.name) ? "default" : "outline"}
+                        size="sm"
+                        className={`h-6 px-2 ${
+                          followedBrands.includes(brand.name) 
+                            ? "bg-indigo-600 hover:bg-indigo-700 text-white" 
+                            : "border-indigo-600 text-indigo-600 hover:bg-indigo-50"
+                        }`}
+                        onClick={() => toggleFollow(brand.name)}
+                      >
+                        <UserPlus className="h-2 w-2 mr-1" />
+                        <span className="text-xs">
+                          {followedBrands.includes(brand.name) ? "Following" : "Follow"}
+                        </span>
+                      </Button>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -295,4 +366,3 @@ const [posts, setPosts] = useState([
 }
 
 export default ANewsFeed
-

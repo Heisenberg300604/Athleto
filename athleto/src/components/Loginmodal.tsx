@@ -112,7 +112,7 @@ const LoginModal = ({ isOpen, onClose, onOpenBrandSignup, onOpenAthleteSignup }:
           toast.success("Login successful! Redirecting to Brand Dashboard...");
           onClose();
           router.push("/brand-dashboard");
-          return;
+          return; 
         }
   
         // If user exists in neither table

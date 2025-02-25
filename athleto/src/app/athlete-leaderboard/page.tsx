@@ -111,7 +111,6 @@ export default function LeaderboardPage() {
   const currentAthletes = filteredAthletes.slice(startIndex, endIndex);
   return (
     <>
-      <AthleteNavbar />
       <div className="container mx-auto p-8 max-w-7xl">
         <div className="space-y-6">
           <div className="flex flex-col space-y-2">
