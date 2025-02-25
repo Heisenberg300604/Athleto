@@ -27,44 +27,6 @@ export default function Home() {
   const [isBrandSignupModalOpen, setIsBrandSignupModalOpen] = useState(false)
   const router = useRouter()
   const supabase = createClientComponentClient()
-  const [user, setUser] = useState<User | null>(null)
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    // Create a single function to handle auth state
-    const setupAuth = async () => {
-      try {
-        // Get initial session
-        const {
-          data: { session },
-        } = await supabase.auth.getSession()
-        setUser(session?.user ?? null)
-        setLoading(false)
-
-        // Listen for auth changes
-        const {
-          data: { subscription },
-        } = supabase.auth.onAuthStateChange((_event, session) => {
-          setUser(session?.user ?? null)
-        })
-
-        return () => {
-          subscription.unsubscribe()
-        }
-      } catch (error) {
-        console.error("Auth error:", error)
-        setLoading(false)
-      }
-    }
-
-    setupAuth()
-  }, [supabase.auth])
-
-  const handleLogout = async () => {
-    const { error } = await supabase.auth.signOut()
-    if (error) console.error("Logout error:", error)
-    // No need to update state here - the auth listener will handle it
-  }
 
   const handleAthleteSignup = () => {
     setIsSignupModalOpen(false)
@@ -86,7 +48,7 @@ export default function Home() {
       featuresSection.scrollIntoView({ behavior: "smooth" })
     }
   }
-  
+
   const scrollToTestimonials = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault()
     const testimonialsSection = document.getElementById("testimonials")
@@ -124,7 +86,7 @@ export default function Home() {
         <header className="fixed top-0 z-50 w-full border-b border-gray-800/20">
           <div className="container mx-auto flex h-16 items-center justify-between px-4">
             <div className="flex items-center gap-6">
-              <Link href="/"  className={`text-2xl font-extrabold mr-6 text-white ${montserrat.className} tracking-wider transition-colors duration-300 `} >
+              <Link href="/" className={`text-2xl font-extrabold mr-6 text-white ${montserrat.className} tracking-wider transition-colors duration-300 `} >
                 Athleto
               </Link>
               <nav className="hidden space-x-6 md:block">
@@ -146,15 +108,9 @@ export default function Home() {
               <Link href="/contact" className="text-sm text-gray-400 hover:text-white" onClick={scrollToTeam}>
                 Team
               </Link>
-              {user ? (
-                <Button variant="outline" className="bg-white/5 text-white hover:bg-white/10" onClick={handleLogout}>
-                  Logout
-                </Button>
-              ) : (
-                <Button variant="outline" className="hidden bg-white/5 text-white hover:bg-white/10 md:inline-flex">
+              <Button variant="outline" className="hidden bg-white/5 text-white hover:bg-white/10 md:inline-flex">
                   Get a Demo now !
                 </Button>
-              )}
             </div>
           </div>
         </header>
@@ -170,34 +126,23 @@ export default function Home() {
             them reach their full potential. Join us in shaping the future of Indian football.
           </p>
           <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:gap-6">
-            {user ? (
-              <Button
-                className="bg-white px-8 text-black hover:bg-gray-100"
-                onClick={() => router.push("/athlete-dashboard")}
-              >
-                Go to Dashboard
-              </Button>
-            ) : (
-              <>
-                <Button
-                  className="bg-white px-8 text-black hover:bg-gray-100"
-                  onClick={() => setIsSignupModalOpen(true)}
-                >
-                  Athlete Sign up
-                </Button>
-                <Button
-                  onClick={() => setIsBrandSignupModalOpen(true)}
-                  variant="outline"
-                  className="border-gray-600 bg-transparent text-white hover:bg-white/10"
-                >
-                  Brand Sign up
-                </Button>
+            <Button
+              className="bg-white px-8 text-black hover:bg-gray-100"
+              onClick={() => setIsSignupModalOpen(true)}
+            >
+              Athlete Sign up
+            </Button>
+            <Button
+              onClick={() => setIsBrandSignupModalOpen(true)}
+              variant="outline"
+              className="border-gray-600 bg-transparent text-white hover:bg-white/10"
+            >
+              Brand Sign up
+            </Button>
 
-                <AthleteSignupModal isOpen={isSignupModalOpen} onClose={() => setIsSignupModalOpen(false)} />
+            <AthleteSignupModal isOpen={isSignupModalOpen} onClose={() => setIsSignupModalOpen(false)} />
 
-                <BrandSignupModal isOpen={isBrandSignupModalOpen} onClose={() => setIsBrandSignupModalOpen(false)} />
-              </>
-            )}
+            <BrandSignupModal isOpen={isBrandSignupModalOpen} onClose={() => setIsBrandSignupModalOpen(false)} />
           </div>
         </main>
 
@@ -218,7 +163,7 @@ export default function Home() {
         <div id="team">
           <TeamSection />
         </div>
-        
+
       </div>
 
       {/* Footer */}
