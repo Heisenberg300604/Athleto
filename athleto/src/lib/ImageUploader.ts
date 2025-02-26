@@ -5,16 +5,14 @@ export const uploadImage = async (file: File): Promise<string | null> => {
     console.error("No file selected!");
     return null;
   }
-  // console.log("Hello")
-  // console.log("supabase client:", supabase)
   (async () => {
     try {
       console.log("Checking Supabase Storage Buckets...");
-      
+
       const { data, error } = await supabase.storage.listBuckets();
-      
+
       console.log("Storage Buckets:", data, error);
-  
+
       if (error) {
         console.error("Error fetching buckets:", error.message);
       }
@@ -35,7 +33,8 @@ export const uploadImage = async (file: File): Promise<string | null> => {
       return null;
     }
 
-    return supabase.storage.from("images").getPublicUrl(data.path).data.publicUrl;
+    return supabase.storage.from("images").getPublicUrl(data.path).data
+      .publicUrl;
   } catch (err) {
     console.error("Unexpected upload error:", err);
     return null;

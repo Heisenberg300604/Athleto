@@ -26,21 +26,22 @@ import { uploadImage } from "@/lib/ImageUploader";
 import { supabase } from "@/lib/supabase";
 import { title } from "process";
 import { useUser } from "@/context/UserContext";
+import { register } from "module";
+import Spinner from "./spinner";
 
 interface NewPost {
-  brand: string;
+  brand: string | undefined;
   title: string;
   price: string;
   location: string;
   description: string;
   images: string[]; // Array of image URLs
   type: string;
-  brandlogo: string; // Array of brand logo URLs
 }
 
 interface Post {
   id: number;
-  brand?: string;
+  brand: string | undefined;
   title: string;
   price?: string;
   date: string;
@@ -49,21 +50,19 @@ interface Post {
   images: string[]; // Array of image URLs
   type: string;
   byAPI?: boolean;
-  brandlogo?: string; // Array of brand logo URLs
 }
 
 
 const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
   const { user,brand } = useUser();
-  console.log(brand);
+  const brand_name = brand?.brand_name;
   const [activeTab, setActiveTab] = useState("all");
   const [isNewPostOpen, setIsNewPostOpen] = useState(false);
   const [favorites, setFavorites] = useState<string[]>([]);
   const [likes, setLikes] = useState<{ [key: number]: number }>({});
   const [likedPosts, setLikedPosts] = useState<number[]>([]);
   const [following, setFollowing] = useState<string[]>([]);
-  const [articles, setArticles] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [posts, setPosts] = useState<Post[]>([
     {
       id: 1,
@@ -77,7 +76,7 @@ const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
       description:
         "Puma India has launched advanced goalkeeper gloves in collaboration with Indian national team star Gurpreet Singh Sandhu. These gloves feature superior grip, shock absorption, and breathable fabric for maximum performance under pressure.",
       images: ["/n3.jpg?height=400&width=400", "/n4.png?height=400&width=600"],
-      brandlogo: "/puma.png?height=40&width=40",
+      // brandlogo: "/puma.png?height=40&width=40",
     },
     {
       id: 2,
@@ -90,7 +89,7 @@ const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
       description:
         "Adidas India has announced a multi-year sponsorship deal with the Indian National Football Team. This partnership aims to boost the development of football in India.",
       images: ["/n5.png?height=400&width=600"],
-      brandlogo: "/adidas.png?height=40&width=40",
+      // brandlogo: "/adidas.png?height=40&width=40",
     },
     {
       id: 3,
@@ -103,7 +102,7 @@ const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
       description:
         "PUMA India has signed Indian football captain Sunil Chhetri as their new brand ambassador. Chhetri will be the face of PUMA's football category in India.",
       images: ["/n6.png?height=400&width=600"],
-      brandlogo: "/puma.png?height=40&width=40",
+      // brandlogo: "/puma.png?height=40&width=40",
     },
     {
       id: 4,
@@ -117,7 +116,7 @@ const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
       description:
         "Under Armour India teams up with midfield powerhouse Jeakson Singh to introduce a new line of breathable, moisture-wicking football kits. These kits promise enhanced performance and comfort for both training and match days.",
       images: ["/n10.png?height=400&width=600", "/n9.png?height=400&width=600"],
-      brandlogo: "/ua.png?height=40&width=40",
+      // brandlogo: "/ua.png?height=40&width=40",
     },
     {
       id: 5,
@@ -130,9 +129,32 @@ const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
       description:
         "Hero Motocorp has announced a significant sponsorship deal with a leading football academy in India. This move aims to nurture young football talent in the country.",
       images: ["/n7.png?height=400&width=600"],
-      brandlogo: "/hero1.avif?height=40&width=40",
+      // brandlogo: "/hero1.avif?height=40&width=40",
     },
   ]);
+
+  useEffect(()=>{
+    const fetchAllPosts = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("post") // Replace with your actual table name
+          .select("*");  // Select all columns
+    
+        if (error) {
+          throw new Error(error.message);
+        }
+    
+        setPosts((prevPosts) => [...prevPosts, ...data]); 
+      } catch (err) {
+        console.error("Error fetching posts:", err);
+        return [];
+      }
+      finally{
+        setLoading(false);
+      }
+    };
+    fetchAllPosts();
+  },[])
 
   useEffect(() => {
     console.log("Fetching news...");
@@ -149,7 +171,7 @@ const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
             (article: any, index: number) => {
               return {
                 id: index + data.articles.length, // Start IDs after your existing posts
-                brand: article.source?.name || "Sports News",
+                brand:"",
                 title: article.title,
                 price: "",
                 location: "India",
@@ -166,7 +188,6 @@ const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
                 images: [
                   article.image || "/default-news.jpg?height=400&width=600",
                 ],
-                brandlogo: "/news-icon.png?height=40&width=40", // You'll need this image
               };
             }
           );
@@ -182,7 +203,7 @@ const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
     };
 
     fetchArticles();
-  }, [articles]);
+  },[]);
 
   const athletes = [
     {
@@ -228,17 +249,17 @@ const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
   ];
 
   const [newPost, setNewPost] = useState<NewPost>({
-    brand:"",
+    brand: brand_name,
     title: "",
     price: "",
     location: "",
     description: "",
     images: ["/api/placeholder/800/400"],
     type: "",
-    brandlogo: "/api/placeholder/40/40",
+    // brandlogo: "/api/placeholder/40/40",
   });
   const [postImages, setPostImages] = useState<File[]>([]);
-  const [brandImages, setBrandImages] = useState<File>();
+  // const [brandImages, setBrandImages] = useState<File>();
 
   // const brands = Object.entries(brandDetails || {}).map(
   //   ([name, details]: [string, any]) => ({
@@ -259,8 +280,8 @@ const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
       return;
     }
 
-    if (!postImages.length || !brandImages) {
-      toast.error("Please upload brand logo and image");
+    if (!postImages.length) {
+      toast.error("Please upload image");
       return;
     }
 
@@ -268,13 +289,13 @@ const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
 
     try {
       // Upload brand logo first
-      const brandImageURL = await uploadImage(brandImages);
-      if (!brandImageURL) {
-        toast.error("Error uploading brand logo");
-        setLoading(false);
-        return;
-      }
-      console.log("Brand logo uploaded:", brandImageURL);
+      // const brandImageURL = await uploadImage(brandImages);
+      // if (!brandImageURL) {
+      //   toast.error("Error uploading brand logo");
+      //   setLoading(false);
+      //   return;
+      // }
+      // console.log("Brand logo uploaded:", brandImageURL);
       // Upload post images
       const postImageURLs = [];
       for (const image of postImages) {
@@ -283,7 +304,7 @@ const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
           postImageURLs.push(imageURL);
         }
       }
-
+      console.log("Post images uploaded:", postImageURLs);
       if (!postImageURLs.length) {
         toast.error("Error uploading post images");
         setLoading(false);
@@ -300,7 +321,7 @@ const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
           description: newPost.description,
           images: postImageURLs,
           type: newPost.type,
-          brandlogo: brandImageURL,
+          // brandlogo: null,
           date: new Date()
             .toLocaleDateString("en-IN", {
               day: "2-digit",
@@ -324,7 +345,7 @@ const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
         {
           id: posts.length + 1,
           images: postImageURLs,
-          brandlogo: brandImageURL,
+          // brandlogo: brandImageURL,
           brand: newPost.brand,
           title: newPost.title,
           price: newPost.price,
@@ -345,17 +366,17 @@ const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
       // Reset form and close dialog
       setIsNewPostOpen(false);
       setNewPost({
-        brand: "",
+        brand: brand_name,
         title: "",
         price: "",
         location: "",
         description: "",
         images: ["/api/placeholder/800/400"],
         type: "",
-        brandlogo: "/api/placeholder/40/40",
+        // brandlogo: "/api/placeholder/40/40",
       });
       setPostImages([]);
-      setBrandImages(undefined);
+      // setBrandImages(undefined);
 
       toast.success("Post created successfully");
     } catch (error) {
@@ -442,7 +463,12 @@ const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-[#F8F9FB]">
+    loading ? (
+      <div className="flex items-center justify-center h-screen">
+        <Spinner/>
+      </div>
+    ) : (
+      <div className="flex flex-col h-screen bg-[#F8F9FB]">
       <BrandNavbar />
       <div className="flex flex-1 gap-8 p-8 h-[calc(100vh-64px)] overflow-hidden">
         {/*tabs and news feed section*/}
@@ -485,13 +511,13 @@ const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
                 <CardContent className="p-6 ">
                   <div className="flex justify-between items-start mb-4">
                     <div className="flex items-center gap-4">
-                      {post.byAPI === undefined ? (
+                      {/* {post.byAPI === undefined ? (
                         <img
                           src={post.brandlogo || "/placeholder.svg"}
                           alt={post.brand}
                           className="w-12 h-12 rounded-full object-cover"
                         />
-                      ) : null}
+                      ) : null} */}
                       <div>
                         <h3 className=" text-black text-xl font-bold">
                           {post.brand}
@@ -694,6 +720,7 @@ const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
                           brand: e.target.value,
                         }))
                       }
+                      disabled
                       placeholder="Enter brand name"
                       className="border-gray-200 h-11"
                     />
@@ -879,7 +906,9 @@ const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
         </Dialog>
       </div>
     </div>
+    )
   );
+  
 };
 
 export default NewsFeed;
