@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { supabase } from "@/lib/supabase"
 
+
 // Testimonial interface
 interface Testimonial {
   id?: string;
@@ -23,73 +24,108 @@ export default function TestimonialsSection() {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [testimonials, setTestimonials] = useState<Testimonial[]>([])
   const [loading, setLoading] = useState(true)
+  console.log(testimonials)
 
   // Fetch testimonials from Supabase on component mount
-  useEffect(() => {
-    async function fetchTestimonials() {
-      try {
-        setLoading(true)
+  // useEffect(() => {
+  //   async function fetchTestimonials() {
+  //     try {
+  //       setLoading(true)
         
-     //   This would be the actual implementation with Supabase
-        const { data, error } = await supabase
-          .from('feedback')
-          .select('*')
-          .order('created_at', { ascending: false })
-          .limit(10)
+  //    //   This would be the actual implementation with Supabase
+  //       const { data, error } = await supabase
+  //         .from('feedback')
+  //         .select('*')
+  //         .order('created_at', { ascending: false })
+  //         .limit(10)
         
-        if (error) throw error
-        if (data) setTestimonials(data)
+  //       if (error) throw error
+  //       if (data) setTestimonials(data)
         
-        // For demonstration, we'll use static data temporarily
-        // In a real application, this would be replaced with actual data from Supabase
-        // const sampleTestimonials = [
-        //   {
-        //     quote:
-        //       "As a professional footballer, finding the right brand partnerships was always challenging. Through this platform, I've connected with brands that align perfectly with my values and career goals. It's given me opportunities I never thought possible.",
-        //     author: "Sunil Chhetri",
-        //     role: "FOOTBALL | INDIAN NATIONAL TEAM CAPTAIN",
-        //     image: "/sunil.jpg",
-        //     rating: 5,
-        //   },
-        //   {
-        //     quote:
-        //       "Our sports brand was looking to connect with authentic football talent in India. This platform helped us discover and collaborate with emerging athletes who truly represent the spirit of Indian football. The quality of talent and professionalism has been exceptional.",
-        //     author: "Rajesh Kumar",
-        //     role: "MARKETING DIRECTOR | SPORTS BRAND",
-        //     image: "/rajesh.jpeg",
-        //     rating: 4,
-        //   },
-        //   {
-        //     quote:
-        //       "The platform has been a game-changer for my career. Not only did it help me secure brand partnerships, but it also gave me the visibility I needed in the professional football circuit. It's more than just a platform - it's a career accelerator.",
-        //     author: "Sandesh Jhingan",
-        //     role: "FOOTBALL | PROFESSIONAL DEFENDER",
-        //     image: "/sandesh.jpeg",
-        //     rating: 5,
-        //   },
-        //   {
-        //     quote:
-        //       "Finding authentic football talent for our campaigns used to be a complex process. Now, we can directly connect with professional athletes who resonate with our brand values. The platform has streamlined our sports marketing initiatives significantly.",
-        //     author: "Priya Mehta",
-        //     role: "BRAND MANAGER | LIFESTYLE COMPANY",
-        //     image: "/priya.jpg",
-        //     rating: 4,
-        //   },
-        // ];
+  //       // For demonstration, we'll use static data temporarily
+  //       // In a real application, this would be replaced with actual data from Supabase
+  //       // const sampleTestimonials = [
+  //       //   {
+  //       //     quote:
+  //       //       "As a professional footballer, finding the right brand partnerships was always challenging. Through this platform, I've connected with brands that align perfectly with my values and career goals. It's given me opportunities I never thought possible.",
+  //       //     author: "Sunil Chhetri",
+  //       //     role: "FOOTBALL | INDIAN NATIONAL TEAM CAPTAIN",
+  //       //     image: "/sunil.jpg",
+  //       //     rating: 5,
+  //       //   },
+  //       //   {
+  //       //     quote:
+  //       //       "Our sports brand was looking to connect with authentic football talent in India. This platform helped us discover and collaborate with emerging athletes who truly represent the spirit of Indian football. The quality of talent and professionalism has been exceptional.",
+  //       //     author: "Rajesh Kumar",
+  //       //     role: "MARKETING DIRECTOR | SPORTS BRAND",
+  //       //     image: "/rajesh.jpeg",
+  //       //     rating: 4,
+  //       //   },
+  //       //   {
+  //       //     quote:
+  //       //       "The platform has been a game-changer for my career. Not only did it help me secure brand partnerships, but it also gave me the visibility I needed in the professional football circuit. It's more than just a platform - it's a career accelerator.",
+  //       //     author: "Sandesh Jhingan",
+  //       //     role: "FOOTBALL | PROFESSIONAL DEFENDER",
+  //       //     image: "/sandesh.jpeg",
+  //       //     rating: 5,
+  //       //   },
+  //       //   {
+  //       //     quote:
+  //       //       "Finding authentic football talent for our campaigns used to be a complex process. Now, we can directly connect with professional athletes who resonate with our brand values. The platform has streamlined our sports marketing initiatives significantly.",
+  //       //     author: "Priya Mehta",
+  //       //     role: "BRAND MANAGER | LIFESTYLE COMPANY",
+  //       //     image: "/priya.jpg",
+  //       //     rating: 4,
+  //       //   },
+  //       // ];
         
-    //     // Simulate API delay
-  //       setTimeout(() => {
-  //         setTestimonials(sampleTestimonials)
-  //         setLoading(false);
-  //       }, 1000);
-      } catch (error) {
-        console.error('Error fetching testimonials:', error)
-        setLoading(false)
-      }
-    }
+  //   //     // Simulate API delay
+  // //       setTimeout(() => {
+  // //         setTestimonials(sampleTestimonials)
+  // //         setLoading(false);
+  // //       }, 1000);
+  //     } catch (error) {
+  //       console.error('Error fetching testimonials:', error)
+  //       setLoading(false)
+  //     }
+  //   }
     
-    fetchTestimonials()
-  }, [])
+  //   fetchTestimonials()
+  // }, [])
+  useEffect(() => {
+    const fetchTestimonials = async () => {
+      try {
+        setLoading(true);
+
+        const { data, error } = await supabase
+          .from("feedback")
+          .select("id, from_user_id, feedback_text, rating, created_at, users(name, email, image)")
+          .order("created_at", { ascending: false })
+          .limit(10);
+
+        if (error) throw error;
+
+        // Process data to handle missing images
+        const processedData = data.map((item) => ({
+          id: item.id,
+          quote: item.feedback_text,
+          author: item.users[0]?.name || "Unknown",
+          role: "User", // You can adjust this based on your data
+          image: item.users[0]?.image || "/placeholder.svg",
+          rating: item.rating,
+          created_at: item.created_at,
+        }));
+
+        setTestimonials(processedData);
+      } catch (error) {
+        console.error("Error fetching testimonials:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTestimonials();
+  }, []);
 
   const next = () => {
     setCurrentIndex((currentIndex + 1) % testimonials.length)
