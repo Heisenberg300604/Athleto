@@ -47,6 +47,7 @@ interface OpportunityCardProps {
 }
 
 export const OpportunityCard: React.FC<OpportunityCardProps> = ({ opportunity, onApply }) => {
+  console.log(opportunity)
   const [showDetailsDialog, setShowDetailsDialog] = useState(false);
   const [activeTab, setActiveTab] = useState('details');
   const [message, setMessage] = useState('');
