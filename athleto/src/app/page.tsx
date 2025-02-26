@@ -19,14 +19,21 @@ import NumbersSection from "@/components/Numbersection"
 import TestimonialsSection from "@/components/Testimonial"
 import TeamSection from "@/components/Teamsection"
 import { Montserrat } from "next/font/google"
+import { useUser } from "@/context/UserContext"
+import LoginModal from "@/components/Loginmodal"
 
 const montserrat = Montserrat({ subsets: ["latin"] })
 
 export default function Home() {
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false)
   const [isBrandSignupModalOpen, setIsBrandSignupModalOpen] = useState(false)
+  const [dashboardPath, setDashboardPath] = useState("");
+  console.log(dashboardPath)
   const router = useRouter()
   const supabase = createClientComponentClient()
+  const { user } = useUser();
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  console.log(user)
 
   const handleAthleteSignup = () => {
     setIsSignupModalOpen(false)
@@ -37,6 +44,59 @@ export default function Home() {
     setIsSignupModalOpen(false)
     router.push("/brand-dashboard")
   }
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      if (!user?.email) return;
+
+      // Check if the user is in the athletes table
+      const { data: athlete, error: athleteError } = await supabase
+        .from("athletes")
+        .select("*")
+        .eq("email", user.email)
+        .single();
+
+      if (athlete) {
+        setDashboardPath("/athlete-dashboard");
+        return;
+      }
+
+      // Check if the user is in the brands table
+      const { data: brand, error: brandError } = await supabase
+        .from("brands")
+        .select("*")
+        .eq("business_email", user.email)
+        .single();
+
+      if (brand) {
+        setDashboardPath("/brand-dashboard");
+        return;
+      }
+    };
+
+    fetchUserRole();
+  }, [user]);
+
+  const handleDashboardRedirect = () => {
+    if (dashboardPath) {
+      router.push(dashboardPath);
+    }
+  };
+  const handleLogout = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+
+      // Clear localStorage & Supabase session
+      localStorage.clear();
+      sessionStorage.clear();
+
+      // Refresh the auth state immediately
+      await router.replace("/"); // Ensures full reload
+      router.refresh(); // Ensures state update
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };
 
   useHomePageForcedTheme()
 
@@ -108,9 +168,24 @@ export default function Home() {
               <Link href="/contact" className="text-sm text-gray-400 hover:text-white" onClick={scrollToTeam}>
                 Team
               </Link>
-              <Button variant="outline" className="hidden bg-white/5 text-white hover:bg-white/10 md:inline-flex">
-                  Get a Demo now !
+              {user ? (
+                <Button
+                  variant="outline"
+                  className="hidden bg-white/5 text-white hover:bg-white/10 md:inline-flex"
+                  onClick={handleLogout}
+                >
+                  Logout
                 </Button>
+              ) : (
+                <Button
+                  variant="outline"
+                  className="hidden bg-white/5 text-white hover:bg-white/10 md:inline-flex"
+                  onClick={() => setIsLoginModalOpen(true)}
+                >
+                  Login
+                </Button>
+              )}
+
             </div>
           </div>
         </header>
@@ -126,23 +201,44 @@ export default function Home() {
             them reach their full potential. Join us in shaping the future of Indian football.
           </p>
           <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:gap-6">
-            <Button
-              className="bg-white px-8 text-black hover:bg-gray-100"
-              onClick={() => setIsSignupModalOpen(true)}
-            >
-              Athlete Sign up
-            </Button>
-            <Button
-              onClick={() => setIsBrandSignupModalOpen(true)}
-              variant="outline"
-              className="border-gray-600 bg-transparent text-white hover:bg-white/10"
-            >
-              Brand Sign up
-            </Button>
+            {user ? (
+              <Button
+                className="bg-white px-8 text-black hover:bg-gray-100"
+                onClick={handleDashboardRedirect}
+                disabled={!dashboardPath}
+              >
+                Go to dashboard
+              </Button>
+            ) : (
 
-            <AthleteSignupModal isOpen={isSignupModalOpen} onClose={() => setIsSignupModalOpen(false)} />
+              <>
+                <Button
+                  className="bg-white px-8 text-black hover:bg-gray-100"
+                  onClick={() => setIsSignupModalOpen(true)}
+                >
+                  Athlete Sign up
+                </Button>
+                <Button
+                  onClick={() => setIsBrandSignupModalOpen(true)}
+                  variant="outline"
+                  className="border-gray-600 bg-transparent text-white hover:bg-white/10"
+                >
+                  Brand Sign up
+                </Button>
 
-            <BrandSignupModal isOpen={isBrandSignupModalOpen} onClose={() => setIsBrandSignupModalOpen(false)} />
+                <AthleteSignupModal isOpen={isSignupModalOpen} onClose={() => setIsSignupModalOpen(false)} />
+                <BrandSignupModal isOpen={isBrandSignupModalOpen} onClose={() => setIsBrandSignupModalOpen(false)} />
+              </>
+
+            )}
+            <LoginModal
+            isOpen={isLoginModalOpen}
+            onClose={() => setIsLoginModalOpen(false)}
+            onOpenBrandSignup={() => {}}
+          onOpenAthleteSignup={() => {}}
+          />
+
+
           </div>
         </main>
 
