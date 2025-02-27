@@ -31,6 +31,7 @@ interface Post {
   byAPI?: boolean;
   verified?: boolean;
 }
+import Chatbot from "./Chatbot"
 
 const ANewsFeed = ({ brandDetails }: { brandDetails: any }) => {
   const { user, brand } = useUser();
@@ -530,6 +531,7 @@ const ANewsFeed = ({ brandDetails }: { brandDetails: any }) => {
           </Card>
         </div>
       </div>
+      <Chatbot/>
     </div>
   );
 };
