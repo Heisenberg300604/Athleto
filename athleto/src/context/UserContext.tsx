@@ -30,6 +30,7 @@ interface Athlete {
   bank_account_name?: string;
   iban?: string;
   currency?: string;
+  profile_picture?: string;
 }
 
 interface Brand {

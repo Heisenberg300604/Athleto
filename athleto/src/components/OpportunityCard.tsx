@@ -93,7 +93,7 @@ export const OpportunityCard: React.FC<OpportunityCardProps> = ({ opportunity, o
     }
   };
 
-  const handleEmojiClick = (emojiObject:any) => {
+  const handleEmojiClick = (emojiObject: any) => {
     setMessage((prevMessage) => prevMessage + emojiObject.emoji);
     setShowEmojiPicker(false);
   };
@@ -315,8 +315,8 @@ export const OpportunityCard: React.FC<OpportunityCardProps> = ({ opportunity, o
                   </section>
 
                   {/* Selection Process */}
-                  <section>
-                    <h3 className="text-lg font-semibold mb-3">Selection Process</h3>
+                  {/* <section>
+                    <h3 className="text-lg font-semibold mb-3">Selection Process </h3>
                     <div className="bg-blue-50 p-4 rounded-lg">
                       <ul className="space-y-2">
                         {opportunity.selection_process?.physical_trial && (
@@ -339,13 +339,34 @@ export const OpportunityCard: React.FC<OpportunityCardProps> = ({ opportunity, o
                         )}
                       </ul>
                     </div>
+                  </section> */}
+
+                  <section>
+                    <h3 className="text-lg font-semibold mb-3">Selection Process</h3>
+                    <div className="bg-blue-50 p-4 rounded-lg">
+                      <ul className="space-y-2">
+                        <li className="flex items-center space-x-2">
+                          <CheckCircle className="h-4 w-4 text-green-500" />
+                          <span>Physical trial required</span>
+                        </li>
+                        <li className="flex items-center space-x-2">
+                          <CheckCircle className="h-4 w-4 text-green-500" />
+                          <span>Interview required</span>
+                        </li>
+                        <li className="flex items-center space-x-2">
+                          <CheckCircle className="h-4 w-4 text-green-500" />
+                          <span>Automatic shortlisting enabled</span>
+                        </li>
+                      </ul>
+                    </div>
                   </section>
 
+
                   {/* Brand Contact */}
-                  <section>
+                  {/* <section>
                     <h3 className="text-lg font-semibold mb-3">Brand Representative</h3>
                     <div className="bg-gray-50 p-4 rounded-lg">
-                      {/* {opportunity.brand_representative ? (
+                      {opportunity.brand_representative ? (
                         <div className="flex items-center space-x-4">
                           <Avatar className="h-10 w-10">
                             <AvatarImage src={opportunity.brand_representative.avatar} />
@@ -370,11 +391,37 @@ export const OpportunityCard: React.FC<OpportunityCardProps> = ({ opportunity, o
                           <Info className="h-5 w-5" />
                           <span>Contact information will be provided after application</span>
                         </div>
-                      )} */}
+                      )}
                     </div>
-                  </section>
+                  </section> */}
 
-                  {opportunity.required_documents && (
+<section>
+  <h3 className="text-lg font-semibold mb-3">Brand Representative</h3>
+  <div className="bg-gray-50 p-4 rounded-lg">
+    <div className="flex items-center space-x-4">
+      <Avatar className="h-10 w-10">
+        <AvatarImage src="/path-to-avatar.jpg" />
+        <AvatarFallback>U</AvatarFallback>
+      </Avatar>
+      <div>
+        <p className="font-medium">Team Synapse</p>
+        <div className="flex space-x-4 mt-2">
+          <Button variant="outline" size="sm" className="flex items-center space-x-2">
+            <Phone className="h-4 w-4" />
+            <span>Call</span>
+          </Button>
+          <Button variant="outline" size="sm" className="flex items-center space-x-2">
+            <Mail className="h-4 w-4" />
+            <span>Email</span>
+          </Button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+                  {/* {opportunity.required_documents && (
                     <section>
                       <h3 className="text-lg font-semibold mb-3">Required Documents</h3>
                       <div className="bg-gray-50 p-4 rounded-lg">
@@ -388,7 +435,27 @@ export const OpportunityCard: React.FC<OpportunityCardProps> = ({ opportunity, o
                         </ul>
                       </div>
                     </section>
-                  )}
+                  )} */}
+
+<section>
+  <h3 className="text-lg font-semibold mb-3">Required Documents</h3>
+  <div className="bg-gray-50 p-4 rounded-lg">
+    <ul className="space-y-2">
+      <li className="flex items-center space-x-2">
+        <FileText className="h-4 w-4 text-gray-500" />
+        <span>Government ID</span>
+      </li>
+      <li className="flex items-center space-x-2">
+        <FileText className="h-4 w-4 text-gray-500" />
+        <span>Resume</span>
+      </li>
+      <li className="flex items-center space-x-2">
+        <FileText className="h-4 w-4 text-gray-500" />
+        <span>Passport Size Photo</span>
+      </li>
+    </ul>
+  </div>
+</section>
                 </div>
               </ScrollArea>
             </TabsContent>
@@ -404,8 +471,8 @@ export const OpportunityCard: React.FC<OpportunityCardProps> = ({ opportunity, o
                     >
                       <div
                         className={`max-w-[80%] rounded-lg p-3 ${msg.sender === 'athlete'
-                            ? 'bg-blue-500 text-white ml-auto'
-                            : 'bg-gray-100 text-gray-900'
+                          ? 'bg-blue-500 text-white ml-auto'
+                          : 'bg-gray-100 text-gray-900'
                           }`}
                       >
                         <p className="break-words">{msg.text}</p>
@@ -420,14 +487,14 @@ export const OpportunityCard: React.FC<OpportunityCardProps> = ({ opportunity, o
 
               <div className="border-t p-4 bg-white mt-auto">
                 <div className="flex items-center space-x-2">
-                {showEmojiPicker && (
-          <div className="absolute bottom-16 left-4 bg-white shadow-md rounded-lg">
-            <EmojiPicker onEmojiClick={handleEmojiClick} />
-          </div>
-        )}
-                <Button variant="ghost" size="icon" className="hover:bg-gray-100" onClick={() => setShowEmojiPicker(!showEmojiPicker)}>
-            <Smile className="h-5 w-5 text-gray-500" />
-          </Button>
+                  {showEmojiPicker && (
+                    <div className="absolute bottom-16 left-4 bg-white shadow-md rounded-lg">
+                      <EmojiPicker onEmojiClick={handleEmojiClick} />
+                    </div>
+                  )}
+                  <Button variant="ghost" size="icon" className="hover:bg-gray-100" onClick={() => setShowEmojiPicker(!showEmojiPicker)}>
+                    <Smile className="h-5 w-5 text-gray-500" />
+                  </Button>
                   <label htmlFor="file-upload" className="cursor-pointer">
                     <Paperclip className="h-5 w-5 text-gray-500" />
                     <input id="file-upload" type="file" className="hidden" onChange={handleFileUpload} />
