@@ -251,6 +251,7 @@ export default function BrandCampaignsView() {
           </div>
         )}
       </div>
+      
     </div>
   );
 }

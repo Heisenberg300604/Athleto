@@ -5,6 +5,7 @@ import { useState, FormEvent, ChangeEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import AthleteNavbar from '@/components/AthleteNavbar';
 import { supabase } from '@/lib/supabase';
+import Chatbot from '@/components/Chatbot';
 
 // Define TypeScript interfaces for our data
 interface CampaignFormData {
@@ -294,6 +295,7 @@ export default function CreateCampaign() {
           </form>
         </div>
       </div>
+      <Chatbot/>
     </div>
   );
 }

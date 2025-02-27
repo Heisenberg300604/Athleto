@@ -41,7 +41,7 @@ const BrandNavbar = () => {
       dropdownItems: [
         { name: 'Crowdfunding Programs', href: '/brand-funding/crowdfunding' },
         { name: 'Train Now Pay Later Models', href: '/brand-funding/tnpl' },
-        { name: 'Corporate Grants', href: '/brand-funding/corporate-grants' },
+        { name: 'Micro Investments', href: '/brand-funding/micro-investment' },
         { name: 'Brand Partnerships', href: '/brand-funding/partnerships' },
         { name: 'Marketing Campaigns', href: '/brand-funding/marketing-campaigns' },
       ]
