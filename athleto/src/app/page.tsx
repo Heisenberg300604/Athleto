@@ -21,6 +21,7 @@ import TeamSection from "@/components/Teamsection"
 import { Montserrat } from "next/font/google"
 import { useUser } from "@/context/UserContext"
 import LoginModal from "@/components/Loginmodal"
+import FundingShowcase from "@/components/Funding-features"
 
 const montserrat = Montserrat({ subsets: ["latin"] })
 
@@ -249,6 +250,9 @@ export default function Home() {
         <div id="features">
           <FeaturesSection />
         </div>
+
+        {/* Funding-showcasing */}
+        <FundingShowcase/>
 
         {/* Testimonials Section */}
         <div id="testimonials">
