@@ -25,7 +25,7 @@ interface ChatbotProps {
 
 const Chatbot = ({
   title = "GoalBot",
-  subtitle = "Powered by Cohere",
+  subtitle = "Your Football Companion",
   welcomeMessage = "Hello! I'm your AI assistant. How can I help you today?",
   primaryColor = "bg-blue-600",
   position = "bottom-right",
