@@ -18,6 +18,7 @@ import { Search, ChevronLeft, ChevronRight } from "lucide-react";
 import { useForceLightMode } from "@/hooks/useForcedLightTheme";
 import BrandNavbar from "@/components/BrandNavbar";
 import { MultipliersInfo } from "./__components/MultiplierInfo";
+import Chatbot from "@/components/Chatbot";
 interface Brand {
   id: number;
   name: string;
@@ -115,7 +116,6 @@ export default function BrandLeaderboardPage() {
 
   return (
     <>
-      <BrandNavbar />
       <div className="container mx-auto p-8 max-w-7xl">
         <div className="space-y-6">
           <div className="flex flex-col space-y-2">
@@ -261,6 +261,7 @@ export default function BrandLeaderboardPage() {
             </CardContent>
           </Card>
         </div>
+        <Chatbot/>
       </div>
     </>
   );

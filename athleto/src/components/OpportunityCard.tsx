@@ -19,10 +19,11 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { 
-  MapPin, 
-  Calendar, 
-  Users, 
+import EmojiPicker from "emoji-picker-react";
+import {
+  MapPin,
+  Calendar,
+  Users,
   DollarSign,
   Send,
   Smile,
@@ -46,30 +47,38 @@ interface OpportunityCardProps {
 }
 
 export const OpportunityCard: React.FC<OpportunityCardProps> = ({ opportunity, onApply }) => {
-    const [showDetailsDialog, setShowDetailsDialog] = useState(false);
-    const [activeTab, setActiveTab] = useState('details');
-    const [message, setMessage] = useState('');
-    const [messages, setMessages] = useState([
-      // Adding sample messages for visibility
-      {
-        id: 1,
-        text: "Hello! I'm interested in this opportunity.",
-        sender: 'athlete',
-        timestamp: new Date(),
-      },
-      {
-        id: 2,
-        text: "Great! Let me know if you have any questions.",
-        sender: 'brand',
-        timestamp: new Date(),
-      }
-    ]);
-    const [isApplying, setIsApplying] = useState(false);
-    const [showConfirmDialog, setShowConfirmDialog] = useState(false);
-    const [showSuccessDialog, setShowSuccessDialog] = useState(false);
-  
-  
-  
+  console.log(opportunity)
+  const [showDetailsDialog, setShowDetailsDialog] = useState(false);
+  const [activeTab, setActiveTab] = useState('details');
+  const [message, setMessage] = useState('');
+  const [file, setFile] = useState<File | null>(null);
+  const [messages, setMessages] = useState([
+    // Adding sample messages for visibility
+    {
+      id: 1,
+      text: "Hello! I'm interested in this opportunity.",
+      sender: 'athlete',
+      timestamp: new Date(),
+    },
+    {
+      id: 2,
+      text: "Great! Let me know if you have any questions.",
+      sender: 'brand',
+      timestamp: new Date(),
+    }
+  ]);
+  const [isApplying, setIsApplying] = useState(false);
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+      setFile(event.target.files[0]);
+      console.log("File Uploaded:", event.target.files[0]);
+    }
+  };
+
 
   const handleApply = async () => {
     try {
@@ -83,6 +92,12 @@ export const OpportunityCard: React.FC<OpportunityCardProps> = ({ opportunity, o
       setIsApplying(false);
     }
   };
+
+  const handleEmojiClick = (emojiObject:any) => {
+    setMessage((prevMessage) => prevMessage + emojiObject.emoji);
+    setShowEmojiPicker(false);
+  };
+
   const handleSendMessage = () => {
     if (!message.trim()) return;
     setMessages([
@@ -135,7 +150,7 @@ export const OpportunityCard: React.FC<OpportunityCardProps> = ({ opportunity, o
               <span>€{opportunity.funding_amount?.min?.toLocaleString()} - €{opportunity.funding_amount?.max?.toLocaleString()}</span>
             </div>
           </div>
-          
+
           <p className="text-sm text-gray-700 line-clamp-2">{opportunity.description}</p>
         </CardContent>
 
@@ -147,7 +162,7 @@ export const OpportunityCard: React.FC<OpportunityCardProps> = ({ opportunity, o
             <MessageCircle className="h-4 w-4" />
             <span>View Details</span>
           </Button>
-          
+
           <Button
             className="bg-blue-600 text-white hover:bg-blue-700"
             onClick={() => setShowConfirmDialog(true)}>
@@ -169,7 +184,7 @@ export const OpportunityCard: React.FC<OpportunityCardProps> = ({ opportunity, o
             <Button variant="outline" onClick={() => setShowConfirmDialog(false)}>
               No, Cancel
             </Button>
-            <Button 
+            <Button
               onClick={handleApply}
               disabled={isApplying}
               className="bg-blue-600 text-white hover:bg-blue-700">
@@ -190,7 +205,7 @@ export const OpportunityCard: React.FC<OpportunityCardProps> = ({ opportunity, o
             </p>
           </div>
           <DialogFooter>
-            <Button 
+            <Button
               onClick={() => setShowSuccessDialog(false)}
               className="w-full bg-blue-600 text-white hover:bg-blue-700">
               Okay
@@ -199,8 +214,8 @@ export const OpportunityCard: React.FC<OpportunityCardProps> = ({ opportunity, o
         </DialogContent>
       </Dialog>
 
-    {/* Updated Details Dialog */}
-    <Dialog open={showDetailsDialog} onOpenChange={setShowDetailsDialog}>
+      {/* Updated Details Dialog */}
+      <Dialog open={showDetailsDialog} onOpenChange={setShowDetailsDialog}>
         <DialogContent className="max-w-4xl h-[80vh] p-0">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full flex flex-col">
             <DialogHeader className="px-6 py-4 border-b shrink-0">
@@ -240,7 +255,7 @@ export const OpportunityCard: React.FC<OpportunityCardProps> = ({ opportunity, o
                         </p>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-center space-x-3">
                       <Calendar className="h-5 w-5 text-gray-500" />
                       <div>
@@ -264,7 +279,7 @@ export const OpportunityCard: React.FC<OpportunityCardProps> = ({ opportunity, o
                       <div>
                         <p className="text-sm font-medium">Funding Amount</p>
                         <p className="text-sm text-gray-600">
-                          €{opportunity.funding_amount?.min?.toLocaleString()} - 
+                          €{opportunity.funding_amount?.min?.toLocaleString()} -
                           €{opportunity.funding_amount?.max?.toLocaleString()}
                         </p>
                       </div>
@@ -384,16 +399,14 @@ export const OpportunityCard: React.FC<OpportunityCardProps> = ({ opportunity, o
                   {messages.map((msg) => (
                     <div
                       key={msg.id}
-                      className={`flex ${
-                        msg.sender === 'athlete' ? 'justify-end' : 'justify-start'
-                      }`}
+                      className={`flex ${msg.sender === 'athlete' ? 'justify-end' : 'justify-start'
+                        }`}
                     >
                       <div
-                        className={`max-w-[80%] rounded-lg p-3 ${
-                          msg.sender === 'athlete'
+                        className={`max-w-[80%] rounded-lg p-3 ${msg.sender === 'athlete'
                             ? 'bg-blue-500 text-white ml-auto'
                             : 'bg-gray-100 text-gray-900'
-                        }`}
+                          }`}
                       >
                         <p className="break-words">{msg.text}</p>
                         <p className="text-xs mt-1 opacity-70">
@@ -407,12 +420,18 @@ export const OpportunityCard: React.FC<OpportunityCardProps> = ({ opportunity, o
 
               <div className="border-t p-4 bg-white mt-auto">
                 <div className="flex items-center space-x-2">
-                  <Button variant="ghost" size="icon" className="hover:bg-gray-100">
-                    <Smile className="h-5 w-5 text-gray-500" />
-                  </Button>
-                  <Button variant="ghost" size="icon" className="hover:bg-gray-100">
+                {showEmojiPicker && (
+          <div className="absolute bottom-16 left-4 bg-white shadow-md rounded-lg">
+            <EmojiPicker onEmojiClick={handleEmojiClick} />
+          </div>
+        )}
+                <Button variant="ghost" size="icon" className="hover:bg-gray-100" onClick={() => setShowEmojiPicker(!showEmojiPicker)}>
+            <Smile className="h-5 w-5 text-gray-500" />
+          </Button>
+                  <label htmlFor="file-upload" className="cursor-pointer">
                     <Paperclip className="h-5 w-5 text-gray-500" />
-                  </Button>
+                    <input id="file-upload" type="file" className="hidden" onChange={handleFileUpload} />
+                  </label>
                   <Input
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
@@ -420,7 +439,7 @@ export const OpportunityCard: React.FC<OpportunityCardProps> = ({ opportunity, o
                     className="flex-1"
                     onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
                   />
-                  <Button 
+                  <Button
                     onClick={handleSendMessage}
                     size="icon"
                     className="bg-blue-600 hover:bg-blue-700 text-white"

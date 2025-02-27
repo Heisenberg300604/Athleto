@@ -17,6 +17,7 @@ import { Search, ChevronLeft, ChevronRight } from "lucide-react";
 import { MultipliersInfo } from "./__components/MultipliersInfo";
 import { useForceLightMode } from "@/hooks/useForcedLightTheme";
 import AthleteNavbar from "@/components/AthleteNavbar";
+import Chatbot from "@/components/Chatbot";
 // Define the structure of an athlete's data
 interface Athlete {
   id: number;
@@ -111,7 +112,6 @@ export default function LeaderboardPage() {
   const currentAthletes = filteredAthletes.slice(startIndex, endIndex);
   return (
     <>
-      <AthleteNavbar />
       <div className="container mx-auto p-8 max-w-7xl">
         <div className="space-y-6">
           <div className="flex flex-col space-y-2">
@@ -260,6 +260,7 @@ export default function LeaderboardPage() {
             </CardContent>
           </Card>
         </div>
+        <Chatbot/>
       </div>
     </>
   );

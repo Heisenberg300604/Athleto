@@ -40,31 +40,31 @@ const BrandSignupModal = ({ isOpen, onClose }: BrandSignupModalProps) => {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const router = useRouter();
 
-  const handleGoogleLogin = async () => {
-    try {
-      // Prevent form validation toast messages
-      setLoading(true);
+  // const handleGoogleLogin = async () => {
+  //   try {
+  //     // Prevent form validation toast messages
+  //     setLoading(true);
       
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          redirectTo: `${window.location.origin}/brand-dashboard`,
-          queryParams: {
-            access_type: 'offline',
-            prompt: 'consent',
-          }
-        },
-      });
+  //     const { data, error } = await supabase.auth.signInWithOAuth({
+  //       provider: "google",
+  //       options: {
+  //         redirectTo: `${window.location.origin}/brand-dashboard`,
+  //         queryParams: {
+  //           access_type: 'offline',
+  //           prompt: 'consent',
+  //         }
+  //       },
+  //     });
 
-      if (error) throw error;
+  //     if (error) throw error;
 
-    } catch (error: any) {
-      console.error("Google login error:", error);
-      toast.error(error.message || "Failed to login with Google");
-    } finally {
-      setLoading(false);
-    }
-  };
+  //   } catch (error: any) {
+  //     console.error("Google login error:", error);
+  //     toast.error(error.message || "Failed to login with Google");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   const validateForm = () => {
     if (!firstName || !lastName || !brandName || !brandCategory || !businessEmail || !password || !confirmPassword) {
@@ -174,6 +174,7 @@ const BrandSignupModal = ({ isOpen, onClose }: BrandSignupModalProps) => {
                 onChange={(e) => setFirstName(e.target.value)}
                 className="bg-[#171923] border-gray-700/30 text-white h-12 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 placeholder="Enter your first name"
+                required
               />
             </div>
             <div className="grid w-full gap-1.5">
@@ -186,6 +187,7 @@ const BrandSignupModal = ({ isOpen, onClose }: BrandSignupModalProps) => {
                 onChange={(e) => setLastName(e.target.value)}
                 className="bg-[#171923] border-gray-700/30 text-white h-12 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 placeholder="Enter your last name"
+                required
               />
             </div>
           </div>
@@ -200,6 +202,7 @@ const BrandSignupModal = ({ isOpen, onClose }: BrandSignupModalProps) => {
               onChange={(e) => setBrandName(e.target.value)}
               className="bg-[#171923] border-gray-700/30 text-white h-12 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
               placeholder="Enter your brand name"
+              required
             />
           </div>
 
@@ -232,6 +235,7 @@ const BrandSignupModal = ({ isOpen, onClose }: BrandSignupModalProps) => {
               onChange={(e) => setBusinessEmail(e.target.value)}
               className="bg-[#171923] border-gray-700/30 text-white h-12 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
               placeholder="Enter your business email"
+              required
             />
           </div>
 
@@ -248,6 +252,7 @@ const BrandSignupModal = ({ isOpen, onClose }: BrandSignupModalProps) => {
                   onChange={(e) => setPassword(e.target.value)}
                   className="bg-[#171923] border-gray-700/30 text-white h-12 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                   placeholder="Enter your password"
+                  required
                 />
               </div>
               <div className="grid w-full gap-1.5">
@@ -261,12 +266,13 @@ const BrandSignupModal = ({ isOpen, onClose }: BrandSignupModalProps) => {
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   className="bg-[#171923] border-gray-700/30 text-white h-12 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                   placeholder="Confirm your password"
+                  required
                 />
               </div>
             </div>
           </div>
 
-          <Button
+          {/* <Button
             type="button"
             onClick={handleGoogleLogin}
             className="w-full h-12 flex items-center justify-center gap-2 bg-white/10 text-white hover:bg-white/20 rounded-lg transition-all border border-gray-700/30"
@@ -278,7 +284,7 @@ const BrandSignupModal = ({ isOpen, onClose }: BrandSignupModalProps) => {
               />
             </svg>
             Continue with Google
-          </Button>
+          </Button> */}
 
           <div className="text-sm text-gray-400 text-center">
             By creating an account, you agree to our{" "}

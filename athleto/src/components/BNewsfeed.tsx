@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import BrandNavbar from "./BrandNavbar"
+import Chatbot from "./Chatbot"
 
 const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
   const [activeTab, setActiveTab] = useState("all")
@@ -582,6 +583,7 @@ const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
           </DialogContent>
         </Dialog>
       </div>
+      <Chatbot/>
     </div>
   )
 }

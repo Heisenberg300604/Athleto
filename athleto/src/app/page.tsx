@@ -19,52 +19,21 @@ import NumbersSection from "@/components/Numbersection"
 import TestimonialsSection from "@/components/Testimonial"
 import TeamSection from "@/components/Teamsection"
 import { Montserrat } from "next/font/google"
+import { useUser } from "@/context/UserContext"
+import LoginModal from "@/components/Loginmodal"
 
 const montserrat = Montserrat({ subsets: ["latin"] })
 
 export default function Home() {
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false)
   const [isBrandSignupModalOpen, setIsBrandSignupModalOpen] = useState(false)
+  const [dashboardPath, setDashboardPath] = useState("");
+  console.log(dashboardPath)
   const router = useRouter()
   const supabase = createClientComponentClient()
-  const [user, setUser] = useState<User | null>(null)
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    // Create a single function to handle auth state
-    const setupAuth = async () => {
-      try {
-        // Get initial session
-        const {
-          data: { session },
-        } = await supabase.auth.getSession()
-        setUser(session?.user ?? null)
-        setLoading(false)
-
-        // Listen for auth changes
-        const {
-          data: { subscription },
-        } = supabase.auth.onAuthStateChange((_event, session) => {
-          setUser(session?.user ?? null)
-        })
-
-        return () => {
-          subscription.unsubscribe()
-        }
-      } catch (error) {
-        console.error("Auth error:", error)
-        setLoading(false)
-      }
-    }
-
-    setupAuth()
-  }, [supabase.auth])
-
-  const handleLogout = async () => {
-    const { error } = await supabase.auth.signOut()
-    if (error) console.error("Logout error:", error)
-    // No need to update state here - the auth listener will handle it
-  }
+  const { user } = useUser();
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  console.log(user)
 
   const handleAthleteSignup = () => {
     setIsSignupModalOpen(false)
@@ -75,6 +44,59 @@ export default function Home() {
     setIsSignupModalOpen(false)
     router.push("/brand-dashboard")
   }
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      if (!user?.email) return;
+
+      // Check if the user is in the athletes table
+      const { data: athlete, error: athleteError } = await supabase
+        .from("athletes")
+        .select("*")
+        .eq("email", user.email)
+        .single();
+
+      if (athlete) {
+        setDashboardPath("/athlete-dashboard");
+        return;
+      }
+
+      // Check if the user is in the brands table
+      const { data: brand, error: brandError } = await supabase
+        .from("brands")
+        .select("*")
+        .eq("business_email", user.email)
+        .single();
+
+      if (brand) {
+        setDashboardPath("/brand-dashboard");
+        return;
+      }
+    };
+
+    fetchUserRole();
+  }, [user]);
+
+  const handleDashboardRedirect = () => {
+    if (dashboardPath) {
+      router.push(dashboardPath);
+    }
+  };
+  const handleLogout = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+
+      // Clear localStorage & Supabase session
+      localStorage.clear();
+      sessionStorage.clear();
+
+      // Refresh the auth state immediately
+      await router.replace("/"); // Ensures full reload
+      router.refresh(); // Ensures state update
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };
 
   useHomePageForcedTheme()
 
@@ -86,7 +108,7 @@ export default function Home() {
       featuresSection.scrollIntoView({ behavior: "smooth" })
     }
   }
-  
+
   const scrollToTestimonials = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault()
     const testimonialsSection = document.getElementById("testimonials")
@@ -124,7 +146,7 @@ export default function Home() {
         <header className="fixed top-0 z-50 w-full border-b border-gray-800/20">
           <div className="container mx-auto flex h-16 items-center justify-between px-4">
             <div className="flex items-center gap-6">
-              <Link href="/"  className={`text-2xl font-extrabold mr-6 text-white ${montserrat.className} tracking-wider transition-colors duration-300 `} >
+              <Link href="/" className={`text-2xl font-extrabold mr-6 text-white ${montserrat.className} tracking-wider transition-colors duration-300 `} >
                 Athleto
               </Link>
               <nav className="hidden space-x-6 md:block">
@@ -147,14 +169,23 @@ export default function Home() {
                 Team
               </Link>
               {user ? (
-                <Button variant="outline" className="bg-white/5 text-white hover:bg-white/10" onClick={handleLogout}>
+                <Button
+                  variant="outline"
+                  className="hidden bg-white/5 text-white hover:bg-white/10 md:inline-flex"
+                  onClick={handleLogout}
+                >
                   Logout
                 </Button>
               ) : (
-                <Button variant="outline" className="hidden bg-white/5 text-white hover:bg-white/10 md:inline-flex">
-                  Get a Demo now
+                <Button
+                  variant="outline"
+                  className="hidden bg-white/5 text-white hover:bg-white/10 md:inline-flex"
+                  onClick={() => setIsLoginModalOpen(true)}
+                >
+                  Login
                 </Button>
               )}
+
             </div>
           </div>
         </header>
@@ -173,11 +204,13 @@ export default function Home() {
             {user ? (
               <Button
                 className="bg-white px-8 text-black hover:bg-gray-100"
-                onClick={() => router.push("/athlete-dashboard")}
+                onClick={handleDashboardRedirect}
+                disabled={!dashboardPath}
               >
-                Go to Dashboard
+                Go to dashboard
               </Button>
             ) : (
+
               <>
                 <Button
                   className="bg-white px-8 text-black hover:bg-gray-100"
@@ -194,10 +227,18 @@ export default function Home() {
                 </Button>
 
                 <AthleteSignupModal isOpen={isSignupModalOpen} onClose={() => setIsSignupModalOpen(false)} />
-
                 <BrandSignupModal isOpen={isBrandSignupModalOpen} onClose={() => setIsBrandSignupModalOpen(false)} />
               </>
+
             )}
+            <LoginModal
+            isOpen={isLoginModalOpen}
+            onClose={() => setIsLoginModalOpen(false)}
+            onOpenBrandSignup={() => {}}
+          onOpenAthleteSignup={() => {}}
+          />
+
+
           </div>
         </main>
 
@@ -218,7 +259,7 @@ export default function Home() {
         <div id="team">
           <TeamSection />
         </div>
-        
+
       </div>
 
       {/* Footer */}
