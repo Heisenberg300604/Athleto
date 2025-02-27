@@ -18,6 +18,7 @@ import { MultipliersInfo } from "./__components/MultipliersInfo";
 import { useForceLightMode } from "@/hooks/useForcedLightTheme";
 import AthleteNavbar from "@/components/AthleteNavbar";
 import Chatbot from "@/components/Chatbot";
+
 // Define the structure of an athlete's data
 interface Athlete {
   id: number;
