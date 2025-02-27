@@ -1,36 +1,61 @@
-"use client"
-import { useState } from "react"
-import { Heart, MapPin, Building2, Share2, ThumbsUp, ChevronLeft, ChevronRight, UserPlus } from "lucide-react"
-import { Button } from "../components/ui/button"
-import { Badge } from "../components/ui/badge"
-import { Card, CardContent } from "../components/ui/card"
-import AthleteNavbar from "./AthleteNavbar"
+"use client";
+import { useEffect, useState } from "react";
+import {
+  Heart,
+  MapPin,
+  Building2,
+  Share2,
+  ThumbsUp,
+  ChevronLeft,
+  ChevronRight,
+  UserPlus,
+} from "lucide-react";
+import { Button } from "../components/ui/button";
+import { Badge } from "../components/ui/badge";
+import { Card, CardContent } from "../components/ui/card";
+import AthleteNavbar from "./AthleteNavbar";
+import { useUser } from "@/context/UserContext";
+import { supabase } from "@/lib/supabase";
+import Spinner from "./spinner";
+
+interface Post {
+  id: number;
+  brand: string | undefined;
+  title: string;
+  price?: string;
+  date: string;
+  location?: string;
+  description: string;
+  images: string[]; // Array of image URLs
+  type: string;
+  byAPI?: boolean;
+  verified?: boolean;
+}
 
 const ANewsFeed = ({ brandDetails }: { brandDetails: any }) => {
-  const [activeTab, setActiveTab] = useState("all")
-  const [favorites, setFavorites] = useState<string[]>([])
-  const [likes, setLikes] = useState<{ [key: number]: number }>({})
-  const [likedPosts, setLikedPosts] = useState<number[]>([])
-  const [followedBrands, setFollowedBrands] = useState<string[]>([])
-
-const [posts, setPosts] = useState([
+  const { user, brand } = useUser();
+  const [activeTab, setActiveTab] = useState("all");
+  const [favorites, setFavorites] = useState<string[]>([]);
+  const [likes, setLikes] = useState<{ [key: number]: number }>({});
+  const [likedPosts, setLikedPosts] = useState<number[]>([]);
+  const [followedBrands, setFollowedBrands] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [posts, setPosts] = useState<Post[]>([
     {
       id: 1,
       brand: "Puma India",
-      title: "Puma Unveils High-Tech Goalkeeper Gloves with Gurpreet Singh Sandhu",
+      title:
+        "Puma Unveils High-Tech Goalkeeper Gloves with Gurpreet Singh Sandhu",
       price: "₹7,500",
       location: "India, Bengaluru",
       date: "10.03.2025",
       type: "Product Endorsement",
-      description:"Puma India has launched advanced goalkeeper gloves in collaboration with Indian national team star Gurpreet Singh Sandhu. These gloves feature superior grip, shock absorption, and breathable fabric for maximum performance under pressure.",
-      images: [
-        "/n3.jpg?height=400&width=400",
-        "/n4.png?height=400&width=600",
-        
-      ],
-      brandlogo: "/puma.png?height=40&width=40",
+      description:
+        "Puma India has launched advanced goalkeeper gloves in collaboration with Indian national team star Gurpreet Singh Sandhu. These gloves feature superior grip, shock absorption, and breathable fabric for maximum performance under pressure.",
+      images: ["/n3.jpg?height=400&width=400", "/n4.png?height=400&width=600"],
+      // brandlogo: "/puma.png?height=40&width=40",
     },
-    {  
+    {
       id: 2,
       brand: "Adidas India",
       title: "Adidas Sponsors Indian Football Team",
@@ -40,8 +65,8 @@ const [posts, setPosts] = useState([
       type: "Team Sponsorship",
       description:
         "Adidas India has announced a multi-year sponsorship deal with the Indian National Football Team. This partnership aims to boost the development of football in India.",
-      image: "/n5.png?height=400&width=600",
-      brandlogo: "/adidas.png?height=40&width=40",
+      images: ["/n5.png?height=400&width=600"],
+      // brandlogo: "/adidas.png?height=40&width=40",
     },
     {
       id: 3,
@@ -53,20 +78,22 @@ const [posts, setPosts] = useState([
       type: "Brand Ambassador",
       description:
         "PUMA India has signed Indian football captain Sunil Chhetri as their new brand ambassador. Chhetri will be the face of PUMA's football category in India.",
-      image: "/n6.png?height=400&width=600",
-      brandlogo: "/puma.png?height=40&width=40",
+      images: ["/n6.png?height=400&width=600"],
+      // brandlogo: "/puma.png?height=40&width=40",
     },
     {
       id: 4,
       brand: "Under Armour India",
-      title: "Under Armour Unveils High-Performance Football Kits with Jeakson Singh",
-      price:  "₹5,000",
+      title:
+        "Under Armour Unveils High-Performance Football Kits with Jeakson Singh",
+      price: "₹5,000",
       location: "India, Imphal",
       date: "30.07.2023",
       type: "Product Endorsement",
-      description:"Under Armour India teams up with midfield powerhouse Jeakson Singh to introduce a new line of breathable, moisture-wicking football kits. These kits promise enhanced performance and comfort for both training and match days.",
+      description:
+        "Under Armour India teams up with midfield powerhouse Jeakson Singh to introduce a new line of breathable, moisture-wicking football kits. These kits promise enhanced performance and comfort for both training and match days.",
       images: ["/n10.png?height=400&width=600", "/n9.png?height=400&width=600"],
-      brandlogo: "/ua.png?height=40&width=40",
+      // brandlogo: "/ua.png?height=40&width=40",
     },
     {
       id: 5,
@@ -78,12 +105,82 @@ const [posts, setPosts] = useState([
       type: "Academy Sponsorship",
       description:
         "Hero Motocorp has announced a significant sponsorship deal with a leading football academy in India. This move aims to nurture young football talent in the country.",
-      image: "/n7.png?height=400&width=600",
-      brandlogo: "/hero1.avif?height=40&width=40",
+      images: ["/n7.png?height=400&width=600"],
+      // brandlogo: "/hero1.avif?height=40&width=40",
     },
-  ])
+  ]);
 
-  // New brands section 
+  useEffect(() => {
+    const fetchAllPosts = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("post") // Replace with your actual table name
+          .select("*"); // Select all columns
+
+        if (error) {
+          throw new Error(error.message);
+        }
+
+        setPosts((prevPosts) => [...prevPosts, ...data]);
+      } catch (err) {
+        console.error("Error fetching posts:", err);
+        return [];
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAllPosts();
+  }, []);
+
+  useEffect(() => {
+    console.log("Fetching news...");
+    const fetchArticles = async () => {
+      try {
+        const response = await fetch(
+          `https://gnews.io/api/v4/search?q="sports"&lang=en&country=in&max=10&apikey=${process.env.NEXT_PUBLIC_GNEWS_API_KEY}`
+        );
+        const data = await response.json();
+        let index = posts.length;
+        // Transform GNews articles to your Post format
+        if (data && data.articles && Array.isArray(data.articles)) {
+          const newsArticles = data.articles.map(
+            (article: any, index: number) => {
+              return {
+                id: index + data.articles.length + posts.length, // Start IDs after your existing posts
+                brand: "",
+                title: article.title,
+                price: "",
+                location: "India",
+                byAPI: true,
+                date: new Date(article.publishedAt)
+                  .toLocaleDateString("en-IN", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                  })
+                  .replace(/\//g, "."),
+                type: "News Article",
+                description: article.description,
+                images: [
+                  article.image || "/default-news.jpg?height=400&width=600",
+                ],
+              };
+            }
+          );
+
+          // Combine existing posts with new articles
+          setPosts((prevPosts) => [...prevPosts, ...newsArticles]);
+        }
+      } catch (error) {
+        console.error("Error fetching news:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchArticles();
+  }, []);
+  // New brands section
   const footballBrands = [
     {
       name: "Nike India",
@@ -126,48 +223,68 @@ const [posts, setPosts] = useState([
       industry: "Sports Nutrition",
       type: "Nutrition Partner",
       image: "/fastup.png?height=40&width=40",
-    }
-  ]
+    },
+  ];
 
-  const brands = Object.entries(brandDetails || {}).map(([name, details]: [string, any]) => ({
-    name,
-    ...details,
-    image: details.image || "/placeholder.svg?height=40&width=40",
-  }))
+  const brands = Object.entries(brandDetails || {}).map(
+    ([name, details]: [string, any]) => ({
+      name,
+      ...details,
+      image: details.image || "/placeholder.svg?height=40&width=40",
+    })
+  );
 
   const toggleFavorite = (postId: number) => {
     setFavorites((prev) =>
-      prev.includes(postId.toString()) ? prev.filter((id) => id !== postId.toString()) : [...prev, postId.toString()],
-    )
-  }
+      prev.includes(postId.toString())
+        ? prev.filter((id) => id !== postId.toString())
+        : [...prev, postId.toString()]
+    );
+  };
 
   const handleLike = (postId: number) => {
     setLikes((prev) => ({
       ...prev,
       [postId]: (prev[postId] || 0) + (likedPosts.includes(postId) ? -1 : 1),
-    }))
-    setLikedPosts((prev) => (prev.includes(postId) ? prev.filter((id) => id !== postId) : [...prev, postId]))
-  }
+    }));
+    setLikedPosts((prev) =>
+      prev.includes(postId)
+        ? prev.filter((id) => id !== postId)
+        : [...prev, postId]
+    );
+  };
 
   const toggleFollow = (brandName: string) => {
     setFollowedBrands((prev) =>
-      prev.includes(brandName) ? prev.filter((name) => name !== brandName) : [...prev, brandName]
-    )
-  }
+      prev.includes(brandName)
+        ? prev.filter((name) => name !== brandName)
+        : [...prev, brandName]
+    );
+  };
 
-  const filteredPosts =
-    activeTab === "favorites" ? posts.filter((post) => favorites.includes(post.id.toString())) : posts
+  const filteredPosts = (
+    activeTab === "favorites"
+      ? posts.filter((post) => favorites.includes(post.id.toString()))
+      : posts
+  )
+  .filter(
+    (post, index, self) => self.findIndex((p) => p.id === post.id) === index
+  );
+  console.log(posts);
+
 
   const ImageCarousel = ({ images }: { images: string[] }) => {
-    const [currentIndex, setCurrentIndex] = useState(0)
+    const [currentIndex, setCurrentIndex] = useState(0);
 
     const nextImage = () => {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length)
-    }
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
+    };
 
     const prevImage = () => {
-      setCurrentIndex((prevIndex) => (prevIndex - 1 + images.length) % images.length)
-    }
+      setCurrentIndex(
+        (prevIndex) => (prevIndex - 1 + images.length) % images.length
+      );
+    };
 
     return (
       <div className="relative">
@@ -182,25 +299,27 @@ const [posts, setPosts] = useState([
               variant="ghost"
               size="icon"
               className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white/50 hover:bg-white/75"
-              onClick={prevImage}
-            >
+              onClick={prevImage}>
               <ChevronLeft className="h-6 w-6" />
             </Button>
             <Button
               variant="ghost"
               size="icon"
               className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white/50 hover:bg-white/75"
-              onClick={nextImage}
-            >
+              onClick={nextImage}>
               <ChevronRight className="h-6 w-6" />
             </Button>
           </>
         )}
       </div>
-    )
-  }
+    );
+  };
 
-  return (
+  return loading ? (
+    <div className="flex items-center justify-center h-screen">
+      <Spinner />
+    </div>
+  ) : (
     <div className="flex flex-col min-h-screen bg-[#F8F9FB]">
       <AthleteNavbar />
       <div className="flex flex-1 gap-8 p-8">
@@ -215,8 +334,7 @@ const [posts, setPosts] = useState([
                     activeTab === "all"
                       ? "text-indigo-600 border-b-2 border-indigo-600"
                       : "text-gray-500 hover:text-gray-700"
-                  }`}
-                >
+                  }`}>
                   ALL NEWS
                 </button>
                 <button
@@ -225,8 +343,7 @@ const [posts, setPosts] = useState([
                     activeTab === "favorites"
                       ? "text-indigo-600 border-b-2 border-indigo-600"
                       : "text-gray-500 hover:text-gray-700"
-                  }`}
-                >
+                  }`}>
                   NEWS FROM FAVOURITES
                 </button>
               </div>
@@ -235,92 +352,131 @@ const [posts, setPosts] = useState([
 
           {/*Post Cards with Scrollbar*/}
           <div className="space-y-6 h-[calc(100vh-200px)] overflow-y-auto pr-4 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
-            {filteredPosts.map((post) => (
-              <Card
-                key={post.id}
-                className="bg-white shadow-md hover:shadow-lg transition-shadow w-full mx-auto border-none"
-              >
-                <CardContent className="p-6">
-                  <div className="flex justify-between items-start mb-4">
-                    <div className="flex items-center gap-4">
-                      <img
-                        src={post.brandlogo || "/placeholder.svg"}
-                        alt={post.brand}
-                        className="w-12 h-12 rounded-full object-cover"
-                      />
-                      <div>
-                        <h3 className="text-black text-xl font-bold">{post.brand}</h3>
-                        <p className="text-sm text-muted-foreground">Posted {post.date}</p>
+            {filteredPosts.map((post) =>
+              (post.verified !== undefined && post.verified === true) || post.verified===undefined ? (
+                <Card
+                  key={post.id}
+                  className="bg-white shadow-md hover:shadow-lg transition-shadow w-full mx-auto border-none">
+                  <CardContent className="p-6">
+                    <div className="flex justify-between items-start mb-4">
+                      <div className="flex items-center gap-4">
+                        {/* <img
+                          src={post.brandlogo || "/placeholder.svg"}
+                          alt={post.brand}
+                          className="w-12 h-12 rounded-full object-cover"
+                        /> */}
+                        <div>
+                          <h3 className="text-black text-xl font-bold">
+                            {post.brand}
+                          </h3>
+                          <p className="text-sm text-muted-foreground">
+                            Posted {post.date}
+                          </p>
+                        </div>
+                      </div>
+                      {post.byAPI === undefined ? (
+                        <div className="flex items-center gap-2">
+                          <Badge
+                            variant="secondary"
+                            className="bg-green-400 text-white font-medium hover:text-black">
+                            Brand
+                          </Badge>
+                          <Badge
+                            variant="secondary"
+                            className="bg-indigo-50 text-indigo-700 font-medium hover:text-black">
+                            {post.price}
+                          </Badge>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleLike(post.id)}
+                            className={`${
+                              likedPosts.includes(post.id)
+                                ? "text-indigo-600"
+                                : "text-gray-400"
+                            }`}>
+                            <ThumbsUp className="h-5 w-5" />
+                            <span className="ml-1 text-sm">
+                              {likes[post.id] || 0}
+                            </span>
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => toggleFavorite(post.id)}
+                            className={`${
+                              favorites.includes(post.id.toString())
+                                ? "text-red-500"
+                                : "text-gray-400"
+                            }`}>
+                            <Heart
+                              className="h-5 w-5"
+                              fill={
+                                favorites.includes(post.id.toString())
+                                  ? "currentColor"
+                                  : "none"
+                              }
+                            />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="text-gray-400">
+                            <Share2 className="h-1 w-15" />
+                          </Button>
+                        </div>
+                      ) : (
+                        <Badge
+                          variant="secondary"
+                          className="bg-indigo-400 text-white font-medium hover:text-black">
+                          News
+                        </Badge>
+                      )}
+                    </div>
+
+                    <h2 className="text-md font-semibold mb-4 text-gray-900">
+                      {post.title}
+                    </h2>
+
+                    <div className="flex items-center gap-6 mb-4 text-gray-600">
+                      <div className="flex items-center gap-2 font-medium">
+                        <Building2 className="h-5 w-5" />
+                        <span className="text-md text-muted-foreground">
+                          {post.type}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 text-muted-foreground">
+                        <MapPin className="h-5 w-5" />
+                        <span className="text-sm">{post.location}</span>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Badge variant="secondary" className="bg-indigo-50 text-indigo-700 font-medium">
-                        {post.price}
-                      </Badge>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleLike(post.id)}
-                        className={`${likedPosts.includes(post.id) ? "text-indigo-600" : "text-gray-400"}`}
-                      >
-                        <ThumbsUp className="h-5 w-5" />
-                        <span className="ml-1 text-sm">{likes[post.id] || 0}</span>
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => toggleFavorite(post.id)}
-                        className={`${favorites.includes(post.id.toString()) ? "text-red-500" : "text-gray-400"}`}
-                      >
-                        <Heart
-                          className="h-5 w-5"
-                          fill={favorites.includes(post.id.toString()) ? "currentColor" : "none"}
-                        />
-                      </Button>
-                      <Button variant="ghost" size="icon" className="text-gray-400">
-                        <Share2 className="h-5 w-5" />
-                      </Button>
-                    </div>
-                  </div>
 
-                  <h2 className="text-md font-semibold mb-4 text-gray-900">{post.title}</h2>
+                    <p className="text-gray-900 text-sm leading-relaxed">
+                      {post.description}
+                    </p>
 
-                  <div className="flex items-center gap-6 mb-4 text-gray-600">
-                    <div className="flex items-center gap-2 font-medium">
-                      <Building2 className="h-5 w-5" />
-                      <span className="text-md text-muted-foreground">{post.type}</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-muted-foreground">
-                      <MapPin className="h-5 w-5" />
-                      <span className="text-sm">{post.location}</span>
-                    </div>
-                  </div>
-
-                  <p className="text-gray-900 text-sm leading-relaxed">{post.description}</p>
-
-                  {post.images ? (
-                    <ImageCarousel images={post.images} />
-                  ) : post.image ? (
-                    <img
-                      src={post.image || "/placeholder.svg"}
-                      alt={post.title}
-                      className="w-full h-64 object-cover rounded-lg mt-4"
-                    />
-                  ) : null}
-                </CardContent>
-              </Card>
-            ))}
+                    {post.images ? (
+                      <ImageCarousel images={post.images} />
+                    ) : null}
+                  </CardContent>
+                </Card>
+              ) : null
+            )}
           </div>
         </div>
         {/*New Brands Card with Scrollbar*/}
         <div className="w-80">
           <Card className="bg-white shadow-sm sticky top-8">
             <CardContent className="p-6">
-              <h2 className="text-lg font-semibold mb-6 text-gray-900">NEW BRANDS</h2>
+              <h2 className="text-lg font-semibold mb-6 text-gray-900">
+                NEW BRANDS
+              </h2>
               <div className="h-[calc(100vh-200px)] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
                 <div className="space-y-6">
                   {footballBrands.map((brand, index) => (
-                    <div key={index} className="flex items-center justify-between">
+                    <div
+                      key={index}
+                      className="flex items-center justify-between">
                       <div className="flex items-center gap-4">
                         <img
                           src={brand.image || "/placeholder.svg"}
@@ -328,29 +484,42 @@ const [posts, setPosts] = useState([
                           className="w-12 h-12 rounded-full object-cover"
                         />
                         <div>
-                          <h3 className="font-medium text-gray-900">{brand.name}</h3>
+                          <h3 className="font-medium text-gray-900">
+                            {brand.name}
+                          </h3>
                           {brand.verified && (
-                            <Badge variant="secondary" className="bg-green-50 text-green-700 text-xs">
+                            <Badge
+                              variant="secondary"
+                              className="bg-green-50 text-green-700 text-xs">
                               Verified
                             </Badge>
                           )}
-                          <p className="text-sm text-gray-500">{brand.industry}</p>
-                          <span className="text-xs text-gray-400">{brand.type}</span>
+                          <p className="text-sm text-gray-500">
+                            {brand.industry}
+                          </p>
+                          <span className="text-xs text-gray-400">
+                            {brand.type}
+                          </span>
                         </div>
                       </div>
                       <Button
-                        variant={followedBrands.includes(brand.name) ? "default" : "outline"}
+                        variant={
+                          followedBrands.includes(brand.name)
+                            ? "default"
+                            : "outline"
+                        }
                         size="sm"
                         className={`h-6 px-2 ${
-                          followedBrands.includes(brand.name) 
-                            ? "bg-indigo-600 hover:bg-indigo-700 text-white" 
+                          followedBrands.includes(brand.name)
+                            ? "bg-indigo-600 hover:bg-indigo-700 text-white"
                             : "border-indigo-600 text-indigo-600 hover:bg-indigo-50"
                         }`}
-                        onClick={() => toggleFollow(brand.name)}
-                      >
+                        onClick={() => toggleFollow(brand.name)}>
                         <UserPlus className="h-2 w-2 mr-1" />
                         <span className="text-xs">
-                          {followedBrands.includes(brand.name) ? "Following" : "Follow"}
+                          {followedBrands.includes(brand.name)
+                            ? "Following"
+                            : "Follow"}
                         </span>
                       </Button>
                     </div>
@@ -362,7 +531,7 @@ const [posts, setPosts] = useState([
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ANewsFeed
+export default ANewsFeed;
