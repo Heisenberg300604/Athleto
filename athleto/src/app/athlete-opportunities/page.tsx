@@ -9,25 +9,42 @@ import { useForceLightMode } from "@/hooks/useForcedLightTheme";
 import { OpportunityCard } from "@/components/OpportunityCard";
 import { useOpportunity } from "@/context/OpportunityContext";
 import { useUser } from "@/context/UserContext";
+import Chatbot from "@/components/Chatbot";
+// import { OpportunityType } from "@/types/OpportunityType";
+import { OpportunityType } from "@/context/OpportunityContext";
 
 export default function OpportunitiesPage() {
   useForceLightMode();
   const { opportunities, loading, getOpenOpportunities } = useOpportunity();
-  console.log(opportunities);
   const { athlete } = useUser();
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredOpportunities, setFilteredOpportunities] = useState(opportunities);
+  const [filteredOpportunities, setFilteredOpportunities] = useState<OpportunityType[]>([]);
+  
+  // Fetch opportunities only once when component mounts
   useEffect(() => {
     const fetchOpportunities = async () => {
-      const openOpportunities = await getOpenOpportunities();
-      setFilteredOpportunities(openOpportunities);
+      try {
+        const openOpportunities = await getOpenOpportunities();
+        setFilteredOpportunities(openOpportunities);
+      } catch (error) {
+        console.error("Error fetching opportunities:", error);
+      }
     };
+    
     fetchOpportunities();
   }, [getOpenOpportunities]);
 
+  // Apply search filter whenever searchTerm changes
   useEffect(() => {
-    if (opportunities.length > 0) {
-      const filtered = opportunities.filter(opp => 
+    if (searchTerm === "") {
+      // If search is empty, show all opportunities from context or from our initial fetch
+      const allOpps = opportunities.length > 0 ? opportunities : filteredOpportunities;
+      setFilteredOpportunities(allOpps);
+    } else {
+      // Get the source data to filter - either from context or our current filtered list
+      const sourceData = opportunities.length > 0 ? opportunities : filteredOpportunities;
+      
+      const filtered = sourceData.filter(opp => 
         opp.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         (opp.brand_name?.toLowerCase() ?? "").includes(searchTerm.toLowerCase()) ||
         opp.location.city.toLowerCase().includes(searchTerm.toLowerCase())
@@ -35,11 +52,8 @@ export default function OpportunitiesPage() {
       setFilteredOpportunities(filtered);
     }
   }, [searchTerm, opportunities]);
-  
-  
 
   const handleApply = async (opportunityId: string) => {
-    // This would be implemented in your application logic
     try {
       // Add application logic here
       // Example: await applyToOpportunity(opportunityId, athlete.id);
@@ -66,7 +80,7 @@ export default function OpportunitiesPage() {
           </div>
           
           <div className="space-y-4">
-            {loading ? (
+            {loading && filteredOpportunities.length === 0 ? (
               <div className="text-center py-8">Loading opportunities...</div>
             ) : filteredOpportunities.length === 0 ? (
               <div className="text-center py-8">
@@ -89,6 +103,7 @@ export default function OpportunitiesPage() {
           </div>
         </div>
       </div>
+      <Chatbot/>
     </div>
   );
 }

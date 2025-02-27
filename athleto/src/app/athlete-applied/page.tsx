@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
 import { Card, CardContent } from "@/components/ui/card";
+import Chatbot from "@/components/Chatbot";
 
 // TypeScript Types
 type SportCategory = 'Cricket' | 'Athletics' | 'Kabaddi' | 'Badminton' | 'Wrestling' | 'Basketball' | 'Football' | 'Hockey';
@@ -437,11 +438,12 @@ const AppliedPage: React.FC = () => {
                       )}
                     </TabsContent>
                   </Tabs>
-                </div>
+                </div>                
               </div>
             </div>
           </div>
         </div>
+        <Chatbot/>
       </div>
     </>
   );
