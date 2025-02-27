@@ -5,21 +5,21 @@ export const uploadImage = async (file: File): Promise<string | null> => {
     console.error("No file selected!");
     return null;
   }
-  (async () => {
-    try {
-      console.log("Checking Supabase Storage Buckets...");
+  // (async () => {
+  //   try {
+  //     console.log("Checking Supabase Storage Buckets...");
 
-      const { data, error } = await supabase.storage.listBuckets();
+  //     const { data, error } = await supabase.storage.listBuckets();
 
-      console.log("Storage Buckets:", data, error);
+  //     console.log("Storage Buckets:", data, error);
 
-      if (error) {
-        console.error("Error fetching buckets:", error.message);
-      }
-    } catch (err) {
-      console.error("Unexpected error:", err);
-    }
-  })();
+  //     if (error) {
+  //       console.error("Error fetching buckets:", error.message);
+  //     }
+  //   } catch (err) {
+  //     console.error("Unexpected error:", err);
+  //   }
+  // })();
   try {
     const fileName = `public/${Date.now()}-${file.name}`;
     const { data, error } = await supabase.storage

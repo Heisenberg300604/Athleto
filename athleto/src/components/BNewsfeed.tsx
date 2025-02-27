@@ -50,11 +50,11 @@ interface Post {
   images: string[]; // Array of image URLs
   type: string;
   byAPI?: boolean;
+  verified?: boolean;
 }
 
-
 const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
-  const { user,brand } = useUser();
+  const { user, brand } = useUser();
   const brand_name = brand?.brand_name;
   const [activeTab, setActiveTab] = useState("all");
   const [isNewPostOpen, setIsNewPostOpen] = useState(false);
@@ -133,28 +133,27 @@ const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
     },
   ]);
 
-  useEffect(()=>{
+  useEffect(() => {
     const fetchAllPosts = async () => {
       try {
         const { data, error } = await supabase
           .from("post") // Replace with your actual table name
-          .select("*");  // Select all columns
-    
+          .select("*"); // Select all columns
+
         if (error) {
           throw new Error(error.message);
         }
-    
-        setPosts((prevPosts) => [...prevPosts, ...data]); 
+
+        setPosts((prevPosts) => [...prevPosts, ...data]);
       } catch (err) {
         console.error("Error fetching posts:", err);
         return [];
-      }
-      finally{
+      } finally {
         setLoading(false);
       }
     };
     fetchAllPosts();
-  },[])
+  }, []);
 
   useEffect(() => {
     console.log("Fetching news...");
@@ -164,14 +163,14 @@ const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
           `https://gnews.io/api/v4/search?q="sports"&lang=en&country=in&max=10&apikey=${process.env.NEXT_PUBLIC_GNEWS_API_KEY}`
         );
         const data = await response.json();
-
+        let index = posts.length;
         // Transform GNews articles to your Post format
         if (data && data.articles && Array.isArray(data.articles)) {
           const newsArticles = data.articles.map(
             (article: any, index: number) => {
               return {
-                id: index + data.articles.length, // Start IDs after your existing posts
-                brand:"",
+                id: index + data.articles.length + posts.length, // Start IDs after your existing posts
+                brand: "",
                 title: article.title,
                 price: "",
                 location: "India",
@@ -203,7 +202,7 @@ const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
     };
 
     fetchArticles();
-  },[]);
+  }, []);
 
   const athletes = [
     {
@@ -341,27 +340,27 @@ const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
       }
 
       // Add the new post to the state
-      setPosts([
-        {
-          id: posts.length + 1,
-          images: postImageURLs,
-          // brandlogo: brandImageURL,
-          brand: newPost.brand,
-          title: newPost.title,
-          price: newPost.price,
-          location: newPost.location,
-          description: newPost.description,
-          date: new Date()
-            .toLocaleDateString("en-IN", {
-              day: "2-digit",
-              month: "2-digit",
-              year: "numeric",
-            })
-            .replace(/\//g, "."),
-          type: newPost.type || "New Opportunity",
-        },
-        ...posts,
-      ]);
+      // setPosts([
+      //   {
+      //     id: posts.length + 1,
+      //     images: postImageURLs,
+      //     // brandlogo: brandImageURL,
+      //     brand: newPost.brand,
+      //     title: newPost.title,
+      //     price: newPost.price,
+      //     location: newPost.location,
+      //     description: newPost.description,
+      //     date: new Date()
+      //       .toLocaleDateString("en-IN", {
+      //         day: "2-digit",
+      //         month: "2-digit",
+      //         year: "numeric",
+      //       })
+      //       .replace(/\//g, "."),
+      //     type: newPost.type || "New Opportunity",
+      //   },
+      //   ...posts,
+      // ]);
 
       // Reset form and close dialog
       setIsNewPostOpen(false);
@@ -415,10 +414,13 @@ const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
     );
   };
 
-  const filteredPosts =
+  const filteredPosts = (
     activeTab === "favorites"
       ? posts.filter((post) => favorites.includes(post.id.toString()))
-      : posts;
+      : posts
+  ).filter(
+    (post, index, self) => self.findIndex((p) => p.id === post.id) === index
+  );
 
   const ImageCarousel = ({ images }: { images: string[] }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -462,13 +464,12 @@ const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
     );
   };
 
-  return (
-    loading ? (
-      <div className="flex items-center justify-center h-screen">
-        <Spinner/>
-      </div>
-    ) : (
-      <div className="flex flex-col h-screen bg-[#F8F9FB]">
+  return loading ? (
+    <div className="flex items-center justify-center h-screen">
+      <Spinner />
+    </div>
+  ) : (
+    <div className="flex flex-col h-screen bg-[#F8F9FB]">
       <BrandNavbar />
       <div className="flex flex-1 gap-8 p-8 h-[calc(100vh-64px)] overflow-hidden">
         {/*tabs and news feed section*/}
@@ -504,114 +505,119 @@ const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
 
           {/*Scrollable Post Cards*/}
           <div className="overflow-y-auto flex-1 pr-4 space-y-6">
-            {filteredPosts.map((post) => (
-              <Card
-                key={post.id}
-                className="bg-white shadow-md hover:shadow-lg transition-shadow w-full mx-auto border-none">
-                <CardContent className="p-6 ">
-                  <div className="flex justify-between items-start mb-4">
-                    <div className="flex items-center gap-4">
-                      {/* {post.byAPI === undefined ? (
+            {filteredPosts.map((post) =>
+              (post.verified !== undefined && post.verified) ||
+              post.verified === undefined ? (
+                <Card
+                  key={post.id}
+                  className="bg-white shadow-md hover:shadow-lg transition-shadow w-full mx-auto border-none">
+                  <CardContent className="p-6 ">
+                    <div className="flex justify-between items-start mb-4">
+                      <div className="flex items-center gap-4">
+                        {/* {post.byAPI === undefined ? (
                         <img
                           src={post.brandlogo || "/placeholder.svg"}
                           alt={post.brand}
                           className="w-12 h-12 rounded-full object-cover"
                         />
                       ) : null} */}
-                      <div>
-                        <h3 className=" text-black text-xl font-bold">
-                          {post.brand}
-                        </h3>
-                        <p className="text-sm text-muted-foreground">
-                          Posted {post.date}
-                        </p>
+                        <div>
+                          <h3 className=" text-black text-xl font-bold">
+                            {post.brand}
+                          </h3>
+                          <p className="text-sm text-muted-foreground">
+                            Posted {post.date}
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                    {post.byAPI === undefined ? (
-                      <div className="flex items-center gap-2">
-                        <Badge
-                          variant="secondary"
-                          className="bg-green-400 text-white font-medium hover:text-black">
-                          Brand
-                        </Badge>
-                        <Badge
-                          variant="secondary"
-                          className="bg-indigo-50 text-indigo-700 font-medium hover:text-black">
-                          {post.price}
-                        </Badge>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleLike(post.id)}
-                          className={`${
-                            likedPosts.includes(post.id)
-                              ? "text-indigo-600"
-                              : "text-gray-400"
-                          }`}>
-                          <ThumbsUp className="h-5 w-5" />
-                          <span className="ml-1 text-sm">
-                            {likes[post.id] || 0}
-                          </span>
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => toggleFavorite(post.id)}
-                          className={`${
-                            favorites.includes(post.id.toString())
-                              ? "text-red-500"
-                              : "text-gray-400"
-                          }`}>
-                          <Heart
-                            className="h-5 w-5"
-                            fill={
+                      {post.byAPI === undefined ? (
+                        <div className="flex items-center gap-2">
+                          <Badge
+                            variant="secondary"
+                            className="bg-green-400 text-white font-medium hover:text-black">
+                            Brand
+                          </Badge>
+                          <Badge
+                            variant="secondary"
+                            className="bg-indigo-50 text-indigo-700 font-medium hover:text-black">
+                            {post.price}
+                          </Badge>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleLike(post.id)}
+                            className={`${
+                              likedPosts.includes(post.id)
+                                ? "text-indigo-600"
+                                : "text-gray-400"
+                            }`}>
+                            <ThumbsUp className="h-5 w-5" />
+                            <span className="ml-1 text-sm">
+                              {likes[post.id] || 0}
+                            </span>
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => toggleFavorite(post.id)}
+                            className={`${
                               favorites.includes(post.id.toString())
-                                ? "currentColor"
-                                : "none"
-                            }
-                          />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="text-gray-400">
-                          <Share2 className="h-1 w-15" />
-                        </Button>
+                                ? "text-red-500"
+                                : "text-gray-400"
+                            }`}>
+                            <Heart
+                              className="h-5 w-5"
+                              fill={
+                                favorites.includes(post.id.toString())
+                                  ? "currentColor"
+                                  : "none"
+                              }
+                            />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="text-gray-400">
+                            <Share2 className="h-1 w-15" />
+                          </Button>
+                        </div>
+                      ) : (
+                        <Badge
+                          variant="secondary"
+                          className="bg-indigo-400 text-white font-medium hover:text-black">
+                          News
+                        </Badge>
+                      )}
+                    </div>
+
+                    <h2 className="text-md font-semibold mb-4 text-gray-900">
+                      {post.title}
+                    </h2>
+
+                    <div className="flex items-center gap-6 mb-4 text-gray-600">
+                      <div className="flex items-center gap-2 font-medium">
+                        <Building2 className="h-5 w-5" />
+                        <span className="text-md text-muted-foreground">
+                          {post.type}
+                        </span>
                       </div>
-                    ) : (
-                      <Badge
-                        variant="secondary"
-                        className="bg-indigo-400 text-white font-medium hover:text-black">
-                        News
-                      </Badge>
-                    )}
-                  </div>
-
-                  <h2 className="text-md font-semibold mb-4 text-gray-900">
-                    {post.title}
-                  </h2>
-
-                  <div className="flex items-center gap-6 mb-4 text-gray-600">
-                    <div className="flex items-center gap-2 font-medium">
-                      <Building2 className="h-5 w-5" />
-                      <span className="text-md text-muted-foreground">
-                        {post.type}
-                      </span>
+                      <div className="flex items-center gap-2 text-muted-foreground">
+                        <MapPin className="h-5 w-5" />
+                        <span className="text-sm">{post.location}</span>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2 text-muted-foreground">
-                      <MapPin className="h-5 w-5" />
-                      <span className="text-sm">{post.location}</span>
-                    </div>
-                  </div>
 
-                  <p className="text-gray-900 text-sm leading-relaxed">
-                    {post.description}
-                  </p>
+                    <p className="text-gray-900 text-sm leading-relaxed">
+                      {post.description}
+                    </p>
 
-                  {post.images ? <ImageCarousel images={post.images} /> : null}
-                </CardContent>
-              </Card>
-            ))}
+                    {post.images ? (
+                      <ImageCarousel images={post.images} />
+                    ) : null}
+                  </CardContent>
+                </Card>
+              ) : null
+            )}
           </div>
         </div>
 
@@ -906,9 +912,7 @@ const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
         </Dialog>
       </div>
     </div>
-    )
   );
-  
 };
 
 export default NewsFeed;
