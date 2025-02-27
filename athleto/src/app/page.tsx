@@ -152,7 +152,7 @@ export default function Home() {
                 </Button>
               ) : (
                 <Button variant="outline" className="hidden bg-white/5 text-white hover:bg-white/10 md:inline-flex">
-                  Get a Demo now !
+                  Get a Demo now
                 </Button>
               )}
             </div>
