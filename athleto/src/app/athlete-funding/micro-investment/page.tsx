@@ -108,7 +108,7 @@ export default function CreateProposal() {
       
       // Get the athlete's profile ID
       const { data: profileData, error: profileError } = await supabase
-        .from('profiles')
+        .from('athletes')
         .select('id')
         .eq('user_id', session.session.user.id)
         .single();

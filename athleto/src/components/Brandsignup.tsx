@@ -68,7 +68,7 @@ const BrandSignupModal = ({ isOpen, onClose }: BrandSignupModalProps) => {
 
   const validateForm = () => {
     if (!firstName || !lastName || !brandName || !brandCategory || !businessEmail || !password || !confirmPassword) {
-      toast.error("All fields are required.");
+      //toast.error("All fields are required.");
       return false;
     }
     if (password !== confirmPassword) {
