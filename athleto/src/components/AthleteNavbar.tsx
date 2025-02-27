@@ -38,7 +38,7 @@ const AthleteNavbar: React.FC = () => {
       isDropdown: true,
       dropdownItems: [
         { name: "Crowdfunding", href: "/athlete-funding/crowdfunding" },
-        { name: "Train-Now-Pay-Later", href: "/athlete-funding/train-now-pay-later" },
+        { name: "Train-Now-Pay-Later", href: "/athlete-funding/tnpl" },
         { name: "Micro-Investment", href: "/athlete-funding/micro-investment" },
         { name: "Athlete Marketplace", href: "/athlete-funding/athlete-marketplace" },
         { name: "Scholarship & Grants Portal", href: "/athlete-funding/scholarship-grants" },

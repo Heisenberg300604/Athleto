@@ -56,9 +56,9 @@ export default function CreateCampaign() {
         return;
       }
 
-      // Create the opportunity (campaign)
+      // Create the (campaign)
       const { data: opportunityData, error: opportunityError } = await supabase
-        .from('opportunity')
+        .from('campaigns')
         .insert([
           {
             title: formData.title,
@@ -66,12 +66,13 @@ export default function CreateCampaign() {
             number_of_entries: 0,
             status: 'active',
             application_deadline: formData.application_deadline,
-            brand_id: user.id, // Using user ID as brand_id (we'll need to update this based on your data model)
+            // brand_id: user.id, // Using user ID as brand_id (we'll need to update this based on your data model)
             post_image: formData.post_image,
-            funding_amount: formData.funding_goal,
+            funding_goal: formData.funding_goal,
             selection_process: 'crowdfunding',
             spots_available: 1,
-            deadline: formData.application_deadline,
+            athlete_id: "d70c65b0-721d-487a-9817-bde0a2a72902", // Using a placeholder athlete ID
+            // deadline: formData.application_deadline,
             skills_required: formData.category,
           }
         ])
@@ -110,6 +111,10 @@ export default function CreateCampaign() {
     'Gymnastics', 'Tennis', 'Badminton', 'Cricket', 'Football', 
     'Hockey', 'Archery', 'Shooting', 'Cycling', 'Other'
   ];
+
+  console.log("formData", formData);
+  
+
 
   return (
     <div className="min-h-screen bg-gray-50">

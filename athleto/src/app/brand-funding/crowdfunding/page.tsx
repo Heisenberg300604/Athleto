@@ -31,6 +31,7 @@ export default function BrandCampaignsView() {
   const [filter, setFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
 
+
   useEffect(() => {
     fetchCampaigns();
   }, []);
@@ -38,22 +39,24 @@ export default function BrandCampaignsView() {
   const fetchCampaigns = async () => {
     try {
       // Get all active campaigns
-      const { data, error } = await supabase
-        .from('opportunity')
-        .select(`
-          id, 
-          title, 
-          description, 
-          funding_amount, 
-          application_deadline, 
-          post_image, 
-          skills_required,
-          status,
-          created_at,
-          brand_id
-        `)
-        .eq('selection_process', 'crowdfunding')
-        .eq('status', 'active');
+    //   const { data, error } = await supabase
+    //     .from('campaigns')
+    //     .select(`
+    //       id, 
+    //       title, 
+    //       description, 
+    //       funding_amount, 
+    //       application_deadline, 
+    //       post_image, 
+    //       skills_required,
+    //       status,
+    //       created_at,
+          
+    //     `)
+    const { data, error } = await supabase.from("campaigns").select("*");
+    console.log(data);
+        //.eq('selection_process', 'crowdfunding')
+        //.eq('status', 'active');
 
       if (error) throw error;
 
@@ -66,7 +69,7 @@ export default function BrandCampaignsView() {
             const { data: brandData } = await supabase
               .from('brands')
               .select('first_name, last_name, brand_logo')
-              .eq('id', campaign.brand_id)
+              //.eq('id', campaign.brand_id)
               .single();
 
             // Get current funding for this campaign
@@ -213,7 +216,7 @@ export default function BrandCampaignsView() {
                   <div className="mb-4">
                     <div className="flex justify-between text-sm mb-1">
                       <span className="font-medium">₹{campaign.current_funding.toLocaleString()} raised</span>
-                      <span className="text-gray-500">of ₹{campaign.funding_amount.toLocaleString()}</span>
+                      <span className="text-gray-500">of ₹{campaign.funding_goal.toLocaleString()}</span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
                       <div 
