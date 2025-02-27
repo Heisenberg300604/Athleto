@@ -7,7 +7,7 @@ const TalentProfilePage = () => {
   const params = useParams()
   
   // Pass the params to TalentProfile component which handles the data fetching
-  return <TalentProfile params={{ id: params.id }} />
+  return <TalentProfile params={{ id: params.id as string }} />
 }
 
 export default TalentProfilePage
