@@ -337,14 +337,6 @@ const AppliedPage: React.FC = () => {
     (campaign) => campaign.status === "complete"
   );
 
-  const filterOptions: FilterOption[] = [
-    { value: "all", label: "ALL SPORTS" },
-    { value: "cricket", label: "CRICKET" },
-    { value: "athletics", label: "ATHLETICS" },
-    { value: "kabaddi", label: "KABADDI" },
-    { value: "badminton", label: "BADMINTON" },
-    { value: "wrestling", label: "WRESTLING" },
-  ];
 
   useForceLightMode();
   
@@ -445,18 +437,6 @@ const AppliedPage: React.FC = () => {
                       )}
                     </TabsContent>
                   </Tabs>
-                </div>
-                
-                <div className="flex gap-2 md:flex-none">
-                  <select 
-                    value={filter}
-                    onChange={(e) => setFilter(e.target.value)}
-                    className="rounded-md border border-gray-300 text-sm px-3 py-2 focus:ring-blue-500 focus:border-blue-500"
-                  >
-                    {filterOptions.map(option => (
-                      <option key={option.value} value={option.value}>{option.label}</option>
-                    ))}
-                  </select>
                 </div>
               </div>
             </div>
