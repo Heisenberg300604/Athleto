@@ -271,7 +271,7 @@ const ANewsFeed = ({ brandDetails }: { brandDetails: any }) => {
   .filter(
     (post, index, self) => self.findIndex((p) => p.id === post.id) === index
   );
-  console.log(posts);
+  // console.log(posts);
 
 
   const ImageCarousel = ({ images }: { images: string[] }) => {
