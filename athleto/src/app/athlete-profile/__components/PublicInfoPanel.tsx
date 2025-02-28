@@ -832,6 +832,7 @@ export const PublicInfoPanel: React.FC<PublicInfoProps> = ({
                 className="flex items-center">
                 {tag}
                 <button
+                  title="Remove tag"
                   type="button"
                   onClick={() => removeTag(tag)}
                   className="ml-2 hover:text-destructive">

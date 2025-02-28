@@ -497,7 +497,7 @@ export const OpportunityCard: React.FC<OpportunityCardProps> = ({ opportunity, o
                   </Button>
                   <label htmlFor="file-upload" className="cursor-pointer">
                     <Paperclip className="h-5 w-5 text-gray-500" />
-                    <input id="file-upload" type="file" className="hidden" onChange={handleFileUpload} />
+                    <input id="file-upload" type="file" className="hidden" onChange={handleFileUpload} title="Upload File" />
                   </label>
                   <Input
                     value={message}

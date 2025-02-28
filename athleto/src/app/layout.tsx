@@ -21,6 +21,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Athleto",
   description: "Football Players",
+  icons: "/logo1.svg",
 };
 
 export default function RootLayout({
