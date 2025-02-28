@@ -60,7 +60,7 @@ const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
   // const [brandName, setBrandName] = useState(brand?.brand_name);
   const [brandName, setBrandName] = useState(() => {
     if (typeof window !== "undefined") {
-      return localStorage.getItem("brand_name") || brand?.brand_name;
+      return brand?.brand_name || localStorage.getItem("brand_name");
     }
     return null;
   });
