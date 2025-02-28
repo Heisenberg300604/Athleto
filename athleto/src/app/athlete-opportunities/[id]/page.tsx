@@ -1,5 +1,5 @@
 "use client";
-
+import React from "react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -694,12 +694,16 @@ const CompletionCertificate = ({ campaign }: { campaign: Campaign }) => {
   );
 };
 
+type ParamProps = {
+  params: Promise<{ id: string }>;
+}
 // Opportunity Detail Page
-const OpportunityDetailPage = ({ params }: { params: { id: string } }) => {
+const OpportunityDetailPage = ({ params }: ParamProps ) => {
     // For TypeScript to understand the type properly
     // const id = typeof params === 'object' && 'id' in params ? (params as { id: string }).id : use(params).id;
     // const id = params.id;
-    const id = params.id;
+    // const id = params.id;
+    const  {id}  = React.use(params);
     const [campaign, setCampaign] = useState<Campaign | null>(null);
     const [loading, setLoading] = useState(true);
     const router = useRouter();
