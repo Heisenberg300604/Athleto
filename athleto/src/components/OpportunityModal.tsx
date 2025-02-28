@@ -62,7 +62,7 @@ export const CreateOpportunityModal: React.FC<CreateOpportunityModalProps> = ({ 
     eligibility_criteria: '',
     funding_amount: {
       min: 0,
-      max: 100,
+      max: 0,
       currency: 'INR'
     },
     selection_process: {

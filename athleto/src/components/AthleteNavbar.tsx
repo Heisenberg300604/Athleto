@@ -10,6 +10,8 @@ import { Textarea } from "@/components/ui/textarea"
 import { useRouter, usePathname } from "next/navigation"
 import { Montserrat } from "next/font/google"
 import { supabase } from "@/lib/supabase"
+import { useUser } from "@/context/UserContext"
+import toast from "react-hot-toast"
 
 const montserrat = Montserrat({ subsets: ["latin"] })
 
@@ -27,7 +29,8 @@ const AthleteNavbar: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const router = useRouter()
   const pathname = usePathname()
-
+  const {athlete} = useUser();
+  // console.log(athlete)
   const navLinks = [
     { name: "BRANDS", href: "/athlete-dashboard" },
     { name: "OPPORTUNITIES", href: "/athlete-opportunities" },
@@ -69,7 +72,7 @@ const AthleteNavbar: React.FC = () => {
   }
 
   const handleFeedbackSubmit = async () => {
-    if (!feedbackText.trim() || !userName.trim()) {
+    if (!feedbackText.trim() || !userName.trim() || !athlete) {
       alert("Please fill in all fields")
       return
     }
@@ -80,34 +83,31 @@ const AthleteNavbar: React.FC = () => {
       //This would be the actual implementation with Supabase
       const { data, error } = await supabase
         .from('feedback')
-        .insert([
+        .insert([ // here 
           { 
-            user_id: 'current-user-id', // This would be the actual user ID
+            user_id: athlete?.id, // This would be the actual user ID
             author: userName,
             quote: feedbackText,
-            role: 'ATHLETE', // Or could be dynamic based on user role
-            image: '/placeholder.svg', // Could be the user's profile image
+            image: athlete?.profile_picture, // Could be the user's profile image
             rating: rating,
             created_at: new Date()
           }
         ])
-      
-      if (error) throw error
+        // console.log(data)
+        toast.success("Feedback submitted successfully!");
 
-      // For demonstration, we'll simulate a successful submission
-    //   setTimeout(() => {
-    //     setFeedbackSubmitted(true)
-    //     setIsSubmitting(false)
-        
-    //     // Reset form after 2 seconds
-    //     setTimeout(() => {
-    //       setIsFeedbackOpen(false)
-    //       setFeedbackText("")
-    //       setUserName("")
-    //       setRating(5)
-    //       setFeedbackSubmitted(false)
-    //     }, 2000)
-    //   }, 1000)
+        // Reset form
+        setFeedbackText("");
+        setUserName("");
+        setRating(5);
+        setIsSubmitting(false);
+        setFeedbackSubmitted(true);
+    
+        // Close modal after 2 seconds
+        setTimeout(() => {
+          setIsFeedbackOpen(false);
+          setFeedbackSubmitted(false);
+        }, 2000);
     } catch (error) {
       console.error('Error submitting feedback:', error)
       setIsSubmitting(false)
