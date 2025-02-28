@@ -35,7 +35,7 @@ interface NewPost {
   price: string;
   location: string;
   description: string;
-  images: string[]; // Array of image URLs
+  images: string[];
   type: string;
 }
 
