@@ -56,7 +56,22 @@ import Chatbot from "./Chatbot"
 
 const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
   const { user, brand } = useUser();
-  const brand_name = brand?.brand_name;
+  
+  // const [brandName, setBrandName] = useState(brand?.brand_name);
+  const [brandName, setBrandName] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("brand_name") || brand?.brand_name;
+    }
+    return null;
+  });
+
+  useEffect(() => {
+    if (brand?.brand_name && typeof window !== "undefined") {
+      localStorage.setItem("brand_name", brand.brand_name);
+      setBrandName(brand.brand_name);
+    }
+  }, [brand]);
+
   const [activeTab, setActiveTab] = useState("all");
   const [isNewPostOpen, setIsNewPostOpen] = useState(false);
   const [favorites, setFavorites] = useState<string[]>([]);
@@ -249,7 +264,7 @@ const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
   ];
 
   const [newPost, setNewPost] = useState<NewPost>({
-    brand: brand_name,
+    brand: brandName || "",
     title: "",
     price: "",
     location: "",
@@ -366,7 +381,7 @@ const NewsFeed = ({ brandDetails }: { brandDetails: any }) => {
       // Reset form and close dialog
       setIsNewPostOpen(false);
       setNewPost({
-        brand: brand_name,
+        brand: brandName || "",
         title: "",
         price: "",
         location: "",
