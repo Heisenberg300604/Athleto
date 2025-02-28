@@ -39,7 +39,7 @@ const AthleteSignupModal = ({ isOpen, onClose }: AthleteSignupModalProps) => {
 
   const validateForm = () => {
     if (!firstName || !lastName || !email || !password || !confirmPassword) {
-      toast.error('All fields are required');
+     // toast.error('All fields are required');
       return false;
     }
     if (password !== confirmPassword) {

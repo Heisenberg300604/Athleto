@@ -90,7 +90,7 @@ const LoginModal = ({ isOpen, onClose, onOpenBrandSignup, onOpenAthleteSignup }:
           .single();
 
         if (athlete) {
-          toast.success("Login successful! Redirecting to Athlete Dashboard...");
+          toast.success("Login successful! Redirecting to Athlete Dashboard");
           onClose();
           router.push("/athlete-dashboard");
           return;
@@ -104,7 +104,7 @@ const LoginModal = ({ isOpen, onClose, onOpenBrandSignup, onOpenAthleteSignup }:
           .single();
 
         if (brand) {
-          toast.success("Login successful! Redirecting to Brand Dashboard...");
+          toast.success("Login successful! Redirecting to Brand Dashboard");
           onClose();
           router.push("/brand-dashboard");
           return; 

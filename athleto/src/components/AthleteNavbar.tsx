@@ -10,6 +10,8 @@ import { Textarea } from "@/components/ui/textarea"
 import { useRouter, usePathname } from "next/navigation"
 import { Montserrat } from "next/font/google"
 import { supabase } from "@/lib/supabase"
+import { useUser } from "@/context/UserContext"
+import toast from "react-hot-toast"
 
 const montserrat = Montserrat({ subsets: ["latin"] })
 
@@ -27,23 +29,29 @@ const AthleteNavbar: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const router = useRouter()
   const pathname = usePathname()
-
+  const {athlete} = useUser();
+  // console.log(athlete)
   const navLinks = [
     { name: "BRANDS", href: "/athlete-dashboard" },
     { name: "OPPORTUNITIES", href: "/athlete-opportunities" },
     { name: "APPLIED", href: "/athlete-applied" },
-    { 
-      name: "FUNDING", 
-      href: "/athlete-funding",
+    {
+      name: "FUNDING",
+      href: "#", // Prevent navigation
       isDropdown: true,
       dropdownItems: [
         { name: "Crowdfunding", href: "/athlete-funding/crowdfunding" },
-        { name: "Train-Now-Pay-Later", href: "/athlete-funding/train-now-pay-later" },
+        { name: "Train-Now-Pay-Later", href: "/athlete-funding/tnpl" },
         { name: "Micro-Investment", href: "/athlete-funding/micro-investment" },
-        { name: "Athlete Marketplace", href: "/athlete-funding/athlete-marketplace" },
-        { name: "Scholarship & Grants Portal", href: "/athlete-funding/scholarship-grants" },
-      ]
-    },  
+        { name: "Athlete Marketplace", href: "/athlete-funding/marketplace" },
+        { name: "Scholarship & Grants Portal", href: "/athlete-funding/scholarships" },
+      ],
+      onClick: (e: React.MouseEvent<HTMLAnchorElement>, setDropdown: React.Dispatch<React.SetStateAction<boolean>>) => {
+        e.preventDefault(); // Prevent navigation
+        setDropdown((prev) => !prev); // Toggle dropdown
+      }
+    },
+    
     { name: "LEADERBOARD", href: "/athlete-combined-leaderboard" },
     { name: "NEWS FEED", href: "/athlete-dashboard/newsfeed" },
   ]
@@ -64,7 +72,7 @@ const AthleteNavbar: React.FC = () => {
   }
 
   const handleFeedbackSubmit = async () => {
-    if (!feedbackText.trim() || !userName.trim()) {
+    if (!feedbackText.trim() || !userName.trim() || !athlete) {
       alert("Please fill in all fields")
       return
     }
@@ -75,34 +83,31 @@ const AthleteNavbar: React.FC = () => {
       //This would be the actual implementation with Supabase
       const { data, error } = await supabase
         .from('feedback')
-        .insert([
+        .insert([ // here 
           { 
-            user_id: 'current-user-id', // This would be the actual user ID
+            user_id: athlete?.id, // This would be the actual user ID
             author: userName,
             quote: feedbackText,
-            role: 'ATHLETE', // Or could be dynamic based on user role
-            image: '/placeholder.svg', // Could be the user's profile image
+            image: athlete?.profile_picture, // Could be the user's profile image
             rating: rating,
             created_at: new Date()
           }
         ])
-      
-      if (error) throw error
+        // console.log(data)
+        toast.success("Feedback submitted successfully!");
 
-      // For demonstration, we'll simulate a successful submission
-    //   setTimeout(() => {
-    //     setFeedbackSubmitted(true)
-    //     setIsSubmitting(false)
-        
-    //     // Reset form after 2 seconds
-    //     setTimeout(() => {
-    //       setIsFeedbackOpen(false)
-    //       setFeedbackText("")
-    //       setUserName("")
-    //       setRating(5)
-    //       setFeedbackSubmitted(false)
-    //     }, 2000)
-    //   }, 1000)
+        // Reset form
+        setFeedbackText("");
+        setUserName("");
+        setRating(5);
+        setIsSubmitting(false);
+        setFeedbackSubmitted(true);
+    
+        // Close modal after 2 seconds
+        setTimeout(() => {
+          setIsFeedbackOpen(false);
+          setFeedbackSubmitted(false);
+        }, 2000);
     } catch (error) {
       console.error('Error submitting feedback:', error)
       setIsSubmitting(false)
