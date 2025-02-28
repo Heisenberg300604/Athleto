@@ -36,16 +36,20 @@ const BrandNavbar = () => {
     { name: 'TALENT', href: '/brand-talent' },
     { 
       name: 'FUNDING', 
-      href: '/brand-funding',
+      href: "#", // Prevent navigation
       isDropdown: true,
       dropdownItems: [
         { name: 'Crowdfunding Programs', href: '/brand-funding/crowdfunding' },
         { name: 'Train Now Pay Later Models', href: '/brand-funding/tnpl' },
         { name: 'Micro Investments', href: '/brand-funding/micro-investment' },
-        { name: 'Brand Partnerships', href: '/brand-funding/partnerships' },
-        { name: 'Marketing Campaigns', href: '/brand-funding/marketing-campaigns' },
-      ]
-    },
+        { name: 'Marketing Campaigns', href: '/brand-funding/marketplace' },
+        { name: 'Scholarships and Grants', href: '/brand-funding/scholarships' },
+      ],
+    onClick: (e: React.MouseEvent<HTMLAnchorElement>, setDropdown: React.Dispatch<React.SetStateAction<boolean>>) => {
+           e.preventDefault(); // Prevent navigation
+           setDropdown((prev) => !prev); // Toggle dropdown
+         }
+       },
     { name: 'NEWS FEED', href: '/brand-dashboard/newsfeed' },
     { name: 'LEADERBOARD', href: '/brand-combined-leaderboard' },
   ];

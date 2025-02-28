@@ -11,7 +11,7 @@ interface Campaign {
   id: string;
   title: string;
   description: string;
-  funding_amount: number;
+  funding_goal: number;
   application_deadline: string;
   post_image: string;
   skills_required: string; // Used as category
@@ -216,7 +216,7 @@ export default function BrandCampaignsView() {
                   <div className="mb-4">
                     <div className="flex justify-between text-sm mb-1">
                       <span className="font-medium">₹{campaign.current_funding.toLocaleString()} raised</span>
-                      <span className="text-gray-500">of ₹{campaign.funding_amount.toLocaleString()}</span>
+                      <span className="text-gray-500">of ₹{campaign.funding_goal.toLocaleString()}</span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
                       <div 

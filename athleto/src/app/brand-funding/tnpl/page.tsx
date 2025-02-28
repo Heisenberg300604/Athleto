@@ -632,35 +632,9 @@ export default function BrandTNPLDashboard() {
                         
                         {showSupporters && (
                           <div className="mt-3 border border-gray-200 rounded-md overflow-hidden">
-                            {selectedApplication.supporters && selectedApplication.supporters.length > 0 ? (
-                              <ul className="divide-y divide-gray-200">
-                                {selectedApplication.supporters.map((supporter, index) => (
-                                  <li key={index} className="px-4 py-3 flex justify-between items-center">
-                                    <div className="flex items-center">
-                                      <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center">
-                                        {supporter.logo ? (
-                                          <Image
-                                            src={supporter.logo}
-                                            alt={supporter.name}
-                                            width={32}
-                                            height={32}
-                                            className="h-8 w-8 rounded-full"
-                                          />
-                                        ) : (
-                                          <User className="h-4 w-4 text-gray-500" />
-                                        )}
-                                      </div>
-                                      <span className="ml-2 text-sm font-medium">{supporter.name}</span>
-                                    </div>
-                                    <span className="text-sm text-gray-500">₹{supporter.amount.toLocaleString()}</span>
-                                  </li>
-                                ))}
-                              </ul>
-                            ) : (
-                              <div className="px-4 py-3 text-sm text-gray-500">
-                                No supporters yet. Be the first to support this athlete!
-                              </div>
-                            )}
+                            <div className="px-4 py-3 text-sm text-gray-500">
+                              No supporters yet. Be the first to support this athlete!
+                            </div>
                           </div>
                         )}
                       </div>
@@ -668,8 +642,8 @@ export default function BrandTNPLDashboard() {
                       <div className="mb-6">
                         <h3 className="text-lg font-medium text-gray-900 mb-2">Athlete Background</h3>
                         <p className="text-base text-gray-700">
-                          {selectedApplication.athlete?.background || 
-                            "This athlete hasn't provided a detailed background yet."}
+                       
+                            "This athlete hasn't provided a detailed background yet."
                         </p>
                       </div>
                       
@@ -687,10 +661,17 @@ export default function BrandTNPLDashboard() {
                         </div>
                       )}
                       
-                      {selectedApplication.athlete?.goals && (
+                      {selectedApplication.athlete?.achievements && selectedApplication.athlete.achievements.length > 0 && (
                         <div className="mb-6">
-                          <h3 className="text-lg font-medium text-gray-900 mb-2">Future Goals</h3>
-                          <p className="text-base text-gray-700">{selectedApplication.athlete.goals}</p>
+                          <h3 className="text-lg font-medium text-gray-900 mb-2">Achievements</h3>
+                          <ul className="space-y-2">
+                            {selectedApplication.athlete.achievements.map((achievement, index) => (
+                              <li key={index} className="flex items-start">
+                                <Medal className="h-5 w-5 text-yellow-500 mr-2 flex-shrink-0 mt-0.5" />
+                                <span className="text-base text-gray-700">{achievement}</span>
+                              </li>
+                            ))}
+                          </ul>
                         </div>
                       )}
                     </div>

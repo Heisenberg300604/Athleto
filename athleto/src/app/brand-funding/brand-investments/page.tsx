@@ -108,8 +108,8 @@ export default function InvestorDistributions() {
       const investmentData = data.map(inv => ({
         id: inv.id,
         microinvestment_id: inv.microinvestment_id,
-        title: inv.microinvestments.title,
-        athlete_name: inv.microinvestments.athletes.email,
+        title: inv.microinvestments[0].title,
+        athlete_name: inv.microinvestments[0].athletes[0].email,
         investment_amount: inv.investment_amount,
         investment_date: inv.investment_date,
         payout_percentage: inv.contract_details?.payout_percentage || 0
@@ -180,12 +180,12 @@ export default function InvestorDistributions() {
       const distributionData = data.map(dist => ({
         id: dist.id,
         microinvestment_id: dist.microinvestment_id,
-        microinvestment_title: dist.microinvestments.title,
-        athlete_name: dist.microinvestments.athletes.full_name,
-        earning_source: dist.microinvestment_earnings.earning_source,
-        earning_amount: dist.microinvestment_earnings.earning_amount,
+        microinvestment_title: dist.microinvestments[0].title,
+        athlete_name: dist.microinvestments[0].athletes[0].full_name,
+        earning_source: dist.microinvestment_earnings[0].earning_source,
+        earning_amount: dist.microinvestment_earnings[0].earning_amount,
         distribution_amount: dist.amount,
-        earning_date: dist.microinvestment_earnings.earning_date,
+        earning_date: dist.microinvestment_earnings[0].earning_date,
         distribution_date: dist.created_at,
         status: dist.status
       }));
@@ -235,12 +235,12 @@ export default function InvestorDistributions() {
       const distributionData = data.map(dist => ({
         id: dist.id,
         microinvestment_id: dist.microinvestment_id,
-        microinvestment_title: dist.microinvestments.title,
-        athlete_name: dist.microinvestments.athletes.full_name,
-        earning_source: dist.microinvestment_earnings.earning_source,
-        earning_amount: dist.microinvestment_earnings.earning_amount,
+        microinvestment_title: dist.microinvestments[0].title,
+        athlete_name: dist.microinvestments[0].athletes[0].full_name,
+        earning_source: dist.microinvestment_earnings[0].earning_source,
+        earning_amount: dist.microinvestment_earnings[0].earning_amount,
         distribution_amount: dist.amount,
-        earning_date: dist.microinvestment_earnings.earning_date,
+        earning_date: dist.microinvestment_earnings[0].earning_date,
         distribution_date: dist.created_at,
         status: dist.status
       }));

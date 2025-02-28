@@ -32,18 +32,23 @@ const AthleteNavbar: React.FC = () => {
     { name: "BRANDS", href: "/athlete-dashboard" },
     { name: "OPPORTUNITIES", href: "/athlete-opportunities" },
     { name: "APPLIED", href: "/athlete-applied" },
-    { 
-      name: "FUNDING", 
-      href: "/athlete-funding",
+    {
+      name: "FUNDING",
+      href: "#", // Prevent navigation
       isDropdown: true,
       dropdownItems: [
         { name: "Crowdfunding", href: "/athlete-funding/crowdfunding" },
         { name: "Train-Now-Pay-Later", href: "/athlete-funding/tnpl" },
         { name: "Micro-Investment", href: "/athlete-funding/micro-investment" },
-        { name: "Athlete Marketplace", href: "/athlete-funding/athlete-marketplace" },
-        { name: "Scholarship & Grants Portal", href: "/athlete-funding/scholarship-grants" },
-      ]
-    },  
+        { name: "Athlete Marketplace", href: "/athlete-funding/marketplace" },
+        { name: "Scholarship & Grants Portal", href: "/athlete-funding/scholarships" },
+      ],
+      onClick: (e: React.MouseEvent<HTMLAnchorElement>, setDropdown: React.Dispatch<React.SetStateAction<boolean>>) => {
+        e.preventDefault(); // Prevent navigation
+        setDropdown((prev) => !prev); // Toggle dropdown
+      }
+    },
+    
     { name: "LEADERBOARD", href: "/athlete-combined-leaderboard" },
     { name: "NEWS FEED", href: "/athlete-dashboard/newsfeed" },
   ]

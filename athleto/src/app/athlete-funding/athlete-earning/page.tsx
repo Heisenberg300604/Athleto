@@ -366,7 +366,7 @@ export default function AthleteEarnings() {
       // Transform the data to match the Investor type
       const investorData = investmentData.map(inv => ({
         id: inv.investor_id,
-        full_name: inv.profiles?.full_name || 'Unknown',
+        full_name: inv.brands?.[0]?.brand_name || 'Unknown',
         investment_amount: inv.investment_amount,
         investment_date: inv.investment_date,
         payout_percentage: (inv.investment_amount / selectedInvestment.funding_amount) * selectedInvestment.earnings_percentage
