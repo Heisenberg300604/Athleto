@@ -32,7 +32,7 @@ export default function OpportunitiesPage() {
     };
     
     fetchOpportunities();
-  }, [getOpenOpportunities]);
+  }, []);
 
   // Apply search filter whenever searchTerm changes
   useEffect(() => {
