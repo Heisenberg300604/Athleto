@@ -118,6 +118,14 @@ export default function Home() {
     }
   }
 
+  const scrollToFunding = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault()
+    const fundingSection = document.getElementById("funding")
+    if (fundingSection) {
+      fundingSection.scrollIntoView({ behavior: "smooth" })
+    }
+  }
+
   const scrollToTeam = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault()
     const teamSection = document.getElementById("team")
@@ -158,6 +166,11 @@ export default function Home() {
               <nav className="hidden space-x-6 md:block">
                 <Link href="#testimonials" className="text-sm text-gray-400 hover:text-white" onClick={scrollToTestimonials}>
                   Testimonials
+                </Link>
+              </nav>
+              <nav className="hidden space-x-6 md:block">
+                <Link href="#funding" className="text-sm text-gray-400 hover:text-white" onClick={scrollToFunding}>
+                  Financial Model
                 </Link>
               </nav>
             </div>
@@ -252,7 +265,9 @@ export default function Home() {
         </div>
 
         {/* Funding-showcasing */}
+        <div id ="funding">
         <FundingShowcase/>
+        </div>
 
         {/* Testimonials Section */}
         <div id="testimonials">
