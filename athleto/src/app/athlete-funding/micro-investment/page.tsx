@@ -105,24 +105,25 @@ export default function CreateProposal() {
         toast.error("You must be logged in to create a proposal");
         return;
       }
-      
-      // Get the athlete's profile ID
+
+      // ✅ Check if the athletes table has a user_id column
       const { data: profileData, error: profileError } = await supabase
-        .from('athletes')
-        .select('id')
-        .eq('user_id', session.session.user.id)
-        .single();
+  .from('athletes')
+  .select('id')
+  .eq('email', session.session.user.email)  // Use 'email' instead of 'user_id'
+  .maybeSingle();
+
       
-      if (profileError || !profileData) {
-        toast.error("Failed to fetch your profile");
+      if (profileError || !profileData?.id) {
+        toast.error("Failed to fetch your profile. Make sure your account is linked.");
         return;
       }
       
-      // Insert the new proposal
+      // ✅ Insert the new proposal
       const { data: proposal, error } = await supabase
         .from('microinvestments')
         .insert({
-          athlete_id: profileData.id,
+          athlete_id: profileData.id,  // Correct reference
           title: data.title,
           sport_category: data.sport_category,
           funding_amount: data.funding_amount,
@@ -142,9 +143,9 @@ export default function CreateProposal() {
       
       toast.success("Proposal created successfully!");
       
-      // Redirect to the athlete dashboard
+      // ✅ Redirect to the athlete dashboard
       setTimeout(() => {
-        router.push('/athlete/dashboard');
+        router.push('/athlete-funding/micro-investment');
       }, 2000);
       
     } catch (error) {
@@ -153,8 +154,8 @@ export default function CreateProposal() {
     } finally {
       setIsSubmitting(false);
     }
-  };
-  
+};
+
   return (
     <div className="min-h-screen bg-gray-50">
       <AthleteNavbar />
@@ -165,6 +166,17 @@ export default function CreateProposal() {
           <div className="mb-8 text-center">
             <h1 className="text-3xl font-bold text-gray-800">Create Investment Proposal</h1>
             <p className="text-gray-600 mt-2">Tokenize your future earnings and get funding for your sports career</p>
+          </div>
+
+         
+
+          <div className=" mb-8 space-x-4 lg:space-x-8 flex justify-center ">
+            <button
+              onClick={() => router.push('/athlete-funding/athlete-earning')}
+              className="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors"
+            >
+              Earnings Dashboard
+            </button>
           </div>
           
           <div className="flex flex-col lg:flex-row gap-8">

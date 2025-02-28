@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState }from "react";
 import { cn } from "@/lib/utils";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -14,6 +14,7 @@ import { useForceLightMode } from "@/hooks/useForcedLightTheme";
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
+import { useUser } from "@/context/UserContext";
 
 interface AthleteSidebarProps {
   isEditing?: boolean;
@@ -31,6 +32,11 @@ export const AthleteProfileSidebar: React.FC<AthleteSidebarProps> = ({
   onTabChange,
 }) => {
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  // const [ProfileImage, setProfileImage] = useState<string | null>(null);
+  const [uploadedProfileImage, setUploadedProfileImage] = useState<string | null>(profileImage || null);
+
+  const [uploading, setUploading] = useState(false);
+  const {athlete} = useUser();
   const supabase = createClientComponentClient();
   const router = useRouter();
   
@@ -41,7 +47,75 @@ export const AthleteProfileSidebar: React.FC<AthleteSidebarProps> = ({
     { id: "analytics", label: "ANALYTICS", icon: BarChart2 },
   ];
   useForceLightMode();
-
+  console.log(athlete)
+  const handleImageUpload = async (file: File) => {
+    if (!file) {
+      console.error("No file selected.");
+      return;
+    }
+  
+    setUploading(true);
+    
+    const fileExt = file.name.split(".").pop();
+    const fileName = `${athlete?.id}.${fileExt}`;
+    const filePath = `avatars/${fileName}`;
+  
+    console.log("Uploading file:", fileName);
+  
+    try {
+      // Upload image to Supabase Storage
+      const { data, error } = await supabase.storage
+        .from("avatars")
+        .upload(filePath, file, { upsert: true });
+  
+      if (error) {
+        console.error("Upload error:", error.message);
+        alert("Upload failed: " + error.message);
+        return;
+      }
+  
+      console.log("Upload successful. Data:", data);
+  
+      // Get the public URL after successful upload
+      const { data: publicURLData } = await supabase
+        .storage
+        .from("avatars")
+        .getPublicUrl(filePath);
+  
+      console.log("Public URL Data:", publicURLData);
+  
+      const imageUrl = publicURLData.publicUrl;
+  
+      if (!imageUrl) {
+        throw new Error("Failed to retrieve public URL.");
+      }
+  
+      console.log("Public Image URL:", imageUrl);
+  
+      // Update profile picture in the database
+      const { error: updateError } = await supabase
+        .from("athletes")
+        .update({ profile_picture: imageUrl })
+        .eq("id", athlete?.id);
+  
+      if (updateError) {
+        console.error("Database update error:", updateError.message);
+        alert("Database update failed: " + updateError.message);
+        return;
+      }
+  
+      console.log("Profile image updated in DB.");
+      setUploadedProfileImage(imageUrl);
+      alert("Profile image updated successfully!");
+  
+    } catch (err) {
+      console.error("Error:", err);
+      alert("Failed to upload and save profile picture.");
+    } finally {
+      setUploading(false);
+    }
+  };
+  
   const handleLogout = async () => {
     try {
       setIsLoggingOut(true);
@@ -78,23 +152,30 @@ export const AthleteProfileSidebar: React.FC<AthleteSidebarProps> = ({
       {/* Logo/Image Upload Section */}
       <div className="relative mb-8">
         <div className="w-full aspect-square rounded-xl overflow-hidden bg-gradient-to-br from-blue-50 to-blue-100 border-2 border-blue-200">
-          {profileImage ? (
-            <img
-              src={profileImage}
-              alt="Brand Logo"
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <div className="flex flex-col items-center justify-center h-full text-blue-400">
-              <ImageIcon className="w-12 h-12 mb-2" />
-              <p className="text-sm font-medium">Athlete Profile Image</p>
-            </div>
-          )}
+{uploadedProfileImage ? (
+  <img
+    src={uploadedProfileImage}
+    alt="Athlete Profile"
+    className="w-full h-full object-cover"
+  />
+) : athlete?.profile_picture ? (
+  <img
+    src={athlete.profile_picture}
+    alt="Athlete Profile"
+    className="w-full h-full object-cover"
+  />
+) : (
+  <div className="flex flex-col items-center justify-center h-full text-blue-400">
+    <ImageIcon className="w-12 h-12 mb-2" />
+    <p className="text-sm font-medium">Athlete Profile Image</p>
+  </div>
+)}
         </div>
         {isEditing && (
           <label
             htmlFor="profile-image"
-            className="absolute bottom-3 right-3 p-2 bg-white rounded-lg shadow-lg cursor-pointer hover:bg-gray-50 transition-all duration-200 border border-gray-100">
+            className="absolute bottom-3 right-3 p-2 bg-white rounded-lg shadow-lg cursor-pointer hover:bg-gray-50 transition-all duration-200 border border-gray-100"
+          >
             <ImageIcon className="w-5 h-5 text-gray-600" />
             <input
               id="profile-image"
@@ -103,8 +184,8 @@ export const AthleteProfileSidebar: React.FC<AthleteSidebarProps> = ({
               accept="image/*"
               title="Upload Profile Image"
               onChange={(e) => {
-                if (e.target.files?.[0] && onImageUpload) {
-                  onImageUpload(e.target.files[0]);
+                if (e.target.files?.[0]) {
+                  handleImageUpload(e.target.files[0]);
                 }
               }}
             />
