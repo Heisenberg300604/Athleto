@@ -1,0 +1,32 @@
+import faiss
+import numpy as np
+from openai import OpenAI
+from config import OPENAI_API_KEY
+
+client = OpenAI(api_key=OPENAI_API_KEY)
+
+def embed_text(text):
+    """Convert text into an embedding vector using OpenAI API."""
+    response = client.embeddings.create(input=text, model="text-embedding-ada-002")
+    return np.array(response.data[0].embedding)
+
+def build_vector_store(sponsorships):
+    """Create a FAISS vector index from sponsorship descriptions."""
+    dimension = 1536  # OpenAI's embedding size
+    index = faiss.IndexFlatL2(dimension)
+    
+    vectors = []
+    for sponsorship in sponsorships:
+        vector = embed_text(sponsorship["description"])
+        vectors.append(vector)
+        index.add(np.array([vector], dtype=np.float32))
+    
+    return index, vectors
+
+def find_best_sponsorships(athlete_profile, sponsorships, index, vectors):
+    """Find top sponsorships for an athlete based on profile matching."""
+    athlete_vector = embed_text(athlete_profile)
+    distances, indices = index.search(np.array([athlete_vector], dtype=np.float32), k=5)
+    
+    return [sponsorships[i] for i in indices[0]]
+

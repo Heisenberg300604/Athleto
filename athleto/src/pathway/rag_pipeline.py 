@@ -1,0 +1,28 @@
+import pathway as pw
+from data_loader import fetch_athlete_data, fetch_sponsorships
+from vector_store import build_vector_store, find_best_sponsorships
+
+# Define Pathway Schema
+class Athlete(pw.Schema):
+    id: str
+    name: str
+    profile: str
+
+class Sponsorship(pw.Schema):
+    id: str
+    brand: str
+    description: str
+
+# Load Data in Pathway
+athletes_table = pw.io.s3.read(fetch_athlete_data(), Athlete)
+sponsorships_table = pw.io.s3.read(fetch_sponsorships(), Sponsorship)
+
+# Convert Sponsorships to Vector Store
+index, vectors = build_vector_store(sponsorships_table.collect())
+
+# Real-time AI Matching
+def recommend_sponsorships(athlete):
+    return find_best_sponsorships(athlete.profile, sponsorships_table.collect(), index, vectors)
+
+recommendations = athletes_table.apply(recommend_sponsorships)
+pw.io.s3.write(recommendations, "recommendations.json")

@@ -1,0 +1,24 @@
+from flask import Flask, request, jsonify
+from rag_pipeline import recommend_sponsorships
+from data_loader import fetch_athlete_data
+
+app = Flask(__name__)
+
+@app.route("/match_sponsorships", methods=["POST"])
+def match_sponsorships():
+    """API endpoint to get best sponsorships for an athlete."""
+    data = request.get_json()
+    athlete_id = data.get("athlete_id")
+
+    # Fetch athlete profile
+    athletes = fetch_athlete_data()
+    athlete = next((a for a in athletes if a["id"] == athlete_id), None)
+
+    if not athlete:
+        return jsonify({"error": "Athlete not found"}), 404
+
+    sponsorships = recommend_sponsorships(athlete)
+    return jsonify(sponsorships)
+
+if __name__ == "__main__":
+    app.run(port=8080, debug=True)
