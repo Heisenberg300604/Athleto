@@ -1,7 +1,6 @@
-// pages/brand/campaigns/[id]/support.tsx
 "use client"
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import BrandNavbar from '@/components/BrandNavbar';
@@ -16,7 +15,6 @@ interface Campaign {
   current_funding: number;
   progress_percentage: number;
   athlete_name: string;
- // brand_id: string;
 }
 
 // Create a type for the Window interface to include Razorpay
@@ -38,6 +36,7 @@ export default function SupportCampaign() {
   const [showCryptoOption, setShowCryptoOption] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('razorpay');
   const [processingPayment, setProcessingPayment] = useState(false);
+  const [scriptLoaded, setScriptLoaded] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -66,7 +65,6 @@ export default function SupportCampaign() {
         const { data: brandData } = await supabase
           .from('brands')
           .select('first_name, last_name')
-         // .eq('id', campaignData.brand_id)
           .single();
 
         // Get current funding
@@ -110,6 +108,22 @@ export default function SupportCampaign() {
     }
   };
 
+  // Function to manually load the Razorpay script
+  const loadRazorpayScript = () => {
+    return new Promise((resolve) => {
+      const script = document.createElement('script');
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.onload = () => {
+        resolve(true);
+      };
+      script.onerror = () => {
+        resolve(false);
+      };
+      document.body.appendChild(script);
+    });
+  };
+
+  // Updated handlePayment function that ensures the script is loaded
   const handlePayment = async () => {
     if (!campaign) return;
     
@@ -124,59 +138,32 @@ export default function SupportCampaign() {
         setProcessingPayment(false);
         return;
       }
-
+  
       if (paymentMethod === 'razorpay') {
-        // Create a Razorpay order
-        const response = await fetch('http://localhost:3000/api/create-razorpay-order', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            amount: amount * 100, // Razorpay expects amount in paise
-            currency: 'INR',
-            receipt: `campaign-${campaign.id}`,
-          }),
-        });
-
-        const order = await response.json();
-
-        if (!order.id) {
-          throw new Error('Failed to create payment order');
+        // Ensure Razorpay script is loaded
+        if (!window.Razorpay) {
+          const isLoaded = await loadRazorpayScript();
+          if (!isLoaded) {
+            throw new Error('Failed to load Razorpay SDK');
+          }
         }
 
-        // Initialize Razorpay payment
-        const razorpay = new window.Razorpay({
-          key: process.env.RAZORPAY_KEY_ID,
-          amount: amount * 100,
+        // Generate a random order ID for testing purposes
+        const tempOrderId = `order_${Math.random().toString(36).substring(2, 15)}`;
+        
+        // Initialize Razorpay payment options
+        const options = {
+          key: 'rzp_test_XoHqU0hyOlTR8X', // Replace with your Razorpay test key
+          amount: amount * 100, // Razorpay expects amount in paise
           currency: 'INR',
           name: 'Athlete Crowdfunding',
           description: `Support for ${campaign.title}`,
-          order_id: order.id,
-          handler: async function(response: any) {
-            // Create a record in the payments table
-            const { error } = await supabase
-              .from('payments')
-              .insert([
-                {
-                  brand_id: user.id,
-                  //athlete_id: campaign.brand_id, // Using the athlete's ID
-                  amount: amount,
-                  currency: 'INR',
-                  status: 'completed',
-                  payment_method: 'razorpay',
-                  //transaction_id: campaign.id, // Link to campaign ID
-                }
-              ]);
-              
-            if (error) {
-              console.error('Error recording payment:', error);
-              alert('Payment was processed but there was an error recording it. Please contact support.');
-            } else {
-              // Success - show confirmation and redirect
-              alert('Thank you for supporting this athlete!');
-              router.push(`/brand/campaigns/${campaign.id}`);
-            }
+          // order_id: tempOrderId, // Commented out for testing - in real implementation, this would come from your backend
+          handler: function(response: any) {
+            // For now, just show success message without backend integration
+            console.log('Payment successful', response);
+            alert('Thank you for supporting this athlete! (This is a test payment)');
+            router.push(`/brand/campaigns/${campaign.id}`);
           },
           prefill: {
             name: name,
@@ -185,6 +172,23 @@ export default function SupportCampaign() {
           theme: {
             color: '#4F46E5',
           },
+          modal: {
+            ondismiss: function() {
+              setProcessingPayment(false);
+            }
+          },
+          notes: {
+            campaign_id: campaign.id
+          }
+        };
+  
+        // Initialize Razorpay
+        const razorpay = new window.Razorpay(options);
+        
+        razorpay.on('payment.failed', function(response: any) {
+          console.error('Payment failed', response.error);
+          alert('Payment failed. Please try again.');
+          setProcessingPayment(false);
         });
 
         razorpay.open();
@@ -198,6 +202,10 @@ export default function SupportCampaign() {
     } finally {
       setProcessingPayment(false);
     }
+  };
+
+  const handleScriptLoad = () => {
+    setScriptLoaded(true);
   };
 
   if (loading) {
@@ -236,7 +244,11 @@ export default function SupportCampaign() {
   return (
     <div className="min-h-screen bg-gray-50">
       <BrandNavbar />
-      <Script src="https://checkout.razorpay.com/v1/checkout.js" />
+      {/* Load Razorpay script */}
+      <Script 
+        src="https://checkout.razorpay.com/v1/checkout.js"
+        onLoad={handleScriptLoad}
+      />
       
       <div className="max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
