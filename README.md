@@ -2,6 +2,8 @@
 
 Athleto is a virtual platform designed to support underprivileged athletes in India by providing them with the resources, training, and financial backing they need to excel in their respective sports. Our mission is to bridge the gap between talent and opportunity, ensuring that no athlete is left behind due to economic constraints.
 
+Note : AR/VR training would be implemented in the later stages of development of project
+
 ##  Live Demo
 
 Check out the live demo of the project below:
